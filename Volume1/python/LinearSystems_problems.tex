@@ -1,0 +1,77 @@
+ % Program simple row reduction to REF.
+Write a function that reduces an arbitrary square matrix $A$ to REF.
+You may assume that $A$ is invertible and that a $0$ will never appear on the main diagonal (so only use type III row reductions, not type II).
+Avoid operating on entries that you know will be $0$ before and after a row operation.
+Use at most two nested loops.
+
+Test your function with small test cases that you can check by hand.
+Consider using \li{np.random.randint()} to generate a few manageable tests cases.
+\label{prob:ref-row-reduction}
+
+Write a function that finds the LU decomposition of a square matrix.
+You may assume that the decomposition exists and requires no row swaps.
+\label{prob:LU-Decomposition}
+ % Program back and forward substitution.
+Write a function that, given $A$ and $\b$, solves the square linear system $A\x = \b$.
+Use the function from Problem \ref{prob:LU-Decomposition} to compute $L$ and $U$, then use (\ref{eq:forward-substitution}) and (\ref{eq:backward-substitution}) to solve for $\y$, then $\x$.
+You may again assume that no row swaps are required ($P = I$ in this case).
+\label{prob:substitute-solve}
+ % Time ways to solve Ax = b with scipy.linalg.
+Write a function that times different \li{scipy.linalg} functions for solving square linear systems.
+
+For various values of $n$, generate a random $n \times n$ matrix $A$ and a random $n$-vector $\b$ using \li{np.random.random()}.
+Time how long it takes to solve the system $A\x = \b$ with each of the following approaches:
+%
+\begin{enumerate}
+\item Invert $A$ with \li{la.inv()} and left-multiply the inverse to $\b$.
+\item Use \li{la.solve()}.
+\item Use \li{la.lu_factor()} and \li{la.lu_solve()} to solve the system with the LU decomposition.
+\item Use \li{la.lu_factor()} and \li{la.lu_solve()}, but only time \li{la.lu_solve()} (not the time it takes to do the factorization with \li{la.lu_factor()}).
+\end{enumerate}
+%
+Plot the system size $n$ versus the execution times.
+Use log scales if needed.
+\label{prob:linsystems-timing1}
+ % Construct a large sparse matrix.
+% Write a function that accepts an integer $n$.
+Let $I$ be the $n\times n$ identity matrix, and define
+\[
+A =\left[\begin{array}{ccccc}
+B & I &      &        & \\
+I & B &  I   &        & \\
+  & I & \ddots & \ddots & \\
+  &   & \ddots & \ddots & I \\
+  &   &        &    I   & B
+\end{array}\right],
+\qquad
+B = \left[\begin{array}{rrrrr}
+-4 &  1 &      &        & \\
+ 1 & -4 &  1   &        & \\
+   &  1 & \ddots & \ddots & \\
+   &    & \ddots & \ddots & 1 \\
+   &    &        &    1   & -4
+\end{array}\right],
+\]
+where $A$ is $n^2\times n^2$ and each block $B$ is $n\times n$.
+The large matrix $A$ is used in finite difference methods for solving Laplace's equation in two dimensions, $\frac{\partial^2u}{\partial x^2} + \frac{\partial^2u}{\partial y^2} = 0$.
+
+Write a function that accepts an integer $n$ and constructs and returns $A$ as a sparse matrix.
+Use \li{plt.spy()} to check that your matrix has nonzero values in the correct places.
+% \\ (Hint: Consider using \li{setdiag()} method of sparse matrices to fill in some of the diagonals.)
+\label{prob:sparse-construction}
+ % Time scipy.sparse.linalg.spsolve() against sp.linalg.solve().
+Write a function that times regular and sparse linear system solvers.
+
+For various values of $n$, generate the $n^{2} \times n^{2}$ matrix $A$ described in Problem \ref{prob:sparse-construction} and a random vector $\b$ with $n^2$ entries.
+Time how long it takes to solve the system $A\x = \b$ with each of the following approaches:
+%
+\begin{enumerate}
+\item Convert $A$ to CSR format and use \li{scipy.sparse.linalg.spsolve()} (\li{spla.spsolve()}).
+% Do not include the time it takes to convert $A$ to CSR format.
+\item Convert $A$ to a NumPy array and use \li{scipy.linalg.solve()} (\li{la.solve()}).
+% Do not include the time it takes to convert $A$ to a NumPy array.
+\end{enumerate}
+In each experiment, only time how long it takes to solve the system (not how long it takes to convert $A$ to the appropriate format).
+
+Plot the system size $n^{2}$ versus the execution times.
+As always, use log scales where appropriate and use a legend to label each line.

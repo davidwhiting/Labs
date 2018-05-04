@@ -1,0 +1,20 @@
+
+Using $20$ $x$ steps, $250$ time steps, and a final time of $.2$, plot the solution that minimizes \eqref{tv_images:SA_flow}.
+It should match figure \ref{fig:tv_images:SA_image}.
+
+
+Using $\triangle t = 1e{-3},$ $\lambda = 40,$ $\triangle x = 1,$ and $\triangle y = 1$, implement the numerical scheme mentioned above to obtain a solution $u$. (So $\Omega = [0,n_x]\times [0,n_y]$, where $n_x$ and $n_y$ represent the number of pixels in the $x$ and $y$ dimensions, respectively.) Take 250 steps in time. Compare your results with Figure \ref{fig:noise_compare_attempts}.
+
+Hint: Use the function \li{np.roll} to compute the spatial derivatives. For example, the second derivative can be approximated at interior grid points using 
+\begin{lstlisting}
+u_xx = np.roll(u,-1,axis=1) - 2*u + np.roll(u,1,axis=1)	
+\end{lstlisting}
+
+Using $\triangle t = 1e-3, \lambda = 1, \triangle x = 1,$ and $ \triangle y = 1$, implement the numerical scheme mentioned above to obtain a solution $u$.  Take 200 steps in time. Compare your results with Figure \ref{fig:noise_compare_attempts}. How small should $\epsilon$ be? 
+
+Hint: To compute the spatial derivatives, consider the following: 
+\begin{lstlisting}
+u_x = (np.roll(u,-1,axis=1) -  np.roll(u,1,axis=1))/2	
+u_xx = np.roll(u,-1,axis=1) - 2*u + np.roll(u,1,axis=1)	
+u_xy = (np.roll(u_x,-1,axis=0) - np.roll(u_x,1,axis=0))/2.
+\end{lstlisting}

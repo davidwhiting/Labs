@@ -1,0 +1,91 @@
+
+Let the following matrix represent a directed graph
+\[
+\begin{array}{ccccccc}
+0 & 0 & 1 & 0 & 1 & 0 & 1 \\
+1 & 0 & 0 & 0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 0 & 0 & 1 & 0 \\
+1 & 0 & 0 & 0 & 1 & 0 & 0 \\
+0 & 0 & 0 & 1 & 0 & 0 & 0 \\
+0 & 0 & 1 & 0 & 0 & 0 & 1 \\
+0 & 1 & 0 & 0 & 0 & 0 & 0
+\end{array}\right]
+\]
+Between which pair of nodes does there exist the greatest number of paths
+of length five?
+From which node to which node is there no path of length seven?
+
+Write a function that accepts the adjacency matrix $A$ of a graph $G$.
+Use (\ref{eq:degree-matrix-formula}) and (\ref{eq:laplacian-matrix-formula}) to compute the Laplacian matrix $L$ of $G$.
+\\(Hint: The diagonal entries of $D$ can be computed in one line by summing $A$ over an axis.)
+
+Test your function on the graphs $G_1$ and $G_2$ from Figure \ref{fig:imgseg-example-graphs} and validate your results with \li{scipy.sparse.csgraph.laplacian()}.
+\label{prob:imgseg-laplacian}
+
+Write a function that accepts the adjacency matrix $A$ of a graph $G$ and a small tolerance value \li{tol}.
+Compute the number of connected components in $G$ and its algebraic connectivity.
+Consider all eigenvalues that are less than the given \li{tol} to be zero.
+
+Use \li{scipy.linalg.eig()} or \li{scipy.linalg.eigvals()} to compute the eigenvalues of the Laplacian matrix.
+These functions return complex eigenvalues (with negligible imaginary parts); use \li{np.real()} to extract the real parts.
+
+% Used to be part of the previous problem.
+% Rmoved because these is no great way to evaluate it.
+The folowing function creates a random symmetric matrix of Boolean values with sparsity determined by the input \li{c}.
+\begin{lstlisting}
+def sparse_generator(n, c):
+    """Return a symmetric nxn matrix with sparsity determined by c."""
+    A = np.random.rand(n**2).reshape((n, n))
+    A = ( A > c**(.5) )
+    return A.T @ A
+\end{lstlisting}
+
+Test your function from the previous problem on matrices created by \li{sparse_generator()} with inputs $n = 10, 100$ and $c = .25, .5, .95$.
+What do you notice about the likelihood that a random graph is connected?
+ % Read and display an image.
+Define a class called \li{ImageSegmenter}.
+\begin{enumerate}
+    \item Write the constructor so that it accepts the name of an image file.
+    Read the image, scale it so that it contains floats between $0$ and $1$, then store it as an attribute.
+    If the image is in color, compute its brightness matrix by averaging the RGB values at each pixel (if it is a grayscale image, the image array itself is the brightness matrix).
+    Flatten the brightness matrix into a 1-D array and store it as an attribute.
+
+    \item Write a method called \li{show_original()} that displays the original image.
+    If the original image is grayscale, remember to use \li{cmap="gray"} as part of \li{plt.imshow()}.
+\end{enumerate}
+
+Write a method for the \li{ImageSegmenter} class that accepts floats $r$ defaulting to $5$, $\sigma_B^2$ defaulting to $.02$, and $\sigma_X^2$ defaulting to $3$.
+Compute the adjacency matrix $A$ and the degree matrix $D$ according to the weights specified in (\ref{eq:imgseg-edge-weight}).
+
+Initialize $A$ as a \li{scipy.sparse.lil_matrix}, which is optimized for incremental construction.
+Fill in the nonzero elements of $A$ one row at a time.
+Use \li{get_neighbors()} at each step to help compute the weights.
+\\(Hint: Try to compute and store an entire row of weights at a time.
+What does the command \li{A[5, np.array([1, 4, 5, 6, 9])] = weights} do?)
+
+Finally, convert $A$ to a \li{scipy.sparse.csc_matrix}, which is faster for computations.
+Then return $A$ and $D$.
+\label{prob:imgseg-compute-adjacency}
+
+Write a method for the \li{ImageSegmenter} class that accepts an adjacency matrix $A$ as a \li{scipy.sparse.csc_matrix} and a degree matrix $D$ as a 1-D NumPy array.
+Construct an $m\times n$ boolean mask describing the segments of the image.
+\begin{enumerate}
+    \item Compute the Laplacian $L$ with \li{scipy.sparse.csgraph.laplacian()} or by converting $D$ to a sparse diagonal matrix and computing $L = D - A$ (do not use your function from Problem \ref{prob:imgseg-laplacian} unless it works correctly and efficiently for sparse matrices).
+
+    \item Construct $D^{-1/2}$ as a sparse diagonal matrix using $D$ and \li{scipy.sparse.diags()}, then compute $D^{-1/2}LD^{-1/2}$.
+    Use \li{@} or the \li{dot()} method of the sparse matrix for the matrix multiplication, \textbf{not} \li{np.dot()}.
+
+    \item Use \li{scipy.spase.linalg.eigsh()} to compute the eigenvector corresponding to the second-smallest eigenvalue of $D^{-1/2} L D^{-1/2}$.
+    Set the keyword arguments \li{which="SM"} and \li{k=2} to compute only the two smallest eigenvalues and their eigenvectors.
+
+    \item Reshape the eigenvector as a $m\times n$ matrix and use this matrix to construct the desired boolean mask.
+    Return the mask.
+\end{enumerate}
+\label{prob:imgseg-compute-mask}
+
+Write a method for the \li{ImageSegmenter} class that accepts floats $r$, $\sigma_B^2$, and $\sigma_X^2$, with the same defaults as in Problem \ref{prob:imgseg-compute-adjacency}.
+Call your methods from Problems \ref{prob:imgseg-compute-adjacency} and \ref{prob:imgseg-compute-mask} to obtain the segmentation mask.
+Plot the original image, the positive segment, and the negative segment side-by-side in subplots.
+Your method should work for grayscale or color images.
+
+Use \texttt{dream.png} as a test file and compare your results to Figure \ref{fig:imgseg-segmentation-example}.

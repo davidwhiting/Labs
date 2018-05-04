@@ -1,0 +1,43 @@
+ % Load, clean, and plot Dow Jones IA data.
+The file \texttt{DJIA.csv} contains daily closing values of the Dow Jones Industrial Average from 2006--2016.
+Read the data into a \li{Series} or \li{DataFrame} with a \li{DatetimeIndex} as the index.
+Drop rows with missing values, cast the \li{"VALUES"} column to floats, then plot the data.
+\\(Hint: Use \li{lw=.5} to make the line thin enough for the data.)
+\label{prob:timeseries-dowjones}
+ % Use pd.date_range() for something.
+The file \texttt{paychecks.csv} contains values of an hourly employee's last 93 paychecks.
+He started working March 13, 2008.
+This company hands out paychecks on the first and third Fridays of the month.
+
+Read in the data, using \li{pd.date\_range()} to generate the \li{DatetimeIndex}.
+Plot the data.
+\\(Hint: use the \li{union()} method of \li{DatetimeIndex} class.)
+ %
+The file \texttt{finances.csv} contains a list of simulated quarterly earnings and expense totals from a fictional company.
+Load the data into a \li{Series} or \li{DataFrame} with a \li{PeriodIndex} with a quarterly frequency.
+Assume the fiscal year starts at the beginning of September and that the data begins in September 1978.
+Plot the data.
+ % Downsample
+The file \texttt{website\_traffic.csv} contains records for different visits to a fictitious website.
+Read in the data, calculate the duration of each visit (in seconds), and convert the index to a \li{DatetimeIndex}.
+Use downsampling to calculate the average visit duration by minute, and the average visit duration by hour.
+Plot both results on the same graph.
+
+Compute the following information about the DJIA dataset from Problem \ref{prob:timeseries-dowjones}.
+\begin{itemize}
+    \item The single day with the largest gain.
+    \item The single day with the largest loss.
+    \item The month with the largest gain.
+    \item The month with the largest loss.
+\end{itemize}
+For the monthly statistics, define the gain (or loss) to be the difference between the DJIA on the last and first days of the month.
+
+Plot the following from the DJIA dataset with a window or span of 30, 120, and 365.
+\begin{itemize}
+    \item The original data points.
+    \item Rolling average.
+    \item Exponential average.
+    \item Minimum rolling values.
+    \item Maximum rolling values.
+\end{itemize}
+Describe how varying the length of the window changes the approximation to the data.

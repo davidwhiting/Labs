@@ -1,0 +1,113 @@
+
+Explain what makes HIV unique. What are the consequences of this? What is AIDS?
+\label{problem:hiv:virusunderstanding}
+
+How is AIDS treated and what are the considerations for treatment?
+\label{problem:hiv:treatment}
+
+Create a function that defines the state equations and returns both equations in a single array. The function should be able to be passed into the RK4 solver. This function can depend on the global variables defined below.
+
+\begin{warn}
+When solving the state equations, because of the nature of $T^\prime$ and $V^\prime$, solve the original equations \eqref{original_state:HIV} from the beginning of the lab and not the equations \eqref{modified_state:HIV} with $u_i^*(t)$ replaced by the minmax function.
+\end{warn}
+
+\begin{lstlisting}
+a_1, a_2 = 0, 0
+b_1, b_2 = 0.02, 0.9
+s_1, s_2 = 2., 1.5
+mu = 0.002
+k = 0.000025
+g = 30.
+c = 0.007
+B_1, B_2 = 14, 1
+A_1, A_2 = 250000, 75
+T0, V0 = 400, 3
+t_f = 50
+n = 1000
+\end{lstlisting}
+These constants come from both references cited at the end of this lab. 
+
+\begin{lstlisting}
+# initialize global variables, state, costate, and u.
+state = np.zeros((n,2))
+state0 = np.array([T0, V0])
+	
+costate = np.zeros((n,2))
+costate0 = np.zeros(2)
+
+u=np.zeros((n,2))
+u[:,0] += .02
+u[:,1] += .9
+
+# define state equations
+def state_equations(t,y,i):
+	'''
+	Parameters
+	---------------
+	t : float
+		the time
+	y : ndarray (2,)
+		the T cell concentration and the Virus concentration at time t
+	i : int
+		index for the global variable u.
+	Returns
+	--------------
+	y_dot : ndarray (2,)
+		the derivative of the T cell concentration and the virus concentration at time t
+	'''
+	pass
+\end{lstlisting}
+\label{problem:hiv:state}
+
+Create a function that defines the costate equations and returns both equations in a single array. The function should be able to be passed into the RK4 solver. Use the global variables as defined in Problem \ref{problem:hiv:state}.
+
+\begin{lstlisting}
+def lambda_hat(t,y,i):
+	'''
+	Parameters
+	---------------
+	t : float
+		the time
+	y : ndarray (2,)
+		the lambda_hat values at time t
+	i : int
+		index for global variables, u and state.
+	Returns
+	--------------
+	y_dot : ndarray (2,)
+		the derivative of the lambda_hats at time t.
+	'''
+	pass
+\end{lstlisting}
+
+\label{problem:hiv:costateequations}
+
+Create and run a numerical solver for the HIV two drug model using the code below.
+
+\begin{lstlisting}
+epsilon = 0.001
+test = epsilon + 1
+
+while(test > epsilon):
+	oldu = u.copy();
+    
+	#solve the state equations with forward iteration
+	#state = RK4(...)
+    
+	#solve the costate equations with backwards iteration
+	#costate = RK4(...)[::-1]
+	
+	#solve for u1 and u2
+    
+	#update control
+	u[:,0] = 0.5*(u1 + oldu[:,0])
+	u[:,1] = 0.5*(u2 + oldu[:,1])
+
+	#test for convergence
+	test = abs(oldu - u).sum()
+\end{lstlisting}
+
+Your solutions should match Figure \ref{fig:hiv:solutions}.
+\label{problem:hiv:solver}
+
+\label{problem:hiv:numericalsolver}

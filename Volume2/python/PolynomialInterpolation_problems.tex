@@ -1,0 +1,90 @@
+
+Write a function that uses the Lagrange method to find an interpolating polynomial for a set of data points and evaluates the calculated polynomial at specified values.
+This function should accept two Numpy arrays which contain the $x$ and $y$ values of the interpolation points as well as a Numpy array of values (of length $m$) at which the interpolating polynomial 
+will be evaluated.
+Your function should return a Numpy array of the evaluated points.
+The following steps will help in writing your function:
+\begin{enumerate}
+\item Compute the denominator of each $L_j$ (as in Equation \ref{equa:lagrange}) .
+\item Using the previous step, evaluate each $L_j$ at all points in the compuational domain (this will give you $m$ values for each of the $n$ $L_j$ functions).
+\item Combine all of these values as in Equation \ref{equa:poly}, this will give you the final array of length $m$.
+\end{enumerate}
+Note that steps one and two can be done in the same loop.
+You may find the function \li{np.delete()} to be useful while writing this method.
+
+You can test your function by plotting Runge's function $f(x)=\frac{1}{1+25x^2}$ and your interpolating polynomial on the same plot for different values of $n$ equally spaced interpolating values then comparing 
+your plot to the plots given in Figure \ref{fig:badinterp}.
+\label{prob:lagrange}
+
+\label{prob:barycentric}
+Create a class that performs Barycentric Lagrange interpolation.
+The constructor of your class should accept two Numpy arrays which contain the $x$ and $y$ values of the interpolation points.
+Store these arrays as class attributes.
+The constructor should compute the corresponding barycentric weights and store the resulting array as a class attribute.
+When storing the arrays as class attributes be sure that the relative ordering of the arrays remains unchanged.
+
+Write the \li{__call__} method of your class so that it accepts a Numpy array of values at which to evaluate the interpolating polynomial and returns an array of the evaluated points.
+Your class can be tested in the same way as the Lagrange function written in Problem \ref{prob:lagrange}
+
+\label{prob:add weights}
+Include a method in the class written in Problem \ref{prob:barycentric} that allows for the addition of new interpolating points by updating the barycentric weights.
+Your function should accept two Numpy arrays which contain the $x$ and $y$ values of the new interpolation points.
+Update and store the old weights then extend the class attribute arrays that store the weights, and the $x$ and $y$ values of the interpolation points with the new data.
+When updating all class attributes, make sure to maintain the same relative order.
+
+Compare the runtime and error of your Lagrange and Barycentric methods with Scipy's Barycentric class by writing two functions, one comparing error and the other run-time.
+Both functions should accept a callable function to interpolate and an integer designating how many interpolating points should be used.
+All computations should be made on 200 equally spaced points on the interval $[-1, 1]$ with the interpolating points coming from the Chebyshev roots.
+Both functions should print the runtime or error of the interpolation for all three methods with an accompanying description (so that it is obvious which time/error corresponds to which method).
+When calculating error, use \li{np.linalg.norm()} with \li{ord=np.inf}.
+
+Compare the error of interpolation using equally spaced points and interpolation using the Chebyshev extrema by writing a function that does the following:
+\begin{itemize}
+\item Interpolates Runge's function six times on the interval $[-1,1]$, three times using equally spaced points and three using the Chebyshev extrema.
+\item Performs the interpolations with $n=[10,50,100]$ (note that for the Chebyshev extrema, the given definition uses $n+1$ interpolating values).
+\item Plots each of the interpolating polynomial (for a total of six plots).
+\item Prints the error of the interpolation on a domain using 500 equally spaced points.  When printing the error, it should be clear which error belongs to which value of $n$ and to which method.
+\end{itemize}
+Use Scipy's BarycentricLagrange class to perform all of the interpolation.
+When calculating the error, use \li{scipy.linalg.norm()} with \li{ord=np.inf}.
+
+Write a funtion that finds the Chebyshev coefficients for the degree $n$ interpolating polynomial of a function \li{f}.
+Your function should accept a callable function \li{f} and an integer $n$ which denotes the degree of the interpolating polynomial.
+Make the function return a Numpy array of the Chebyshev coefficients.
+The functions \li{np.real()} and \li{np.fft.fft()} will be helpful in writing your function.
+When using Numpy's \li{fft()} function, you will need to divide every entry of the resulting array by the scaling factor $\frac{1}{2n}$ since it is missing from Numpy's implementation.
+
+Investigate the claims made in the previous section by writing two different functions, one to compare error and the other to compare time.
+This function should accomplish this by doing the following:
+\begin{itemize}
+\item Interpolate Runge's function on the interval $[-1,1]$ using your Lagrange function, your Barycentric Lagrange class, Scipy's Barycentric class and Chebyshev interpolation.
+\item Use the Chebyshev extremal points for the interpolating values.
+\item Print the error or time required to run the function for each of the methods for $n=[500,1000,1500]$ interpolating values.
+Be sure to clearly label the method and value of $n$ being used for each value printed.
+\item Always evaluate at 200 equally spaced points in the domain.
+\end{itemize}
+Use \li{scipy.linalg.norm()} with \li{ord=np.inf} and the Chebyshev extremal points.
+Note that if \li{inf} appears in any of your compuatations \li{scipy.linalg.norm()} will raise an error, in this case print the error as \li{inf} (you may need to use a \li{try} \li{except} block for some of the methods).
+
+Write a function that interpolates the given data along the whole interval at the closest approximations to the $n+1$ Chebyshev extremal nodes.
+The function should accept $n$, perform the Barycentric interpolation then plot the original data and the approximating polynomial on the same domain on two seperate subplots.
+Your interpolating polynomial should give a fairly good approximation starting at around 50 points.
+Note that beyond about 200 points, the given code will break down since it will attempt to return multiple of the same points causing a divide by 0 error.
+If you did not perform the fix suggested in the Warning box, make sure not to pass in any points that exactly match the interpolating values.
+
+\label{prob:cheb_interpolations}
+We will briefly consider the rate of convergence of these polynomial approximations.
+Compute the coefficients for the interpolating Chebyshev series for the function $\cos x$ on the interval $[-1, 1]$.
+This approximation converges very rapidly, so the first $20$ terms or so should be more than enough.
+How many of these coefficients have absolute value greater than $10^{-14}$?
+How close does your series approximate the actual function?
+
+Now compute the coefficients for a degree $100000$ polynomial approximating the function
+\[\sin \left( \frac{1}{x} \right) \sin \left( \frac{1}{\sin \left( \frac{1}{x} \right)} \right) \]
+on the interval $[-1, 1]$.
+How large are the last $10$ coefficients in the series?
+Use NumPy's Chebyshev class to plot this function at $100001$ equispaced points on the interval $[-1, 1]$.
+Plot it with the original function.
+Compare the two.
+How close are they?
+Notice how the interpolating polynomial is able to approximate the original function about as well as the discrete sample of the original function.

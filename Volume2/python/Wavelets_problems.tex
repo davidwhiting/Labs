@@ -1,0 +1,192 @@
+
+Write a function that calculates the discrete wavelet transform using Algorithm \ref{alg:1d_wavelet}.
+The function should return a list of one-dimensional NumPy arrays in the following form: $[A_n, D_n, \ldots, D_1]$.
+
+%The main body of your function should be a loop in which you calculate two arrays: the $i$-th approximation
+%and detail coefficients. Append the detail coefficients array to your list, and feed the approximation array
+%back into the loop. When the loop is finished, append the approximation array. Finally, reverse the order of your list
+%to adhere to the required return format.
+
+Test your function by calculating the Haar wavelet coefficients of a noisy sine signal with $n=4$:
+
+\begin{lstlisting}
+domain = np.linspace(0, 4*np.pi, 1024)
+noise =  np.random.randn(1024)*.1
+noisysin = np.sin(domain) + noise
+coeffs = dwt(noisysin, L, H, 4)
+\end{lstlisting}
+
+Plot the original signal with the approximation and detail coefficients and verify that they match the plots in Figure \ref{fig:dwt1D}.
+\label{prob:dwt1D}
+ % Inverse wavelet transform
+Write a function that performs the inverse wavelet transform.
+The function should accept a list of arrays (of the same form as the output of the function written in Problem \ref{prob:dwt1D}), a reverse low-pass filter, and a reverse high-pass filter.
+The function should return a single array, which represents the recovered signal.
+
+Note that the input list of arrays has length $n+1$ (consisting of $A_n$ together with $D_n, D_{n-1}, \ldots, D_1$), so your code should perform the process given above $n$ times.
+
+To test your function, first perform the inverse transform on the noisy sine wave that you created in the first problem.
+Then, compare the original signal with the signal recovered by your inverse wavelet transform function using \li{np.allclose()}.
+
+Explore the two-dimensional wavelet transform by completing the following:
+\begin{enumerate}
+    \item Plot the subbands of the file \texttt{woman\_darkhair.png} as described above (using the Daubechies 4 wavelet with periodic extension).
+        Compare this with the subbands of the mandrill image shown in Figure \ref{fig:dwt2D}.
+    \item Compare the subband patterns of different wavelets by plotting the $LH$ subband pattern for the Haar wavelet and two other wavelets of your choice using \texttt{woman\_darkhair.png}.
+        Note that not all wavelets included in PyWavelets are compatible with every function.
+        For example, only the first seven families listed by \li{pywt.families()} are compatible with \li{dwt2()}.
+\end{enumerate}
+
+Write a function called \li{clean_image()} which accepts the name of a grayscale image file and cleans high-frequency noise out of the image.
+Load the image as an ndarray, and perform a wavelet decomposition using PyWavelets.
+Reconstruct the image using all subbands except the last set of detail coefficients, and return this cleaned image as an ndarray.
+
+Write two functions, one of which implements the hard thresholding technique and one of which implements the soft.
+While writing these two functions, remember the following:
+\begin{itemize}
+\item The functions should accept a list of wavelet coefficients in the usual form, as well as a threshold value.
+\item The functions should return the thresholded wavelet coefficients (also in the usual form).
+\item Since only the detail coefficients are thresholded, the first entry of the input coefficient list should remain unchanged.
+\end{itemize}
+To test your functions, perform hard and soft thresholding on \texttt{noisy\_darkhair.png} and plot the resulting images together.
+When testing your function, use the Daubechies 4 wavelet and four sets of detail coefficients (\li{level=4} when using \li{wavedec2()}).
+For soft thresholding use $\tau=20$, and for hard thresholding use $\tau=40$.
+
+Create a noisy version of the Lena image by adding Gaussian
+white noise of mean 0 and standard deviation $\sigma = 20$ (i.e. \li{scale=20}).
+Compute four levels of the wavelet coefficients using the Daubechies 4 Wavelet,
+and input these into your
+thresholding functions (with $\tau = 3\sigma$ for the hard threshold,
+and $\tau = 3\sigma/2$ for the soft threshold). Reconstruct the
+two denoised images, and then plot these together alongside the
+noisy image. Your output should match Figure \ref{fig:denoise}.
+
+What do you notice? How does lowering or raising the
+threshold affect the reconstructed images? What happens if you use
+a different Wavelet?
+
+Implement the preprocessing step as well as its inverse by implementing the class methods \li{pre_process()} and \li{post_process()}.
+These methods should accept a NumPy array (the image) and return the processed image as a NumPy array.
+In the \li{pre_process()} method, calculate the values of $m$ and $s$ given above.
+These values are needed later on for decompression, so store them in the class attributes \li{_m} and \li{_s}.
+
+Implement the subband decomposition as described above by implementing the class method \li{decompose()}.
+This function should accept an image to decompose and should return a list of ordered subbands.
+Use the function \li{pywt.wavedec2()} with the \li{'coif1'} wavelet to obtain the subbands.
+These subbands should then be ordered in a single list as described above.
+
+Implement the inverse of the decomposition by writing the class method \li{recreate()}.
+This function should accept a list of 16 subbands (ordered like the output of \li{decompose()}) and should return a reconstructed image.
+Use \li{pywt.waverec2()} to reconstruct an image from the subbands.
+Note that you will need to adjust the accepted list in order to adhere to the required input for \li{waverec2()}.
+
+Implement the quantization step by writing the \li{quantize()} method of your class.
+This method should accept a NumPy array of coefficients and the quantization parameters $Q_k$ and $Z_k$.
+The function should return a NumPy array of the quantized coefficients.
+
+Also implement the \li{dequantize()} method of your class using the formula given above.
+This function should accept the same parameters as \li{quantize()} as well as a parameter $C$ which defaults to $.44$.
+The function should return a NumPy array of dequantized coefficients.
+
+Masking and array slicing will help keep your code short and fast when implementing both of these methods.
+Remember the case for $Q_k=0$.
+You can check that your functions are working correctly by comparing the output of your functions to a hand calculation on a small matrix.
+%You may wish to make use of the array slicing techniques demonstrated below:
+%\begin{lstlisting}
+%>>> # assume X, Y are numpy arrays of same shape
+%>>> m = X < -2 # create mask for entries less than -2
+%>>> Y[m] = np.ceil(X[m]) + 2 # set corresponding entries of Y
+%\end{lstlisting}
+
+Carry out the grouping procedure and its inverse as described above by implementing the li\{_group} and \li{ungroup} class methods:
+
+Note that we need the shapes and the boolean lists indicating which subbands were included
+for the un-grouping step.
+Thus, in the \li{compress} method, once we computed these tuples of lists, we store them in the class attributes \li{_shapes}
+and \li{_tvals}, respectively.
+\begin{lstlisting}
+>>> groups, self._shapes, self._tvals = self._group(q_subbands)
+\end{lstlisting}
+
+Examine the code for \li{_huffmanIndices} to make sure you understand it, and add it to your class.
+
+Examine the code for \li{_indicesToCoeffs} for understanding, and then add the method to your class.
+
+Add the \li{_encode()} method to your class.
+Implement the Huffman coding step in the \li{compress} method by calculating the Huffman indices, Huffman map, and bit string for each group of quantized coefficients separately.
+Store the resulting three bit strings and Huffman maps in the class attributes \li{_bitstrings} and \li{_huff_maps}.
+Use the following code block as a guide.
+\begin{lstlisting}
+>>> # assume groups is a list of the three groups of coefficients
+>>> # for each group, get huffman indices, create huffman tree, and encode
+>>> huff_maps = []
+>>> bitstrings = []
+>>> for i in xrange(3):
+>>>     inds, freqs, extra = self._huffmanIndices(groups[i])
+>>>     huff_map = huffman(freqs)
+>>>     huff_maps.append(huff_map)
+>>>     bitstrings.append(self._encode(inds, extra, huff_map))
+>>>
+>>> # store the bitstrings and the huffman maps
+>>> self._bitstrings = bitstrings
+>>> self._huff_maps = huff_maps
+\end{lstlisting}
+You have now fully implemented the compression algorithm!
+
+Add the \li{_decode()} method to your class.
+
+Add the \li{decompress()} method to your class.
+
+Implement the method \li{get_ratio()} by calculating the ratio of compression.
+The function should not accept any parameters and should return the compression ratio.
+
+Your compression algorithm is now complete!
+You can test your class with the following code:
+\begin{lstlisting}
+# Try out different values of r between .1 to .9.
+r = .5
+finger = imread('uncompressed_finger.png', True)
+wsq = WSQ()
+wsq.compress(finger, r)
+print(wsq.get_ratio())
+new_finger = wsq.decompress()
+plt.subplot(211)
+plt.imshow(finger, cmap=plt.cm.Greys_r)
+plt.subplot(212)
+plt.imshow(np.abs(new_finger), cmap=plt.cm.Greys_r)
+plt.show()
+\end{lstlisting}
+
+Calculate and plot the approximation frames for $f(x) = \sin(x)$ on the interval $[0,2\pi]$
+for $m = 4, 6, 8$. Note that because we are working on a finite interval,
+we only need to calculate certain coefficients $\alpha_{m,k}$. In
+particular, we only need the coefficients for $k = 0$ up to the first integer
+$n$ such that $(n+1)2^{-m} > 2 \pi$ (why?). Furthermore, to plot the frame,
+all we need is an array containing the relevant coefficients. Then simply plot
+the coefficients against \li{linspace} with appropriate arguments
+and set \li{drawstyle='steps'} in the \li{plt.plot} function.
+
+Now calculate the details for $f(x) = \sin(x)$ on the same interval and for the
+same $m$ values given above. Use previous results to compute the coefficients
+for $f_5$, $f_7$, and $f_9$ and plot them.
+
+Build off of the sample code to fully implement the two-dimensional discrete
+wavelet transform as described above.
+As before, the input to your function should consist of
+three arrays: the input image, the low-pass filter, and the high-pass filter.
+You should return a list of the following form: $$[LL_n,(LH_n,HL_n,HH_n), \ldots
+,(LH_1,HL_1,HH_1)].$$
+
+The inverse wavelet transform function should take as input a list
+of that same form, as well as the reconstruction low-pass and high-pass filters,
+and should return the reconstructed image.
+
+Now zero out the approximation coefficients and use your inverse DWT
+function to recreate the image. Plot its absolute value. This image is
+a fairly good representation of the edges. If we add this to the original
+image, we can increase the contrast at the edges (that is, make the dark
+side darker, and the light side lighter). Do this, and plot the original
+image side-by-side with the sharpened image. What do you notice? There
+are many image-sharpening techniques, and those based on wavelets
+are more sophisticated than what we have done here, but this gives the
+basic idea.

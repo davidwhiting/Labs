@@ -1,0 +1,25 @@
+
+Write a function that accepts a convex objective function $f:\mathbb{R}^n\rightarrow\mathbb{R}$, its derivative $Df:\mathbb{R}^n\rightarrow\mathbb{R}^n$, an initial guess $x_0\in\mathbb{R}^n$, a convergence tolerance, and a maximum number of iterations.
+Use the Method of Steepest Descent to compute the minimizer of $f$.
+Continue the algorithm until $\alpha$ is less than the convergence tolerance, or until iterating the maximum number of times.
+Return the minimizer.
+
+Implement the basic Conjugate-Gradient algorithm presented above.
+Write a function \li{conjugateGradient()} that accepts a vector $b$, an initial
+guess $x_0$, a symmetric positive-definite matrix $Q$, and a default tolerance of .0001 as inputs.
+Continue the algorithm until $\|r_k\|$ is less than the tolerance.
+Return the solution $x^*$ to the linear system $Qx = b$.
+
+Using your Conjugate-Gradient function, solve the linear regression problem specified by the data contained in the file
+\texttt{linregression.txt}. This is a whitespace-delimited text file formatted so that the $i$-th row consists of
+$y_i, x_{i,1}, \ldots, x_{i,n}$. Use the function \li{numpy.loadtxt()} to load in the data. Report your solution.
+
+Following the example given above, find the maximum likelihood estimate of the parameters for the logistic regression data in the file \texttt{logregression.txt}.
+This is a whitespace-delimited text file formatted so that the $i$-th row consists of $y_i, x_{i,1}, x_{i,2}, x_{i,3}.$
+Since there are three predictor variables, there are four parameters in the model.
+Report the calculated values.
+
+You should be able to use much of the code above unchanged.
+In particular, the function \li{objective()} does not need any changes.
+You simply need to set your variables \li{y} and \li{x} appropriately, and choose a new initial guess (an array of length four).
+Note that \li{x} should be an $m \times 4$ array whose first column consists entirely of ones, whose second column contains the values in the second column of the data file, and so forth.

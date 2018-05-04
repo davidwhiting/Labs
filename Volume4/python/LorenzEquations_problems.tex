@@ -1,0 +1,63 @@
+
+Solve and graph the Lorenz equation by completing the code.
+Initialize the initial conditions with random values between $-15$ and $15$.
+For this exercise, let $\sigma=10$, $\rho=28$, $\beta=\frac{8}{3}$.
+Compare to Figure \ref{fig:Single_Lorenz}
+\begin{lstlisting}
+import numpy as np
+from scipy.integrate import odeint
+
+def lorenz_ode(inputs, T):
+	'''
+	Code up the sytem of equations given
+	'''
+	return Xprime, Yprime, Zprime
+
+def solve_lorenx(init_cond, time=10):
+	T = np.linspace(0, time, time*100)	#initialize time interval for ode
+	'''
+	Use odeint in conjuction with lorenz_ode and the time interval T
+	To get the X, Y, and Z values for this system.
+	You will need to transpose the output of odeint to graph it correctly.
+	'''
+ 	return X, Y, Z
+
+sigma = 'value'
+rho = 'value'
+beta = 'value'
+init_cond = [x0, y0, z0]
+
+X, Y, Z = solve_lorenz(init_cond, 50)
+'''
+Code to graph
+'''
+\end{lstlisting}
+
+
+Change your code to plot $n$ different solution using different random initial conditions.
+Produce a plot with $n=3$ different solutions.
+Compare to Figure \ref{fig:Multiple_Lorenz}
+
+Change the code above so that it initializes one set of initial conditions and creates a second set of initial conditions by adding the array \li{np.random.randn(3)*(1E-10)}.
+This will represent a small perturbation in the initial conditions. Make sure the \li{time} variable is large enough to notice a difference in the two solutions.
+Plot both solutions together.
+Refer to Figure \ref{fig:perturbed_lorenz}
+
+Animate the solutions of the Lorenz equation for an initial set of conditions and the perturbed conditions on the same plot.
+To make the animation go faster, decrease the \li{interval} value in the \li{FuncAnimation()} call.
+It will take several seconds before the curves split, so be patient.
+
+Now set one initial condition.
+Use \li{odeint} to solve the system, but use the arguments \li{atol=1E-14}, \li{rtol=1E-12}, and then again with \li{atol=1E-15}, \li{rtol=1E-13}.
+Animate both solutions on the same plot.
+
+Write a Python function that finds an initial point on the strange attractor, runs the simulation to a given time $t$, and produces a semilog plot of the norm of the difference between the two solution curves.
+Also have it plot an exponential line fitted to match the curve (this will be linear on the semilog plot).
+Have it return a rough estimate of the Lyapunov exponent.
+The output should be something like Figure \ref{fig:lyapunov_exponent}.
+
+Note: In order to get a good estimate of the Lyapunov exponent, your initial guess should already lie on the strange attractor.
+You can get a value on the attractor by running the system for a while to find a good initial guess.
+
+Hint: To find the fitting line, take the logarithm of the norms of the differences, compute a linear fit, then take the exponential function of the resulting line.
+The Lyapunov exponent will be approximately equal to the slope found by the linear regression.

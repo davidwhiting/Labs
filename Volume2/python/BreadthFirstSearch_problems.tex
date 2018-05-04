@@ -1,0 +1,61 @@
+
+Implement the \li{__str__()} method in the provided \li{Graph} class.
+Print each node in the graph, followed by a list of the neighboring nodes separated by semicolons.
+\\(Hint: consider using the \li{join()} method for strings.)
+
+\begin{lstlisting}
+>>> my_dictionary = {'A':['C', 'B'], 'C':['A'], 'B':['A']}
+>>> graph = Graph(my_dictionary)
+>>> print(graph)
+A: C; B
+C: A
+B: A
+\end{lstlisting}
+
+Implement the \li{traverse()} method in the \li{Graph} class using a BFS.
+Start from a specified node and proceed until all nodes in the graph have been visited.
+Return the list of visited nodes.
+If the starting node is not in the adjacency dictionary, raise a \li{ValueError}.
+
+Implement the \li{shortest_path()} method in the \li{Graph} class using a BFS.
+Begin at a specified starting node and proceed until a specified target is found.
+Return a list containing the node values in the shortest path from the start to the target (including the endpoints).
+If either of the inputs are not in the adjacency graph, raise a \li{ValueError}.
+
+Write a function that accepts an adjacency dictionary.
+Create a \li{networkx} object, load it with the graph information from the dictionary, and return it.
+
+Write a \li{BaconSolver} class to solve the Kevin Bacon problem.
+
+The file \texttt{movieData.txt} contains data from about 13,000 movies released over the course of several years.
+A single movie is listed on each line, followed by a sequence of actors that starred in it.
+The movie title and actors' names are separated by a `/' character.
+The actors are listed by last name first, followed by their first name.
+
+Implement the constructor of \li{BaconSolver}.
+Accept a filename to pull data from and generate a dictionary where each key is a movie title and each value is a list of the actors that appeared in the movie.
+Store the collection of values in the dictionary (the actors) as a class attribute, avoiding duplicates.
+Convert the dictionary to a NetworkX graph and store it as another class attribute.
+Note that in the graph, actors only have movies as neighbors, and movies only have actors as neighbors.
+\\(Hint: recall the \li{split()} method for strings.)
+
+Use NetworkX to implement the \li{path_to_bacon()} method.
+Accept start and target values (actors' names) and return a list with the shortest path from the start to the target.
+Set Kevin Bacon as the default target.
+If either of the inputs are not contained in the stored collection of dictionary values (if either input is not an actor's name), raise a \li{ValueError}.
+
+\begin{lstlisting}
+>>> movie_graph = BaconSolver("movieData.txt")
+>>> movie_graph.path_to_bacon("Jackson, Samuel L.")
+['Jackson, Samuel L.', 'Captain America: The First Avenger', 'Stark,
+Peter', 'X-Men: First Class', 'Bacon, Kevin']
+\end{lstlisting}
+ % Individual and average Bacon numbers
+Implement the \li{bacon_number()} method in the \li{BaconSolver} class.
+Accept start and target values and return the number of actors in the shortest path from start to target.
+Note that this is different than the number of entries in the shortest path list, since movies do not contribute to an actor's Bacon number.
+
+Also implement the \li{average_bacon()} method.
+Compute the average Bacon number across all of the actors in the stored collection of actors.
+Exclude any actors that are not connected to Kevin Bacon (their theoretical Bacon number would be infinity).
+Return the average Bacon number and the number of actors not connected at all to Kevin Bacon.

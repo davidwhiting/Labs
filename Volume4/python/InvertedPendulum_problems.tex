@@ -1,0 +1,106 @@
+
+Write a function that returns the matrices $A, B, Q$, and $R$ given above. Let $g = 9.8\text{ m}/\text{s}^2$.	
+	
+\begin{lstlisting}
+
+def linearized_init(M, m, l, q1, q2, q3, q4, r): 
+	'''
+	Parameters:
+	----------
+	M, m: floats
+          masses of the rickshaw and the present
+	l 	: float
+          length of the rod
+	q1, q2, q3, q4, r : floats
+         relative weights of the position and velocity of the rickshaw, the 
+		 angular displacement theta and the change in theta, and the control
+	
+	Return
+	-------
+	A : ndarray of shape (4,4) 
+	B : ndarray of shape (4,1) 
+	Q : ndarray of shape (4,4) 
+	R : ndarray of shape (1,1) 
+	'''
+	pass	
+\end{lstlisting}
+
+Write the following function to find the matrix $P$. 
+Use \li{scipy.optimize.root}. 
+Since \li{root} takes in a vector and not a matrix, you will have to reshape the matrix $P$ before passing it in and after getting your result, using \li{np.reshape(16)} and \li{np.reshape((4,4))}.
+\begin{lstlisting}
+def find_P(A, B, Q, R):
+	'''
+	Parameters:
+	----------
+	A, Q 	: ndarrays of shape (4,4)
+	B		: ndarray of shape (4,1)
+	R		: ndarray of shape (1,1)
+	
+	Returns
+	-------
+	P		: the matrix solution of the Riccati equation
+	'''
+	pass
+
+
+\end{lstlisting}
+Using the values 
+\begin{lstlisting}
+M, m = 23., 5.
+l = 4.
+q1, q2, q3, q4 = 1., 1., 1., 1.
+r = 10.
+\end{lstlisting}
+compute the eigenvalues of $A - BR^{-1}B^TP$.
+Are any of the eigenvalues positive? 
+Consider differential equation \eqref{inverted_pendulum:optimal_state} governing the optimal state $\tilde{z}$. 
+Using this value of $P$, will we necessarily have $\tilde{z} \to 0$?
+
+	Write the following function that implements the LQR solution described earlier.  For the IVP solver, you can use your own or you may use the function \li{odeint} from \li{scipy.integrate}.
+\begin{lstlisting}
+def rickshaw(tv, X0, A, B, Q, R, P):
+	'''
+	Parameters:
+	----------
+	tv 	: ndarray of time values, with shape (n+1,)
+	X0 	: Initial conditions on state variables
+	A, Q: ndarrays of shape (4,4)
+	B	: ndarray of shape (4,1)
+	R	: ndarray of shape (1,1)
+	P	: ndarray of shape (4,4)
+	
+	Returns
+	-------
+	Z : ndarray of shape (n+1,4), the state vector at each time
+	U : ndarray of shape (n+1,), the control values
+	'''
+	pass
+\end{lstlisting}
+\label{prob:inverted_pendulum3}
+
+Test the function made in Problem \eqref{prob:inverted_pendulum3} with the following inputs: 
+\begin{lstlisting}
+M, m = 23., 5.
+l = 4.
+q1, q2, q3, q4 = 1., 1., 1., 1.
+r = 10.
+tf = None
+X0 = np.array([-1, -1, .1, -.2])
+\end{lstlisting}
+Find the matrix P using the \li{scipy.optimize.root} method with \li{tf=6} as well as the \li{solve_continuous_are} method with \li{tf=60}.
+Plot the solutions $\tilde{z}$ and $\tilde{u}$. 
+Compare your results as shown in Figure \ref{fig:inverted_pendulum:4}.
+% and \ref{fig:inverted_pendulum:prob4_stable} respectively.
+\label{prob:inverted_pendulum:4}
+
+Consider the following inputs: 
+\begin{lstlisting}
+M, m = 23., 5.
+l = 4.
+q1, q2, q3, q4 = 1., 1., 1., 1.
+r = 10.
+tf = 60
+X0 = np.array([-1, -1, .1, -.2])
+\end{lstlisting}
+Vary the entries of \li{X0} responsible for $\theta(0)$ and $\dot{\theta}(0)$ to determine the sensitivity of the control $u$ to the initial conditions.  What initial conditions lead to a reasonable, physical control $u$? (Plot several solutions with various values of $\theta(0)$ and $\dot{\theta}(0)$.)

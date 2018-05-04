@@ -1,0 +1,41 @@
+
+The \li{pydataset} module\footnote{Run \texttt{pip install pydataset} if needed.} contains numerous data sets, each stored as a pandas \li{DataFrame}.
+
+\begin{lstlisting}
+>>> from pydataset import data
+
+# Call data() to see the entire list of data sets.
+# To load a particular data set, enter its ID as an argument to data().
+>>> titanic = data("Titanic")
+# To see the information about a data set, call data() with show_doc=True.
+>>> data("Titanic", show_doc=True)
+<<Titanic
+
+PyDataset Documentation (adopted from R Documentation. The displayed
+examples are in R)
+
+## Survival of passengers on the Titanic>>
+\end{lstlisting}
+
+Visualize and describe at least 5 of the following data sets with 2 or 3 figures each.
+Comment on the implications and significance of each visualization and give a comprehensive summary of the data set.
+
+\begin{itemize}
+\item \li{"Arbuthnot"}: Ratios of male to female births in London from 1629-1710
+\item \li{"trees"}: Girth, height and volume for black cherry trees
+\item \li{"road"}: Road accident deaths in the United States
+\item \li{"birthdeathrates"}: Birth and death rates by country
+\item \li{"bfeed"}: Child breast feeding records
+\item \li{"heart"}: Survival of patients on the waiting list for the Stanford heart transplant program
+\item \li{"lung"}: Survival in patients with advanced lung cancer from the North Central Cancer Treatment group
+\item \li{"birthwt"}: Risk factors associated with low infant birth weight
+\item A data set of your choice
+\end{itemize}
+Include each of the following in each visualization.
+\begin{itemize}
+\item A clear title, with relevant information for the period or region the data was collected in.
+\item Axis labels that specify units.
+\item A legend (if appropriate).
+\item The source.
+You may include the source information in your plot or print it after the plot.
+\end{itemize}

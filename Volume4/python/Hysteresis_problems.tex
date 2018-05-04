@@ -1,0 +1,26 @@
+
+Use the natural embedding algorithm to create a bifurcation diagram for the differential equation
+\[\dot{x} = \lambda x-x^3.\]
+This type of bifurcation is called a pitchfork bifurcation (you should see a pitchfork in your diagram).
+
+Hints: Essentially this amounts to running the same code as the example, but with different parameters and function calls so that you are tracing through the right curves for this problem.
+To make this first problem work, you will want to have your `linspace' run from \underline{high to low} instead of from \underline{low to high}.
+There will be three different lines in this image.
+See Figure \ref{prob1}.
+
+Create bifurcation diagrams for the differential equation
+\[\dot{x} = \eta + \lambda x-x^3,\]
+where $\eta = -1, -.2, .2$ and $1.$  Notice that when $\eta = 0$ you can see the pitchfork bifurcation of the previous problem.
+There should be four different images, one for each value of $\eta$.
+Each image will be built of 3 pieces.
+See Figure \ref{prob2}.
+[Budworm Population]
+Reproduce the bifurcation diagram for the differential equation
+\begin{align*}
+	\frac{dx}{d \tau} &= rx(1-x/k) - \frac{x^2}{1+x^2},
+\end{align*}
+where $r = 0.56$.
+
+Hint: Find a value for $k$ that you know is in the middle of the plot (i.e. where there are three possible solutions), then use the code above to expand along each contour till you obtain the desired curve.
+Now find the proper initial guesses that give you the right bifurcation curve.
+The final plot will look like the one in Figure \ref{bifurcation:budworm}, but you will have to run the embedding algorithm 4-6 times to get every part of the plot.

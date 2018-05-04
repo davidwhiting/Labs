@@ -1,0 +1,39 @@
+
+% Find the solution $u$ of the 2D Poisson equation with the given Dirichlet boundary conditions:
+% \begin{align*}
+% 	\Delta u &= -\pi^2 \sin(\pi x)\sin(\pi y), \quad (x,y) \in [0,1]\times [0,1], \\
+% 	u(x,0) &= 1-x, \\
+% 	u(x,1) &= 1-2x, \\
+% 	u(0,y) &= 1, \\
+% 	u(1,y) &= -y.
+% \end{align*}
+%
+% Graph your solution, and demonstrate convergence of the numerical approximation by
+% creating a log-log plot of the error $E(h).$
+% 
+Construct the matrix $A$ in \eqref{poisson2d:matrixA}. Make sure your matrix is sparse. Then use the code 
+above to solve the boundary value problem
+\begin{align}
+	\begin{split}
+	\Delta u = 0, &{}\quad x \in [0,1]\times [0,1],\\
+	u(x,y) = x^3, &{}\quad (x,y) \in \partial ([0,1]\times [0,1]).
+	\end{split}
+	\label{poisson2d:laplace}
+\end{align}
+Plot the 3D solution with $n=100$.
+
+Solve 
+% \[\Delta V = -\rho(x,y)\]
+\begin{align}
+	\begin{split}
+	\Delta V = -\rho(x,y), &{}\quad x \in [-2,2]\times [-2,2],\\
+	u(x,y) = 0, &{}\quad (x,y) \in \partial ([-2,2]\times [-2,2]).
+	\end{split}
+	\label{poisson2d:source}
+\end{align}
+% 
+for the electric potential $V.$
+Use the source function ($-\rho$) defined above. % and grid sizes defined above.
+% Use $V=0$ for the boundary conditions on all sides.
+% \textit{(Due to the size of $A$, this is best done using sparse matrices)}
+Plot the 2D solution using $n=100$.

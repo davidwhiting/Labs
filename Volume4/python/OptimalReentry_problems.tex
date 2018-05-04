@@ -1,0 +1,62 @@
+
+Complete the function \li{ode} below that implements the right hand side of \eqref{eqn:reentry:full_system}. 
+Notice that the adjoint variables and the final time are coordinates of $y:$ $y_4 = \lambda_1$, $y_5 = \lambda_2$, $y_6=\lambda_3$, and $y_7 = T$. Finally, note that we use Python zero based indexing below.
+\begin{lstlisting}
+def ode(x,y):
+	# Parameters:
+	# x: independent variable (unused in our ODEs)
+	# y: vector-valued dependent variable; it is an ndarray 
+	# 	 with shape (7,)
+	
+	# Returns: 
+	# ndarray of length (7,) that evalutes the RHS of the ODES
+	u =	 arctan((6*y[4])/(9*y[0]*y[3] ))
+	rho = rho0*exp(-beta*R*y[2])
+	out = y[6]*array([
+				 # G_0
+				 -s*rho*y[0]**2*C_d(u) - g*sin(y[1])/(1+y[2])**2,	
+				 # G_1	 
+				( s*rho*y[0]*C_l(u) + y[0]*cos(y[1])/(R*(1 + y[2])) - 
+				  g*cos(y[1])/(y[0]*(1+y[2])**2) ),						 
+				 # G_2
+				y[0]*sin(y[1])/R,		
+				 # G_3								 
+				-( 30*y[0]**2.*sqrt(rho)+ y[3]*(-2*s*rho*y[0]*C_d(u)) + 
+				   y[4]*( s*rho*C_l(u) +cos(y[1])/(R*(1 + y[2])) + 
+						  g*cos(y[1])/( y[0]**2*(1+y[2])**2 ) 
+							) + 
+				   y[5]*(sin(y[1])/R)	   ),	
+				  # G_4						 
+				-( y[3]*( -g*cos(y[1])/(1+y[2])**2	) + 
+				   y[4]*( -y[0]*sin(y[1])/(R*(1+y[2])) + 
+						  g*sin(y[1])/(y[0]*(1+y[2])**2 ) 
+							) + 
+				   y[5]*(y[0]*cos(y[1])/R )	   ),
+				  # G_5 -- This line needs to be completed.						 
+				  ,			
+				  # G_6	
+					0 									 
+			   ])
+	return out
+\end{lstlisting}
+
+	Complete the function \li{guess_auxiliary} given below. Then run the code above to check that your initial guess is adequate. 
+	This function provides an initial guess to \li{bvp_solver} for the auxiliary BVP described by  \eqref{eqn:reentry:control_system_auxiliary} and \eqref{eqn:reentry:BCs}.
+	Use the heuristic data provided in Figure \ref{fig:reentry:estimate_u} to find good estimates of $p_1, p_2,$ and $p_3$. 
+	Use Figure \ref{fig:reentry:solutions} to estimate the trajectories of $y_1, y_2,$ and $y_3$. Hint: Try using the $\tanh$ function.
+	
+\begin{lstlisting}
+def guess_auxiliary(t):
+	out = array([ .5*(.36+.27)-.5*(.36-.27)*tanh(.025*(t-.45*T_init)),
+			# Finish this line, 
+			# And this one, 
+			p1*ones(t.shape),
+			p2*ones(t.shape),
+			p3*ones(t.shape)   ])
+	return out
+\end{lstlisting}	
+	\label{prob:reentry:guess}
+
+	Adapt your previous code to solve the original, dimension seven BVP. 
+	Use the solution of the auxiliary BVP to construct a good initial guess.
+	Plot the control $u$. How long does the reentry maneuver take? 

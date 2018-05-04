@@ -1,0 +1,80 @@
+
+\label{prob:anisdiff_bw}
+Complete the following fuction, implementing anisotropic diffusion for black and white images using the following boundary conditions:
+
+For the top edge let
+\begin{align*}
+U_{l,m}^{n+1} = U_{l,m}^n + & \lambda (g(|U_{l-1,m}^n - U_{l,m}^n|)(U_{l-1,m}^n - U_{l,m}^n) \\
+					& + g(|U_{l+1,m}^n - U_{l,m}^n|)(U_{l+1,m}^n - U_{l,m}^n) \\
+					& + g(|U_{l,m+1}^n - U_{l,m}^n|)(U_{l,m+1}^n - U_{l,m}^n))
+\end{align*}
+Do the other edges similarly.
+
+For the top left corner let
+\begin{align*}
+U_{l,m}^{n+1} = U_{l,m}^n + & \lambda (g(|U_{l+1,m}^n - U_{l,m}^n|)(U_{l+1,m}^n - U_{l,m}^n) \\
+					& + g(|U_{l,m+1}^n - U_{l,m}^n|)(U_{l,m+1}^n - U_{l,m}^n))
+\end{align*}
+Do the other corners similarly.
+
+Essentially we are just using the terms of the difference scheme that are actually defined.
+
+In your function, use
+\[g(x) = e^{-\left(\frac{x}{\sigma}\right)^2}\]
+
+\begin{lstlisting}
+def anisdiff_bw(U, N, lambda_, g):
+    """ Run the Anisotropic Diffusion differencing scheme
+    on the array U of grayscale values for an image.
+    Perform N iterations, use the function g
+    to limit diffusion across boundaries in the image.
+    Operate on U inplace to optimize performance. """
+    pass
+\end{lstlisting}
+
+Show the original image and the diffused image for $\sigma = .1$, $\lambda = .25$, $N = 5, 20, 100$.
+
+
+
+Complete the following function to process a colored image.
+You may modify your colde from the previous problem.
+Measure the difference between pixels using the $2$-norm.
+Use the corresponding vector versions of the boundary conditions given in Problem \ref{prob:anisdiff_bw}.
+
+\begin{lstlisting}
+def anisdiff_color(U, N, lambda_, sigma):
+    """ Run the Anisotropic Diffusion differencing scheme
+    on the array U of grayscale values for an image.
+    Perform N iterations, use the function g = e^{-x^2/sigma^2}
+    to limit diffusion across boundaries in the image.
+    Operate on U inplace to optimize performance. """
+    pass
+\end{lstlisting}
+Show the original image and the diffused image for $\sigma = .1$, $\lambda = .25$, $N = 5, 20, 100$.
+
+Hint: If you have an $m \times n \times 3$ matrix representing the RGB differences of each pixel, then to find a matrix representing the norm of the differences, you can use the following code.
+This code squares each value and sums along the last axis, and takes the square root.
+In order to keep the dimension size of the matrix and aid in broadcasting, you must use \li{keepdims=True}.
+
+\begin{lstlisting}
+# x is mxnx3 matrix of pixel color values
+norm = np.sqrt(np.sum(x**2, axis=2, keepdims=True))
+\end{lstlisting}
+
+
+Use the following code to add noise to your grayscale image.
+
+\begin{lstlisting}
+from numpy.random import randint
+
+image = imread('balloon.jpg', flatten=True)
+x, y = image.shape
+for i in xrange(x*y//100):
+	image[randint(x),randint(y)] = 127 + randint(127)
+\end{lstlisting}
+
+Run \li{anisdiff_bw()} on the noisy image with $\sigma=.1$, $\lambda=.25$, $N=20$.
+Display the original image and the noisy image.
+Explain why anisotropic diffusion does not smooth out the noise.
+
+Hint: Don't forget to rescale.

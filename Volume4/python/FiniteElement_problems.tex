@@ -1,0 +1,40 @@
+
+Use the finite element method to solve
+\begin{align}
+	\begin{split}
+	&{ }\epsilon y'' - y' = -1,\\
+	&{ }y(0) = \alpha, \quad y(1) = \beta,
+	\end{split} \label{eqn:FEM_exercise}
+\end{align}
+where $\alpha = 2, \beta = 4$, and $\epsilon = 0.02$.
+Use $N = 100$ finite elements ($101$ grid points).
+Compare your solution with the analytic solution
+\[y(x) = \alpha + x + (\beta - \alpha - 1 ) \frac{e^{x/\epsilon} -1}{e^{1/\epsilon} -1}.\]
+
+This boundary value problem has a singularly perturbed ODE, because the parameter $\epsilon$ is a coefficient of the highest order derivative in the equation.
+The character of the problem changes dramatically when $\epsilon = 0$: since the limit equation $y' = 1$ is first-order, it only allows for one boundary condition.
+Thus as $\epsilon$ gets smaller, the rightmost boundary condition is satisfied at the `last moment',  and cannot be satisfied when $\epsilon = 0$.
+
+One of the strengths of the finite element method is the ability to generate grids that better suit the problem.
+In two dimensions the finite elements are quadrilaterals and triangles, and can be used to approximate irregular domains.
+The finite element method can also be used to solve PDEs where the shape and size of the domain changes over time.
+
+The solution of \eqref{eqn:FEM_exercise} changes most rapidly near $x = 1$.
+Compare the numerical solution when the grid points are unevenly spaced versus when the grid points are clustered in the area of greatest change; see Figure \ref{fig:FEM_compare_methods}. Specifically, use the grid points defined by
+\begin{lstlisting}
+even_grid = np.linspace(0,1,15)
+clustered_grid = np.linspace(0,1,15)**(1./8)
+\end{lstlisting}
+What is the difference in accuracy?
+
+\label{prob:FEM_accuracy_comparison}
+Higher order methods promise faster convergence, but typically require more work to code.
+So why do we use them when a low order method will converge just as well, albeit with more grid points?
+The answer concerns the roundoff error associated with floating point arithmetic.
+Low order methods generally require more floating point operations, so roundoff error has a much greater effect.
+
+The finite element method introduced here is a second order method, even though the approximate solution is piecewise linear.
+(To see this, note that if the grid points are evenly spaced, the matrix $A$ in \eqref{eqn:FEM_linear_system} is exactly the same as the matrix for the second order centered finite difference method.)
+
+Solve \eqref{eqn:FEM_exercise} with the finite element method using $N = 2^i$  finite elements, $i = 4, 5, \ldots, 21$.
+Use a log-log plot to graph the error; see Figure \ref{fig:FEM_error_2nd_order}.

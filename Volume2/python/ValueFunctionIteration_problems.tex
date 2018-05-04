@@ -1,0 +1,463 @@
+
+
+Write a function called \li{graph_policy()} that will accept a policy vector $\mathbf{c}$, a utility function $u(x)$, and a discount factor $\beta$.
+Return the total utility gained with the policy input.
+Also display a plot of the total cumulative utility gained over time.
+Ensure that the policy that the user passes in sums to 1.
+Otherwise, raise a \li{ValueError}.
+It might seem obvious what sort of policy will yield the most utility, but the truth may surprise you.
+See Figure \ref{fig:diff_pols} for some examples.
+
+\begin{lstlisting}
+# The policy functions used in the Figure below.
+>>> pol1 = np.array([1, 0, 0, 0, 0])
+>>> pol2 = np.array([0, 0, 0, 0, 1])
+>>> pol3 = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+>>> pol4 = np.array([.4, .3, .2, .1, 0])
+\end{lstlisting}
+
+
+
+Write a helper function to assist in solving the value function.
+Assume our cake has volume $1$ and $N$ equally-sized pieces.
+Write a method that accepts $N$ and a utility function $u(x)$.
+Create a partition vector whose entries correspond to possible amounts of cake.
+For example, if split a cake into 4 pieces, the vector is
+\[
+\mathbf{w} = [0, 0.25, 0.5, 0.75, 1.0]\trp.
+\]
+Construct and return a matrix whose $(ij)^{th}$ entry is the amount of utility gained by starting with $i$ pieces and saving $j$ pieces (where $i$ and $j$ start at $0$).
+In other words, the $(ij)^{th}$ entry should be $u(w_i - w_j)$.
+\\
+\\
+Set impossible situations to 0 (i.e., eating more cake than you have available).
+The resulting lower triangular matrix is the \emph{consumption matrix}.
+\\
+\\
+For example, the following matrix results with $N=4$ and $u(x) = \sqrt{x}$.
+
+\[
+\begin{bmatrix}
+0 & 0 & 0 & 0 & 0 \\
+u(0.25) & 0 & 0 & 0 & 0 \\
+u(0.5) & u(0.25) & 0 & 0 & 0 \\
+u(0.75) & u(0.5) & u(0.25) & 0 & 0 \\
+u(1) & u(0.75) & u(0.5) & u(0.25) & 0 \\
+\end{bmatrix}.
+\]
+
+
+Write a function called \li{eat_cake()} that accepts
+the stopping time $T$,
+the number of equal sized pieces that divides the cake $N$,
+a discount factor $\beta$, and
+a utility function $u(x)$.
+Return the value function matrix with all zeros except for the last column.
+The spec file indicates returning a policy matrix as well, for now return a matrix of zeros.
+
+For example, the following matrix results with $T=3$, $N=4$, $\beta=0.9$, and $u(x) = \sqrt{x}$.
+\[
+\begin{bmatrix}
+0 & 0 & 0 & u(0) \\
+0 & 0 & 0 & u(0.25) \\
+0 & 0 & 0 & u(0.5) \\
+0 & 0 & 0 & u(0.75) \\
+0 & 0 & 0 & u(1) \\
+\end{bmatrix}.
+\]
+
+Complete the function \li{eat_cake()} to determine the entire value function matrix.
+Starting from the next to last column, iterate backwards by
+\begin{itemize}
+\item calculating the current value matrix for time $t$ using (\ref{equ:do5}),
+\item finding the largest value in each row of the current value matrix,
+\item filling in the corresponding column of $A$ with these values.
+\end{itemize}
+
+Modify \li{eat_cake()} to determine the policy matrix.
+Initialize the matrix as zeros and fill it in starting from the last column at the same time that you calculate the value function matrix.
+(Hint: You may find \li{np.argmax()} useful.)
+
+The $(ij)^{th}$ entry of the policy matrix tells us how much cake to eat at time $j$ if we start with $i$ pieces.
+Use this information to write a function that will find the optimal policy for starting with a cake of size 1 split into $N$ pieces given the stopping time $T$, the utility function $u$, and a discount factor $\beta$. Use \li{graph\_policy()} to plot the optimal policy.
+See Figure \ref{fig:optimal_policy_graph} for an example.
+
+\label{prob:cake_prob}
+We recommend reading the entire problem before beginning to work on it, as many questions may be addressed further on.  This applies to the other problems in this lab as well.
+
+Follow the steps below to solve the problem described above.  Take $u(c_t) = \sqrt{c_t}$.
+You will write a function called \li{eatCake} that takes parameters $\beta$ (the discount factor),
+$N$ (the number of discrete cake values to consider), $W_{max}$ (the original size of the cake,
+set to the default value of $1$), a keyword argument \li{finite} (set to default value \li{True}),
+a keyword argument  $T$ (the number of time periods, set to
+default value \li{None}), and a keyword argument \li{plot}, which indicates whether or not
+to plot the computed results. The function should return arrays representing the value function and the
+policy function (we describe how to compute these in the following steps).
+\begin{enumerate}
+\item Approximate the continuum of possible cake sizes by creating an array
+of evenly-spaced values that range from to 0 to $W_{max}$ inclusive.
+Let the number of possible cake values be given by $N$. In Python, this can be accomplished easily by
+using the \li{linspace} function in NumPy. You should obtain an array (call it $w$) of the form
+\[
+w = (w_1, w_2, \ldots, w_N),
+\]
+where $w_1 = 0$ and $w_N = W_{max}$.
+
+\item Note that in order to compute the value function, we need $u(W_{t-1}-W_t)$.
+We will pre-compute all such possible values and store them in an array, as follows:
+Create an $N$ by $N$ matrix that contains
+all possible values of $W_{t-1} - W_t$ (where $W_{t-1}$ corresponds to rows and $W_{t}$ to columns).  Make sure that
+$c_t \geq 0$ is satisfied by replacing negative entries in the matrix with zeros.  Then take the square root to get a matrix
+of $u(W_{t-1}-W_t)$.  To make sure we do not choose $W_{t-1} - W_t < 0$ when maximizing, replace the corresponding entries of
+the $u(W_{t-1}-W_t)$ matrix with a large negative number (e.g. $-10^{10}$). You should end up with a matrix whose
+$(i,j)$-th entry is equal to $\sqrt{w_i - w_j}$ when $i \geq j$, and is equal to $-10^{10}$ when $i < j$.
+
+\item Next, create an $N$ by $T+2$ (corresponding to $t=0,1,\ldots, T+1$) matrix representing the value function for a given
+time $t$ and state $W_t$.  We can initialize it with zeros and begin filling in the columns starting with the last (which we
+know is zeros), as explained below.
+
+\item Now we are ready to iterate backward and compute the value function for each time period.  To find $V_T$, we first compute
+$u(W_T - W_{T+1}) + \beta V_{T+1}(W_{T+1})$ for all values of $W_{T}$ and $W_{T+1}$.  This will result in an $N$ by $N$ matrix
+where the rows correspond to values of $W_{T}$ and the columns correspond to values of $W_{T+1}$.
+%Note that to compute this
+%we need a matrix representing $\beta V_{T+1}(W_{T+1})$.  Because this quantity does not depend on $W_T$, its rows should be
+%equal.  To do this, we want to take $\beta V_{T+1}(W_{T+1})$ as a row vector and stack this vector to create a matrix with
+%equal rows.  There are multiple ways to do this.  One is the \li{np.repeat} function.  For example, if \li{b} is a row vector
+%it could be used like the following.
+%\begin{lstlisting}
+%b = [[1, 2, 3]]
+%np.repeat(b, 3, axis = 0)
+%array([[1, 2, 3],
+%[1, 2, 3],
+%[1, 2, 3]])
+%\end{lstlisting}
+%In general, be careful about having the correct rows, columns, transposes, etc throughout your code.
+
+Now we maximize over choices of $W_{T+1}$ (choosing how much to save for the next period).  Then we will have a row vector
+representing the value function for period $T$ across all possible $W_{T+1}$.  Iterate this procedure to fill in the value
+function for all $t=T+1,T,\ldots, 0$.
+
+\item In each iteration, you maximize to find the value function at time $t$.  Save the values of $W_{t+1}$ that achieve the
+maximum.  The result is an $N$ by $T+1$ matrix whose $(n,t)$ entry gives the optimal amount of cake to leave for period
+$t+1$, given that we start period $t$ with the the $n$-th value of our vector of cake.  This is the policy function.
+
+\item If the keyword argument \li{plot} is set to \li{True}, plot the surface of the Value and Policy functions.
+This can be done by including the following import lines
+\begin{lstlisting}
+>>> from matplotlib import pyplot as plt
+>>> from matplotlib import cm
+>>> from mpl_toolkits.mplot3d import Axes3D
+\end{lstlisting}
+and using the following code:
+\begin{lstlisting}
+>>> W = np.linspace(0, Wmax, N)
+>>> x = np.arange(0, N)
+>>> y = np.arange(0, T+2)
+>>> X, Y = np.meshgrid(x, y)
+>>> fig1 = plt.figure()
+>>> ax1 = Axes3D(fig1)
+>>> ax1.plot_surface(W[X], Y, np.transpose(V), cmap=cm.coolwarm)
+>>> plt.show()
+
+>>> fig2 = plt.figure()
+>>> ax2 = Axes3D(fig2)
+>>> y = np.arange(0,T+1)
+>>> X, Y = np.meshgrid(x, y)
+>>> ax2.plot_surface(W[X], Y, np.transpose(psi), cmap=cm.coolwarm)
+>>> plt.show()
+\end{lstlisting}
+where \li{W} is the vector of cake amounts, \li{V} is the value function, and \li{psi} is the policy function.
+
+\item Return the arrays giving the value function and the policy function.
+\end{enumerate}
+
+Solve the problem using cake size $1$, discount factor $\beta = .9$, number of time periods $T = 10$, and number of
+discrete cake values $N = 100$. You should also try plotting the value and policy functions for fixed time periods across
+$W_t$, or for fixed $W_t$ across time,
+ and make sure that these plots fit your intuition. See Figure \ref{fig:valueslices}. Your output should
+agree with the figure.
+
+\label{prob:cake_prob2}
+Compute the solution to Problem \ref{prob:cake_prob} with $T = 1000$, and the rest of the inputs the same.
+Plot the policy function across time for fixed $W_t = 1$.
+Notice that it is the same for all time periods, except those near the end time $T$.
+
+Expand your \li{eatCake} function to solve the Cake Eating Problem with an infinite time horizon. If the keyword argument
+\li{finite} has the value \li{True}, then your function should behave as in Problem \ref{prob:cake_prob}, solving the finite
+time horizon problem. However, if \li{finite = False}, solve the infinite time horizon problem through the following steps.
+Both problems will require you to pre-compute the values $u(W - W')$, where $W$ and $W'$ range over the set of discrete cake
+amounts. Be sure to avoid replicating code by factoring it out.
+As in Problem \ref{prob:cake_prob}, take $u(c_t) = \sqrt{c_t}$.
+\begin{enumerate}
+\item As in Problem \ref{prob:cake_prob}, approximate the continuum of possible
+cake sizes by a column vector called $W$ that ranges from 0 to $W_{max}$ in $N$ steps.
+
+\item \label{item:step2} Initialize the value function V as a vector of zeros of length $N$.  This is $V_0$.  Perform one iteration
+of the contraction operation given in equation \eqref{EqContraction} to get a new value function $V_1$ (this should be very similar
+to Problem 1).  Determine the resulting policy function $W' = \psi_1\left(W\right)$.  [HINT: The policy function should be a vector
+of length $N$ of optimal future values of the cake $W'$ given the current value of the cake $W$, and $V_T$ should be an $N$-length
+vector representing the value of entering a period with cake size $W$.]
+
+\item \label{item:step3} Measure the distance between the two value functions as the sum of the
+squared differences,
+\begin{equation}
+\label{EqDist}
+\delta_1\equiv \norm{V_1\left(W\right) - V_0\left(W'\right)}_2^2 = \left(V_1 - V_0\right)^T\left(V_1 - V_0\right).
+\end{equation}
+Defined in this way, $\delta_1\in [0,\infty)$.
+
+%\item \label{item:step4} Take the resulting $V_1$ from \ref{item:step2}, and perform the same contraction on it to generate $V_2$
+%and $\psi_2$. That is, generate,
+%\begin{equation*}
+%  V_2\left(W\right) = C\Bigl(V_1\left(W\right)\Bigr) = \max_{W'\in[0,W]}\: u\left(W - W'\right) + \beta V_1\left(W'\right)
+%\end{equation*}
+%and the accompanying policy function $W'=\psi_2\left(W\right)$. Calculate the accompanying distance measure for $\delta_2$ using
+% the formula from \eqref{EqDist} with the updated period subscripts. Compare $\delta_2$ with $\delta_1$ from \ref{item:step3}.
+%
+%\item \label{item:step5} Repeat \ref{item:step4} and generate $V_3$ and $\psi_2$ by performing the contraction on $V_2$. Compare
+%$\delta_3$ to $\delta_2$ and $\delta_1$.
+
+\item Write a loop that performs the contraction operation from steps \ref{item:step2} and \ref{item:step3} iteratively
+until the distance measure is very small ($\delta_k < 10^{-9}$).  The distance measure $\delta_k$ being arbitrarily close to zero means
+ you have converged to the fixed point $V_k = V_{k+1} = V$. (For fun, you can show that the policy function converges to the same
+ function regardless of what you put in for your initial policy function value.)
+
+\item If \li{plot = True}, plot the converged policy function vector
+($y$-axis) as a function of the cake amounts ($x$-axis).
+
+\item Return the value function and policy function arrays.
+
+Compute the value function and policy function for the infinite time horizon problem with
+cake size $1$, discount factor $\beta = .9$, and number of
+discrete cake values $N = 100$. The plot you generate should agree with Figure \ref{fig:infinitePolicy}.
+\end{enumerate}
+
+Write a function called \li{discretenorm} that accepts an integer $K$ representing the number of discrete points
+desired, a mean $\mu$, and a standard deviation $\sigma$. It should return a length-$K$ vector of equally-spaced
+values ranging from $\mu - 3\sigma$ to $\mu + 3\sigma$ inclusive,
+and a length-$K$ vector containing the associated probabilities.
+Plot the approximation of $N(0,1)$ using different values of $K$ to check that your results are plausible.
+
+Complete the following steps to solve the problem described above.
+Assume that the period utility function is $u(c)=\sqrt{c}$.
+Write a function \li{stochEatCake}
+that accepts parameters $\beta$ (discount factor), $N$ (number of discrete cake values),
+a tuple of values \li{e_params}, $W_{max}$ (the original size of the cake, set to default value 1),
+a keyword argument \li{iid} (set to default value \li{True}), and
+a keyword argument \li{plot} (set to default value of \li{False}). Inside the function, carry out the steps
+outlined below.
+
+The argument \li{e_params} is a tuple consisting of the values needed to generate
+the discrete approximation to $\ve$. In the present case, this tuple consists (in order) of
+$K$ (the number of discrete approximations of $\ve$), $\mu$ (the
+mean of the shock term $\ve$), and $\sigma$ (the standard deviation of the shock term $\ve$),
+since these are the arguments we need to pass to our \li{discretenorm} function.
+
+\begin{enumerate}
+\item First, compute an approximation of $\ve$ using the \li{discretenorm} function created in Problem 1.
+Use $K$ equally spaced points to approximate $N(\mu,\sigma^2)$. Denote the resulting $K$-length
+vector of equally-spaced values by
+\[e =(e_1,\ldots,e_K),
+\]
+and denote the $K$-length vector of the associated probabilities
+by
+\[\Gamma = (\Gamma_1,\ldots,\Gamma_K).
+\]
+Note that $\Gamma_k$ give the probability $P(\ve = e_k)$.
+
+Since the values needed for the \li{discretenorm} function are contained in the \li{e_params} input,
+we can feed these values directly into the function in the following way:
+\begin{lstlisting}
+>>> e, gamma = discretenorm(*e_params)
+\end{lstlisting}
+The \li{*} operator essentially unpacks the values of a tuple or list.
+
+\item As done previously, create a vector
+\[w = (w_1,\ldots,w_N)
+\]
+of possible cake sizes. This should be
+a length-$N$ vector of equally spaced values from 0 to $W_{max}$, inclusive.
+
+\item Represent the value function as a $N \times K$ matrix $v$, satisfying
+\[
+v_{i,j} = V(w_i, e_j).
+\]
+(The rows correspond to different values of $W$ and the columns correspond to different values of $\ve$.)
+Initialize each entry of the matrix to 0.
+
+Likewise, represent the policy function as a $N \times K$ matrix $p$, satisfying
+\[
+p_{i,j} = \psi(w_i,e_j).
+\]
+Initialize all entries to 0.
+
+\item In order to evaluate the value function equation, we need to pre-compute $\ve u(W-W')$ for all values of
+$\ve,W,W'$.
+Begin by computing all possible values of $u(W-W')$, and storing these values in a $N \times N$ array,
+as done before. Call this array $u$. Make sure that the upper triangular
+entries of this array are equal to zero, as these entries correspond to consuming more cake than is
+available, which is impossible.
+
+The values $\ve u(W-W')$ will be represented by a three-dimensional array $\hat{u}$ of size
+$N\times N\times K$, satisfying
+\[
+\hat{u}_{i,j,k} = v_{i,j}e_k.
+\]
+We can compute this array easily as follows:
+
+\begin{lstlisting}
+>>> import numpy as np
+>>> u_hat = np.repeat(u, K).reshape((N,N,K))*e
+\end{lstlisting}
+
+
+\item We also need to compute $E_{\ve'}\Bigl[V\left(W',\ve'\right)\Bigr]$ for each value of $W'$.
+The expected value is simply
+\begin{equation*}
+E_{\ve'}\Bigl[V\left(W',\ve'\right)\Bigr] = \sum_{k=1}^K \Gamma_kV(W',e_k').
+\end{equation*}
+The result is a length $N$ vector, call it $E$, satisfying
+\[
+E_i = E_{\ve'}\Bigl[V\left(w_i,\ve'\right)\Bigr] = \sum_{k=1}^K \Gamma_kv_{i,k}
+\]
+This calculation can be done by multiplying $\Gamma$ element-wise to each row of the
+value function matrix $v$, and then summing along the rows. Something like the following
+line of code should do the trick:
+\begin{lstlisting}
+>>> E = (v*gamma).sum(axis=1)
+\end{lstlisting}
+
+\item We can now compute the value function contraction
+\begin{equation*}\label{EqContractStochiid}
+C\Bigl(V\left(W,\ve\right)\Bigr) \equiv \max_{W'\in[0,W]}\:
+\Bigl\{\ve u\left(W-W'\right) + \beta E_{\ve'}\Bigl[V\left(W',\ve'\right)\Bigr]\Bigr\}.
+\end{equation*}
+The first task is to create an $N \times N \times K$ array $c$ satisfying
+\[
+c_{i,j,k} = \hat{u}_{i,j,k} + \beta E_j.
+\]
+This can be done in any manner of ways. Below is a one-liner that does the job.
+\begin{lstlisting}
+>>> c = np.swapaxes(np.swapaxes(u_hat, 1, 2) + beta*E, 1, 2)
+\end{lstlisting}
+
+Now, for any $k$, for all $i < j$, set $c_{i,j,k}$ to a large negative number, say $-10^{10}$,
+so that when maximizing over this array, we do not choose to consume more cake than is available.
+Again, this can be done in a variety of different ways, but the following does the job concisely:
+\begin{lstlisting}
+>>> c[np.triu_indices(N, k=1)] = -1e10
+\end{lstlisting}
+
+Finally, maximize over the second axis of $c$ (which corresponds to different values of $W'$)
+to obtain the updated value function matrix:
+\begin{lstlisting}
+>>> v_new = np.max(c, axis=1)
+\end{lstlisting}
+You can likewise update your policy function matrix as follows:
+\begin{lstlisting}
+>>> max_indices = np.argmax(c, axis=1)
+>>> p = w[max_indices]
+\end{lstlisting}
+
+\item We now have our updated value function matrix $v_{new}$ as well as the
+previous $v$, which we refer to here as $v_{old}$. As we iterate on the value function equation, we need a norm
+\begin{equation*}
+\delta = \|v_{new} - v_{old}\|_2
+\end{equation*}
+that measures the distance between these two value functions to determine convergence.
+You may compute the norm using the SciPy function \li{scipy.linalg.norm}, or by direct calculation.
+At the end of each iteration, make sure to set $v$ to $v_{new}$, so that the updates carry through the
+loop.
+Iterate on the contraction until $\delta < 10^{-9}$.
+
+\item If \li{plot = True}, make a 3-D surface plot of the policy function for the converged problem
+$W' = \psi\left(W,\ve\right)$ which gives the value of the cake tomorrow as a
+function of the cake today  and the taste shock today.  Do the same for the value function.
+Example code to create the value function plot is provided below.
+\begin{lstlisting}
+>>> x = np.arange(0,N)
+>>> y = np.arange(0,K)
+>>> X,Y = np.meshgrid(x,y)
+>>> fig1 = plt.figure()
+>>> ax1 = Axes3D(fig1)
+>>> ax1.plot_surface(w[X], Y, v.T, cmap=cm.coolwarm)
+>>> plt.show()
+\end{lstlisting}
+Creating the policy function plot is similar.
+
+\item Return the converged value function matrix $v$ and policy function matrix $p$.
+
+
+\end{enumerate}
+Test your function using values $\beta = .9$, $N = 100$, $K = 7$, $\sigma = .5$, $\mu = 4\sigma$,
+and \li{plot = True}.
+The proper way to set this up and call the function is as follows:
+\begin{lstlisting}
+>>> e_params = (7, 4*.5, .5)
+>>> stuff = stochEatCake(.9, 100, e_params, plot=True)
+\end{lstlisting}
+
+Expand your \li{stochEatCake} function to handle the case of AR(1) shock terms. The function should
+handle this case for the parameter value \li{iid = False}, and should handle the previous case of
+normally distributed i.i.d. shock terms for the parameter value \li{iid = True}. You will need to
+add a few ``if ... else" statements, as well as implement the steps outlined below, but most of the
+code will remain unchanged.
+
+\begin{enumerate}
+\item In the AR(1) case, the \li{e_params} argument should be a tuple of values needed to
+generate the arrays $e$ and $\Gamma$ that approximate the values and distribution of $\ve$
+as a Markov chain.
+Use the file \li{tauchenhussey.py} to calculate these arrays.
+The provided Python function \li{tauchenhussey} produces the vector $e$ of length $M$
+and an $M\times M$ transition matrix $\Gamma$.
+Thus, you simply need the following lines of code, similar to the previous case.
+\begin{lstlisting}
+>>> from tauchenhussey import tauchenhussey
+>>> e, gamma = tauchenhussey(*e_params)
+\end{lstlisting}
+
+\item Because our values for $e$ and $\Gamma$ are different in the AR(1) case than
+in the i.i.d. case, we must compute the expectation in a different manner.
+In particular, we need to compute the conditional expectation
+\begin{equation*}
+E_{\ve'|\ve}\Bigl[V\left(W',\ve'\right)\Bigr].
+\end{equation*}
+We obtain a two-dimensional array, since the expectation depends on both $W'$ and on $\ve$.
+The expectation can be computed by the matrix multiplication $v\Gamma^T$.
+Your code should match the following.
+\begin{lstlisting}
+>>> E = v.dot(gamma.T)
+\end{lstlisting}
+
+\item The last difference comes in computing the array $c$. Fortunately, it is easier in this case.
+Recall that $c$ gives the values for
+\[
+\ve u\left(W-W'\right) + \beta E_{\ve'|\ve}\Bigl[V\left(W',\ve'\right)\Bigr].
+\]
+The array $\hat{u}$ contains the values for the first term in the expression, and the array $E$
+contains the values for the expectation term.
+Hence, we obtain $c$ by simple addition. Array broadcasting makes this work without problems.
+\begin{lstlisting}
+>>> c = u_hat + beta*E
+\end{lstlisting}
+You will still need to set the upper triangular entries of $c$ to a large negative number, just as in the
+previous case.
+\end{enumerate}
+
+Those are the only differences. Let the following code snippet be a guideline for how to implement
+these differences.
+\begin{lstlisting}
+>>> if iid:
+>>>     # compute E as outlined in the previous problem
+>>> else:
+>>>     # compute E as outlined in the current problem
+\end{lstlisting}
+
+Now test your function with $\beta = .9$, $N = 100$, \li{iid = False}, and \li{plot = True}.
+As inputs to \li{tauchenhussey}, let $K=7$, the mean of the process
+$\mu=4\sigma$, $\rho = 1/2$, $\sigma=1/2$, and
+\[baseSigma=(0.5+\frac{\rho}{4})\sigma +
+(0.5 - \frac{\rho}{4})\frac{\sigma}{\sqrt{1-\rho^2}}.
+\]
+Your \li{e_params} parameter will therefore be a tuple of values containing (in order)
+$K$, $\mu$, $\rho$, $\sigma$, and $baseSigma$.

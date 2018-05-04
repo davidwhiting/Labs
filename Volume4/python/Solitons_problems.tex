@@ -1,0 +1,44 @@
+
+Run the code above to numerically solve the KdV equation on $[-\pi,\pi]$ with initial conditions 
+\[
+u(x,t=0) = 3s\sech^2\left(\frac{\sqrt{s}}{2}(x+a)\right),
+\]
+where $s = 25^2,$ $a = 2$. Solve on the time domain $[0,.0075]$. Define the stepsize variable {\tt dt} in the code above so that the method is numerically stable.  How small must {\tt dt} be? 
+
+The solution is shown in Figure \ref{fig:solitons:single}.
+\label{problem:solitons:single}
+
+Numerically solve the KdV equation on $[-\pi,\pi]$. This time we define the initial condition 
+to be the superposition of two solitons,
+\[
+u(x,t=0) = 3s_1\sech^2\left(\frac{\sqrt{s_1}}{2}(x+a_1)\right) + 3s_2\sech^2\left(\frac{\sqrt{s_2}}{2}(x+a_2)\right),
+\]
+where $s_1 = 25^2,$ $a_1 = 2$, and $s_2 = 16^2,$ $a_1 = 1$.\footnote{This problem is solved in \textit{Spectral Methods in MATLAB}, by Trefethen.} Solve on the time domain $[0,.0075]$.  How small must {\tt dt} be so that the method is numerically stable?  The solution is shown in Figure \ref{fig:solitons:interacting}.
+\label{problem:solitons:interacting}
+
+	Consider again equation \eqref{lab:solitons:pseudospectral}. The linear term in this equation is 
+	$i\vec{k}^3Y$. This term contributes much of the exponential growth in the ODE, and responsible for 
+	how short the time step must be to ensure numerical stability. Make the substitution $Z = e^{-ik^3t}Y$ and find a similar ODE for $Z$. This essentially allows the exponential growth to be scaled out (it's solved for analytically). Use the resulting equation to solve the previous problem. How short can the time step be made? 
+
+% Consider again the function $u(x) = \sin^2 (x) \cos(x) +e^{2\sin(x+1)}$.
+% Create a function that approximates $\frac{1}{2}u''-u'$ on the Fourier grid points for a given $N$.	
+% 
+% Numerically solve the initial value problem
+% \begin{align*}
+% 	&{ } u_t -su_x + uu_x = u_{xx}, \quad x \in (-\infty,\infty),\\
+% 	&{ } u(x,0) = v(x),
+% \end{align*}
+% for $t \in [0,1]$.
+% Let the perturbation $v(x)$ be given by
+% \[v(x) = 3.5(\sin{(3x)} + 1)\frac{1}{\sqrt{2\pi}} \exp{(-x^2/2)}\]
+% And let the initial condition be $u(x, 0) = \hat{u}(x) + v(x)$
+% Approximate the $x$ domain,$(-\infty, \infty)$, numerically by the finite interval $[-20,20]$, and fix $u(-20) = u_-$, $u(20) = u_+$. Let $u_- = 5$, $u_+ = 1$.
+% Use 150 intervals in space and 350 steps in time.
+% Animate your results.
+% You should see the solution converge to a translate of the traveling wave $\hat{u}$.
+% 
+% Hint: This difference scheme is no longer a linear equation.
+% We have a nonlinear equation in $U^{n+1}$.
+% We can still solve this function using Newton's method or some other similar solver.
+% In this case, use \li{scipy.optimize.fsolve}.
+% 

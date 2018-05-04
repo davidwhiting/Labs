@@ -1,0 +1,41 @@
+ % Plot July temperatures from Weather Underground.
+Modify \li{wunder_temp()} so that it gathers the Actual Mean Temperature, Actual Max Temperature, and Actual Min Temperature for every day in July of 2012.
+Plot these three measurements against time on the same plot.
+
+Consider printing information at each iteration of the outer loop to keep track of the program's progress.
+ % Crawl through bank data.
+Modify \li{bank_data()} so that it extracts the total consolidated assets (``Consol Assets'') for JPMorgan Chase, Bank of America, and Wells Fargo recorded each December from 2004 to the present.
+In a single figure, plot each bank's assets against time.
+Be careful to keep the data sorted by date.
+ % Crawl through sports data.
+ESPN hosts data on NBA athletes at \url{http://www.espn.go.com/nba/statistics}.
+Each player has their own page with detailed performance statistics.
+For each of the five offensive leaders in points and each of the five defensive leaders in rebounds, extract the player's career minutes per game (MPG) and career points per game (PPG).
+Make a scatter plot of MPG against PPG for these ten players.
+ % Enter something in a search bar.
+The arXiv (pronounced ``archive'') is an online repository of scientific publications, hosted by Cornell University.
+Write a function that accepts a string to serve as a search query.
+Use Selenium to enter the query into the search bar of \url{https://arxiv.org} and press Enter.
+The resulting page has up to 25 links to the PDFs of technical papers that match the query.
+Gather these URLs, then continue to the next page (if there are more results) and continue gathering links until obtaining at most 100 URLs.
+Return the list of URLs.
+
+The NBA has live statistics \url{http://stats.nba.com/}.
+Use Selenium to return a list of the \li{a} tags containing each of the 30 NBA teams.
+Use the \li{find_all()} method in conjunction with whatever unique identifiers get you the correct tags.
+\\(Hint: class and tag name are a good start). % What even is this?
+
+\begin{itemize}
+\item The column titles are Name, HW\%, AW\%, where Name is each team name, HW\% is the Home Win \%, and AW\% is the Away Win \%.
+\item Each row represents a different basketball team, with its home and away win percentages.
+\end{itemize}
+Hint: You will need to use Selenium to access each teams website using the links from the tags found in problem \ref{prob:scraping-bball}.
+If the websites do not load properly, consider a \li{try-except} clause like the one suggested previously.
+
+\emph{Project Euler} (\url{https://projecteuler.net}) is a collection of mathematical computing problems.
+Each problem is listed with an ID, a description/title, and the number of users that have solved the problem.
+
+Using Selenium, BeautifulSoup, or both, for each of the (at least) 600 problems in the archive at \url{https://projecteuler.net/archives}, record the problem ID and the number of people who have solved it.
+Return a list of IDs, sorted from largest to smallest by the number of people who have solved them.
+That is, the first entry in the list should be the ID of the \textbf{most solved} problem, and the last entry in the list should be the ID of the \textbf{least solved} problem.
+\\(Hint: start by identifying the URLs to each archive page.)

@@ -1,0 +1,19 @@
+
+Recreate the plot shown in Figure \ref{fig:iris_pca} by performing PCA on the iris dataset, keeping the first two principal components.
+
+\emph{Note:}
+If \li{Yhat} is your $150 \times 2$ array of transformed observations, you can access the rows corresponding to the setosa flowers as follows:
+\begin{lstlisting}
+>>> Yhat[iris.target==0]
+\end{lstlisting}
+To get the rows corresponding to versicolor and virginica specimens, simply replace the $0$ with $1$ and $2$, respectively.
+
+Using the techniques of LSI discussed above--applied to the word count matrix $X$, and keeping the first 7 principal components--find the most similar and least similar speeches to both Bill Clinton's 1993 speech and to Richard Nixon's 1974 speech.
+Are the results plausible?
+
+\emph{Hint:} Since $X$ is a sparse matrix, you will need to use the SVD method found in \li{scipy.sparse.linalg}.
+This method operates slightly differently than the SVD method found in \li{scipy.linalg}, so make sure to read the
+documentation.
+\label{prob:LSI1}
+
+Repeat Problem \ref{prob:LSI1} using the matrix $A$. Do your answers seem more reasonable than before?

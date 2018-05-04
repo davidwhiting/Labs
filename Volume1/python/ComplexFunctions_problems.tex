@@ -1,0 +1,101 @@
+
+Write a function that accepts a function $f:\mathbb{C}\rightarrow\mathbb{C}$,  bounds $[r_{\text{min}},r_{\text{max}},i_{\text{min}},i_{\text{max}}]$ for the domain, an integer \li{res} that determines the resolution of the plot, and a string to set the figure title.
+Plot $\arg(f(z))$ and $|f(z)|$ on an equally-spaced \li{res}$\times$\li{res} grid over the domain $\{x + iy \mid x \in [r_{\text{min}},r_{\text{max}}],\: y \in [i_{\text{min}},i_{\text{max}}]\}$ in separate subplots.
+\begin{enumerate}
+\item For $\arg(f(z))$, set the \li{plt.pcolormesh()} keyword arguments \li{vmin} and \li{vmax} to $-\pi$ and $\pi$, respectively.
+This forces the color spectrum to work well with \li{np.angle()}.
+Use the colormap \li{"hsv"}, which starts and ends red, so that the color is the same for $-\pi$ and $\pi$.
+
+\item For $|f(z)|$, set \li{norm=matplotlib.colors.LogNorm()} in \li{plt.pcolormesh()} so that the color scale is logarithmic.
+Use a sequential colormap like \li{"viridis"} or \li{"magma"}.
+
+\item Set the aspect ratio to \li{"equal"} in each plot.
+Give each subplot a title, and set the overall figure title with the given input string.
+\end{enumerate}
+
+Use your function to visualize $f(z) = z$ on $\{x+iy \mid x,y \in [-1,1]\}$ and $f(z) = \sqrt{z^2+1}$ on $\{x+iy \mid x,y \in [-3,3]\}$.
+Compare the resulting plots to Figures \ref{fig:complex-identity-angle-mag} and \ref{fig:complex-discontinuity}, respectively.
+\label{prob:complex-plotting-function}
+ % Plot zeros.
+Use your function from Problem \ref{prob:complex-plotting-function} to plot the following functions on the domain $\{x+iy \mid x,y \in [-1,1]\}$.
+\begin{itemize}
+\item $f(z) = z^n$ for $n=2,3,4$.
+\item $f(z) = z^3 - iz^4 - 3z^6$.
+Compare the resulting plots to Figure \ref{fig:complex-zeros}.
+\end{itemize}
+Write a sentence or two about how the zeros of a function appear in angle and magnitude plots.
+How can you tell the multiplicity of the zero from the plot?
+\label{prob:plot-complex-zeros}
+ % Plot poles.
+Plot the following functions on domains that show all of its zeros and/or poles.
+\begin{itemize}
+\item $f(z) = z^{-n}$ for $n=1,2,3$.
+\item $f(z) = z^2+iz^{-1}+z^{-3}$.
+\end{itemize}
+Write a sentence or two about how the poles of a function appear in angle and magnitude plots.
+How can you tell the multiplicity of the poles from the plot?
+\label{prob:plot-complex-poles}
+
+Plot the following functions and count the number and order of their zeros and poles.
+Adjust the bounds of each plot until you have found all zeros and poles.
+\begin{itemize}
+\item $f(z) = -4z^5 + 2z^4 - 2z^3 - 4z^2 + 4z - 4$
+\item $f(z) = z^7 + 6z^6 - 131z^5 - 419z^4 + 4906z^3 - 131z^2 - 420z + 4900$
+\item $f(z) = \frac{16z^4 + 32z^3 + 32z^2 + 16z + 4}{16z^4 - 16z^3 + 5z^2}$
+\end{itemize}
+
+\label{prob:findpz}
+Plot the following functions on the domain $\{x+iy\mid x,y\in[-8,8]\}$.
+Explain carefully what each graph reveals about the function and why the function behaves that way.
+\begin{itemize}
+\item $f(z) = e^z$
+\item $f(z) = \tan(z)$
+\end{itemize}
+(Hint: use the polar coordinate representation to mathematically examine the magnitude and angle of each function.)
+
+For each of the following functions, plot the function on $\{x+iy\mid x,y\in[-1,1]\}$ and describe what this view of the plot seems to imply about the function.
+Then plot the function on a domain that allows you to see the true nature of the roots and poles and describe how it is different from what the original plot implied.
+\begin{itemize}
+\item $f(z) = 100z^2 + z$
+\item $f(z) = \sin\left(\frac{1}{100z}\right)$.
+\end{itemize}
+(Hint: zoom way in.)
+
+Plot the following functions and explain why they look the way that they do.
+\begin{itemize}
+\item $f(z) = \sqrt{z}$.
+Use \li{np.sqrt()} to take the square root.
+\item $f(z) = -\sqrt{z}$.
+\end{itemize}
+
+Write two functions, both accepting a natural number $n$.
+Have one function plot the Riemann surface for the real part $f(z)=\sqrt[n]{z}$ and the other plot the imaginary part.
+
+Hint: Convert $z$ in $f(z)=\sqrt[n]{z}$ to polar form as $z=re^{\theta + 2k\pi}$
+If you then plug this into $\sqrt[n]{z}$ the function takes the form
+\[f(z)=\sqrt[n]{r} e^{i \frac{\theta + 2 \pi k}{n}}\]
+Notice that here $f(z)$ has distinct values for $k = 0, 1, \dots, n-1$ (a total of $n$ different values). Each value of $k$ corresponds to a different branch, which you can plot as $n$ separate surfaces.
+
+If you use just one surface to plot each branch you will get erroneous vertical lines from jump discontinuities. Split each branch into two surfaces to get rid of these lines. You can investigate where the discontinuities occur by first plotting it as just one surface. The discontinuities happen at the same place for all $n$;
+
+Write a function which takes a complex function $f(z)$, a contour parameterization $c(t)$ of a contour $c$, and the integration bounds on $t$ and returns the integral of $f$ along the contour $c$.
+Use the numerical integration function \li{sympy.mpmath.quad} and the numerical derivative function \li{sympy.mpmath.diff} included in mpmath (which is, in turn, included as a submodule of sympy).
+These functions already work for complex numbers.
+To do something similar with the integration routines in SciPy, we would have to separate the function into real and imaginary parts, as is shown above.
+
+Using the function you just defined, integrate the following functions along the following contours
+\begin{itemize}
+\item $\bar{z}$ counterclockwise along the unit ball starting and ending at $1$
+\item $\bar{z}$ along a straight line from $0$ to $1+i$
+\item $\bar{z}$ along the real axis from $0$ to $1$, then along the line from $1$ to $1+i$
+\item $\bar{z}$ along the unit ball centered at $i$ from $0$ to $1+i$
+\item $e^z$ counterclockwise along the unit ball starting and ending at $1$
+\item $e^z$ along a straight line from $0$ to $1+i$
+\item $e^z$ along the real axis from $0$ to $1$, then along the line from $1$ to $1+i$
+\item $e^z$ along the unit ball centered at $i$ from $0$ to $1+i$
+\end{itemize}
+
+Using Cauchy's Integral Formula, write a python function which returns a callable function which evaluates a complex function $f$ along the interior of a contour $C$.
+It should accept a callable function for the parameterization of $C$, a callable function for the values of $f$ along $C$, and the bounds on the parameter used.
+Assume in your function that $C$ begins and ends at the same point and that $f$ also begins and ends at the same value (so that $f$ is continuous along $C$)
+Try it out on simple functions like $e^x$ with complex values and compare what you get with what calling the functions normally gives you.

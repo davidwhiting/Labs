@@ -1,0 +1,84 @@
+
+Define a class to perform Gaussian quadrature.
+The constructor should accept a variable $n$ denoting the number of points and weights to use (this will be explained later in the lab) and a variable \li{ptype} which defaults to \li{'legendre'}, 
+\li{ptype} should be stored as a class attribute.
+If \li{ptype} is not equal to \li{'legendre'} or \li{'chebyshev'}, raise a value error.
+The rest of the class methods will be written throughout the remainder of this lab.
+ % Construct the Jacobi matrix.\
+\label{prob:jacobi}
+Add a function to your class that accepts two Numpy arrays, one containing the $\alpha_k$ coefficients, and the other containing the $\beta_k$ coefficients from the recurrence relation given above.
+Your function should return the corresponding Jacobi matrix.
+ % Calculate points and weights.
+Add another function to your class that accepts an integer $n$ representing the number of points to use for the quadrature.
+Calculate $\alpha$ and $\beta$ as above, form the Jacobi matrix using the function written in Problem \ref{prob:jacobi}, then use the matrix to find the points $x_i$ and weights $w_i$ that 
+correspond to the initialized polynomial class.
+This function should return two Numpy arrays of length $n$, one for the points and the other for the weights.
+
+Recall that $\alpha$, $\beta$ and $\mu(\mathbb{R})$ will change, depending on the polynomial class being used.
+Test your function by checking your returned points and weights against the following values using the Legendre polynomials with $n=5$
+\[
+\centering % TODO: make this a little prettier.
+\begin{array}{c|c|c|c|c|c}
+    x_i
+    & -\frac{1}{3}\sqrt{5 + 2\sqrt{\frac{10}{7}}}
+    & -\frac{1}{3}\sqrt{5 - 2\sqrt{\frac{10}{7}}}
+    & 0
+    & \frac{1}{3}\sqrt{5 - 2\sqrt{\frac{10}{7}}}
+    & \frac{1}{3}\sqrt{5 + 2\sqrt{\frac{10}{7}}}
+    \\[1em] \hline
+    w_i
+    & \dfrac{322-13\sqrt{70}}{900}
+    & \dfrac{322+13\sqrt{70}}{900}
+    & \dfrac{128}{225}
+    & \dfrac{322+13\sqrt{70}}{900}
+    & \dfrac{322-13\sqrt{70}}{900}
+\end{array}.
+\]
+Note that the order of the points and weights in the given table may differ.
+
+Now modify the constructor of your class so that it calls this function and stores the resulting points and weights as class attributes.
+ % Integrate with given points and weights.
+Add a function to your class that accepts a callable function \li{f}.
+Return the approximation of the integral of the function \li{f} on the interval $[-1,1]$.
+
+Remember that the weight function depends on the type of polynomial (the type should be stored as a class attribute).
+%Call your function \li{basic}.
+You can test your function by integrating various functions by hand on this interval and comparing that value to your function's output.
+Small values of $n$ ($n<10$) should give fairly accurate results and as you increase $n$, your approximation should improve.
+%Using these points and weights should yield the approximations \[\int_{-\pi}^\pi \sin(x)dx \approx 0\quad\text{and}\quad\int_{-\pi}^\pi \cos(x)dx \approx 0.000196.\]
+\label{prob:basic}
+ % Shift the integral.
+Write the final method of your class.
+This method should accept a function \li{f} to integrate, an integer $n$ denoting the number of points to use and numbers $a$ and $b$ denoting the bounds of integration.
+The function should return the approximation of the integral.
+Test this function in a similar manner to Problem \ref{prob:basic}
+ % Integrate the standard normal.
+Write a function that uses the standard normal distribution to compare the error of Legendre quadrature, Chebyshev quadrature and \li{scipy.integrate.quad()}.
+Using your quadrature class, estimate the integral of the probability density function of the normal distribution (\li{scipy.stats.norm.pdf()}) on the interval $[-5,1]$.
+Do this for $n=[1,5,10,\dots,30]$ and use these values to plot the error of the Legendre and Chebyshev quadratures on the same plot with $n$ on the $x$-axis and error on the $y$-axis 
+(using a log scale for the $y$-axis).
+Finally, plot a horizontal line accross your plot showing the error of \li{scipy.integrate.quad()}.
+The following code will give you an exact value to use in computing the error of your approximations:
+
+\begin{lstlisting}
+from scipy.stats import norm
+normal = norm()                  # Make a standard normal random variable.
+exact = normal.cdf(1)            # Integrate the pdf from -infinity to 1.
+\end{lstlisting}
+
+Write a function that performs two-dimensional Gaussian quadrature using Legendre polynomials.
+Your function should accept a callable multivariate function \li{f}, four integers that denote the domain of integration (given in the order $a_1, b_1, a_2$ then $b_2$) and an integer $n$ denoting the number 
+of points to use in each dimension.
+Note that we have assumed that we will be using the same number of points in both dimensions so the previous equation is valid.
+You should be able to copy and paste many of the methods you have already written in the \li{quadrature} class with minimal changes.
+
+The following gives a sample outline of what your code should do:
+\begin{enumerate}
+\item Define a lambda function $g(x,y):\mathbb{R}^2 \rightarrow \mathbb{R}$ using the formula given above.
+\item Construct the $n\times n$ Jacobi matrix.
+\item Use the eigenvalues and eigenvectors of the Jacobi matrix to calculate the weights and points (these will be the same in both dimensions).
+\item Calculate the double summation.
+\end{enumerate}
+
+Check that your function is working by comparing its output to simple hand computations or by using Scipy's multivariate quadrature method 
+\li{scipy.integrate.dblquad()}\footnote{Documentation found at \url{https://docs.scipy.org/doc/scipy/reference/generated/scipy.integrate.dblquad.html}}.

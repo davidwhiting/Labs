@@ -1,0 +1,20 @@
+
+% Code up the Superbee and Minmod %MC
+% limiters for an advection problem with constant wind.
+% Use different initial data that is smooth or has steep gradients (such as the square wave in the example code) to see which of the three limiters may be more optimal.
+% 
+Implement the Lax Wendroff method and use it to solve \eqref{eqn:fv_exercise}.
+For $N=30,60,120,240$, plot the analytic solution, the upwind solution, and the Lax-Wendroff solution.
+(You should have 4 separate plots, each with 3 graphs.)
+You should be able to tell that the Lax Wendroff method approximates the smooth portion of the signal much better, as it does not struggle with diffusion.
+Unfortunately, it has some difficulty with the discontinuous portion, where unphysical oscillations are seen.
+Recall that we saw something similar in the waves lab when there were discontinuous initial conditions.
+
+Hint: Use equations \ref{eqn:finite_volume_improved_flux} and \ref{eqn:flux_form}.
+
+Implement the Minmod method and use it to solve \eqref{eqn:fv_exercise}.
+For $N=30,60,120,240$, plot the anaytic solution, the upwind solution, the Lax-Wendroff solution, and the Minmod solution.
+(You should have 4 separate plots, each with 4 graphs.)
+Be sure to vectorize the minmod operation.
+
+Hint: Use equations \ref{eqn:finite_volume_improved_flux} and \ref{eqn:flux_form}.

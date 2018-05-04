@@ -1,0 +1,47 @@
+
+Create a file called \texttt{hello.sh} that contains the previous text and save it in the \texttt{Scripts/} directory.
+The file extension \texttt{.sh} is technically unnecessary, but it is good practice to always include an extension.
+
+Add executable permissions to \texttt{hello.sh}.
+Run the script to verify that it worked.
+
+The \texttt{Python/} directory contains a file called \texttt{count\_files.py}, a Python script that counts all the files within the \texttt{Shell2/} directory.
+Modify this file so it can be run as a script and change the permissions of this script so the user and group can execute the script.
+
+In addition to the \texttt{five\_secs.sh} and \texttt{ten\_secs.sh} scripts, the \texttt{Scripts/} folder contains three scripts that each take about forty-five seconds to execute.
+Execute each of these commands in the background so all three are running at the same time.
+While they are all running, write the output of \li{jobs} to a new file \texttt{log.txt} saved in the \texttt{Scripts/} directory.
+
+Write a Python function \li{grep()} that accepts the name of target string and a file pattern.
+Find all files in the current directory or its subdirectories that match the file pattern, then determine which ones contain the target string.
+For example, \li{grep("*.py", "range(")} should search Python files for the command \li{range(}.
+
+Validate your function by comparing it to \li{grep -lR} in the shell.
+
+Write a Python function that accepts an integer $n$.
+Search the current directory and all subdirectories for the $n$ largest files.
+Return a list of filenames, in order from largest to smallest.
+\\(Hint: the shell commands \li{ls -s} and \li{du} show the file size.)
+
+The file \texttt{urls.txt} in the \texttt{Documents/} directory contains a list of URLs.
+Download the files in this list using \li{wget} and move them to the \texttt{Photos/} directory.
+
+When you finish this problem, archive and compress your entire \texttt{Shell2/} directory and save it as \texttt{ShellFinal.tar.gz}.
+Include the \li{-p} flag on \li{tar} to preserve the file permissions.
+\\(Hint: see the previous lab for a refresher on \li{tar}.
+See also \url{https://xkcd.com/1168/}.)
+
+Inside the \texttt{Documents/} directory, you should find a file named \texttt{files.txt}.
+This file contains details on approximately one hundred files.
+The different fields in the file are separated by tabs.
+Using \li{awk}, \li{sort}, pipes, and redirects, write a file named \texttt{date\_modified.txt} with the following specifications:
+\begin{itemize}
+\item in the first column, print the date the file was modified
+\item in the second column, print the name of the file
+\item sort the file from newest to oldest based on the date last modified
+\end{itemize}
+All this can be accomplished using one command.
+
+You will either need a partner for this problem or have access to a username on another computer.
+Experiment with SSH. Verify that you can connect from a client to a host.
+Copy a few files between the host and the client.

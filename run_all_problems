@@ -1,0 +1,11 @@
+#!/bin/bash
+for file in *.tex; do
+    ./parse_problems.py "$file" "$(basename "$file" .tex)_problems.tex"
+    if [ $? -eq 0 ]
+    	then
+    		echo "Successfully parsed file"
+    		rm "$file"
+		else
+			echo "Error: Something's wrong!"
+	fi
+done

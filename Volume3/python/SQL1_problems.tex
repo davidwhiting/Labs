@@ -1,0 +1,172 @@
+ % Create a student database.
+Write a function that accepts the name of a database file.
+Connect to the database (and create it if it doesn't exist).
+Drop the tables \li{MajorInfo}, \li{CourseInfo}, \li{StudentInfo}, and \li{StudentGrades} from the database \textbf{if} they exist.
+Next, add the following tables to the database with the specified column names and types.
+\begin{itemize}
+\item \li{MajorInfo}: \li{MajorID} (integers) and \li{MajorName} (strings).
+\item \li{CourseInfo}: \li{CourseID} (integers) and \li{CourseName} (strings).
+\item \li{StudentInfo}: \li{StudentID} (integers), \li{StudentName} (strings), and \li{MajorID} (integers).
+\item \li{StudentGrades}: \li{StudentID} (integers), \li{CourseID} (integers), and \li{Grade} (strings).
+\end{itemize}
+Remember to commit and close the database.
+You should be able to execute your function more than once with the same input without raising an error.
+
+To check the database, use the following commands to get the column names of a specified table.
+Assume here that the database file is called \texttt{students.db}.
+
+\begin{lstlisting}
+>>> with sql.connect("students.db") as conn:
+...     cur = conn.cursor()
+...     cur.execute("SELECT * FROM StudentInfo;")
+...     print([d[0] for d in cur.description])
+...
+<<['StudentID', 'StudentName', 'MajorID']>>
+\end{lstlisting}
+\label{prob:sql1-create-student-tables}
+ % Populate student tables.
+Expand your function from Problem \ref{prob:sql1-create-student-tables} so that it populates the tables with the data given in Tables \ref{table:sql1-student-majorinfo}--\ref{table:sql1-student-grades}.
+
+\begin{table}[H]
+\begin{subtable}{0.55\textwidth}
+    \centering
+    \begin{subtable}{.45\textwidth}
+        \centering
+        \footnotesize
+        \begin{tabular}{|l|l|}
+            \hline MajorID & MajorName \\ \hline
+            1 & Math \\
+            2 & Science \\
+            3 & Writing \\
+            4 & Art \\ \hline
+        \end{tabular}
+        \caption{MajorInfo}
+        \label{table:sql1-student-majorinfo}
+    \end{subtable}
+    \hfil
+    \begin{subtable}{.45\textwidth}
+        \centering
+        \footnotesize
+        \begin{tabular}{|l|l|}
+            \hline CourseID & CourseName \\ \hline
+            1 & Calculus \\
+            2 & English \\
+            3 & Pottery \\
+            4 & History \\ \hline
+        \end{tabular}
+        \caption{CourseInfo}
+        \label{table:sql1-student-courseinfo}
+    \end{subtable}
+    \\[1.em] % NOTE: Use 4.01em to align the tables at the top and bottom.
+    \begin{subtable}{\textwidth}
+        \centering
+        \footnotesize
+        \begin{tabular}{|l|l|l|}
+            \hline StudentID & StudentName & MajorID \\ \hline
+            401767594 & Michelle Fernandez & 1 \\
+            678665086 & Gilbert Chapman & NULL \\
+            553725811 & Roberta Cook & 2 \\
+            886308195 & Rene Cross & 3 \\
+            103066521 & Cameron Kim & 4 \\
+            821568627 & Mercedes Hall & NULL \\
+            206208438 & Kristopher Tran & 2 \\
+            341324754 & Cassandra Holland & 1 \\
+            262019426 & Alfonso Phelps & NULL \\
+            622665098 & Sammy Burke & 2 \\ \hline
+        \end{tabular}
+        \caption{StudentInfo}
+        \label{table:sql1-student-info}
+    \end{subtable}
+\end{subtable}
+\hfil
+\begin{subtable}{.35\textwidth}
+    \centering
+    \footnotesize
+    \begin{tabular}{|l|l|l|}
+        \hline StudentID & CourseID & Grade \\ \hline
+        401767594 & 4 & C \\
+        401767594 & 3 & B-- \\
+        678665086 & 4 & A+ \\
+        678665086 & 3 & A+ \\
+        553725811 & 2 & C \\
+        678665086 & 1 & B \\
+        886308195 & 1 & A \\
+        103066521 & 2 & C \\
+        103066521 & 3 & C-- \\
+        821568627 & 4 & D \\
+        821568627 & 2 & A+ \\
+        821568627 & 1 & B \\
+        206208438 & 2 & A \\
+        206208438 & 1 & C+ \\
+        341324754 & 2 & D-- \\
+        341324754 & 1 & A-- \\
+        103066521 & 4 & A \\
+        262019426 & 2 & B \\
+        262019426 & 3 & C \\
+        622665098 & 1 & A \\
+        622665098 & 2 & A-- \\ \hline
+    \end{tabular}
+    \caption{StudentGrades}
+    \label{table:sql1-student-grades}
+\end{subtable}
+\caption{Student database.}
+\end{table}
+
+The \li{StudentInfo} and \li{StudentGrades} tables are also recorded in \texttt{student\_info.csv} and \texttt{student\_grades.csv}, respectively, with \lsql{NULL} values represented as $-1$.
+A CSV (\textbf{c}omma-\textbf{s}eparated \textbf{v}alues) file can be read like a normal text file or with the \li{csv} module.
+
+\begin{lstlisting}
+>>> import csv
+>>> with open("student_info.csv", 'r') as infile:
+...     rows = list(csv.reader(infile))
+\end{lstlisting}
+
+To validate your database, use the following command to retrieve the rows from a table.
+
+\begin{lstlisting}
+>>> with sql.connect("students.db") as conn:
+...     cur = conn.cursor()
+...     for row in cur.execute("SELECT * FROM MajorInfo;"):
+...         print(row)
+<<(1, 'Math')
+(2, 'Science')
+(3, 'Writing')
+(4, 'Art')>>
+\end{lstlisting}
+\label{prob:sql1-populate-students}
+
+The data file \texttt{us\_earthquakes.csv}\footnote{Retrieved from \url{https://datarepository.wolframcloud.com/resources/Sample-Data-US-Earthquakes}.} contains data from about 3,500 earthquakes in the United States since the 1769.
+Each row records the year, month, day, hour, minute, second, latitude, longitude, and magnitude of a single earthquake (in that order).
+Note that latitude, longitude, and magnitude are floats, while the remaining columns are integers.
+
+Write a function that accepts the name of a database file.
+Drop the table \li{USEarthquakes} if it already exists, then create a new \li{USEarthquakes} table with schema \li{(Year, Month, Day, Hour, Minute, Second, Latitude, Longitude, Magnitude)}.
+Populate the table with the data from \texttt{us\_earthquakes.csv}.
+Remember to commit the changes and close the connection.
+\\ (Hint: using \li{executemany()} is much faster than using \li{execute()} in a loop.)
+\label{prob:sql1-create-earthquakes}
+ % Dealing with missing data.
+Modify your function from Problems \ref{prob:sql1-create-student-tables} and \ref{prob:sql1-populate-students} so that in the \li{StudentInfo} table, values of $-1$ in the \li{MajorID} column are replaced with \lsql{NULL} values.
+
+Also modify your function from Problem \ref{prob:sql1-create-earthquakes} in the following ways.
+\begin{enumerate}
+    \item Remove rows from \li{USEarthquakes} that have a value of $0$ for the \li{Magnitude}.
+    \item Replace $0$ values in the \li{Day}, \li{Hour}, \li{Minute}, and \li{Second} columns with \lsql{NULL} values.
+\end{enumerate}
+ % SELECT data from multiple tables.
+Write a function that accepts the name of a database file.
+Assuming the database to be in the format of the one created in Problems \ref{prob:sql1-create-student-tables} and \ref{prob:sql1-populate-students}, query the database for all tuples of the form (\li{StudentName}, \li{CourseName}) where that student has an ``A'' or ``A+'' grade in that course.
+Return the list of tuples.
+
+Write a function that accepts the name of a database file.
+Assuming the database to be in the format of the one created in Problem \ref{prob:sql1-create-earthquakes}, query the \li{USEarthquakes} table for the following information.
+\begin{itemize}
+    \item The magnitudes of the earthquakes during the 19th century ($1800$--$1899$).
+    \item The magnitudes of the earthquakes during the 20th century ($1900$--$1999$).
+    \item The average magnitude of all earthquakes in the database.
+\end{itemize}
+Create a single figure with two subplots: a histogram of the magnitudes of the earthquakes in the 19th century, and a histogram of the magnitudes of the earthquakes in the 20th century.
+Show the figure, then return the average magnitude of all of the earthquakes in the database.
+Be sure to return an actual number, not a list or a tuple.
+\\(Hint: use \li{np.ravel()} to convert a result set of 1-tuples to a 1-D array.)
+\label{prob:sql1-earthquake-analysis}

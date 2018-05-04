@@ -1,0 +1,62 @@
+
+Implement a Gibbs sampler for the exam scores problem using the following function declaration.
+\begin{lstlisting}
+def gibbs(y, nu, tau2, alpha, beta, n_samples):
+    """
+    Assuming a likelihood and priors
+        y_i    ~ N(mu, sigma2),
+        mu     ~ N(nu, tau2),
+        sigma2 ~ IG(alpha, beta),
+    sample from the posterior distribution
+        P(mu, sigma2 | y, nu, tau2, alpha, beta)
+    using a gibbs sampler.
+
+    Parameters
+    ----------
+    y : ndarray of shape (N,)
+        The data
+    nu : float
+        The prior mean parameter for mu
+    tau2 : float > 0
+        The prior variance parameter for mu
+    alpha : float > 0
+        The prior alpha parameter for sigma2
+    beta : float > 0
+        The prior beta parameter for sigma2
+    n_samples : int
+        The number of samples to draw
+
+    Returns
+    -------
+    samples : ndarray of shape (n_samples,2)
+        1st col = mu samples, 2nd col = sigma2 samples
+    """
+    pass
+\end{lstlisting}
+Test it with priors $\nu=80, \tau^{2} = 16, \alpha = 3, \beta = 50$, collecting $1000$ samples. Plot your samples of $\mu$ and your samples of $\sigma^{2}$. How long did it take for each to converge? It should have been very quick.
+
+Plot the kernel density estimators for the posterior distributions of $\mu$ and $\sigma^{2}$.
+You should get plots similar to those in Figure \ref{fig:post}.
+
+Use your samples of $\mu$ and $\sigma^{2}$ to draw samples from the posterior predictive distribution. Plot the kernel density estimator of your sampled scores.
+It should resemble the plot in Figure \ref{fig:predictive}.
+
+Complete the method \li{initialize}. By randomly assigning initial topics, fill in the count matrices and topic assignment dictionary. In this method, you will initialize the count matrices (among other things). Note that the notation
+provided in the code is slightly different than that used above. Be sure to understand how the formulae above
+connect with the code.
+
+To be explicit, you will need to initialize $nmz$, $nzw$, and $nz$ to be zero arrays of the correct size.  Then, in the second for loop, you will assign z to be a random integer in the correct range of topics.  In the increment step, you need to figure out the correct indices to increment by one for each of the three arrays.  Finally, assign $topics$ as given.
+
+Complete the method \li{\_sweep}, which needs to iterate through each word of each document. It should call on the method \li{\_conditional} to get the conditional distribution at each iteration.
+
+Note that the first part of this method will undo what the \li{initialize} method did.  Then we will use the conditional distribution (instead of the uniform distribution we used previously) to pick a more accurate topic assignment.  Finally, the latter part repeats what we did in \li{initialize}, but does so using this more accurate topic assignment. 
+
+Complete the method \li{\_conditional}. It accepts arguments $m,w$ where $m$ is the document and $w$ is an index of \li{vocab}. Don't forget to normalize to ensure you are actually returning a distribution!
+
+Complete the method \li{sample}. The argument \emph{filename} is the name and location of a .txt file, where each line is considered a document. The corpus is built by method \li{buildCorpus}, and stopwords are removed (if argument \emph{stopwords} is provided). Burn in the Gibbs sampler, computing and saving the log-likelihood with the method \li{\_loglikelihood}. After the burn in, iterate further, accumulating your count matrices, by adding \li{nzw} and \li{nmz} to \li{total\_nzw} and \li{total\_nmz} respectively, where you only add every \emph{sample\_rate}$^{th}$ iteration. Also save each log-likelihood.
+
+Create an \li{LDACGS} object with $20$ topics, letting \li{alpha} and \li{beta} be the default values. Load in the stop word list provided. Run the Gibbs sampler, with a burn in of $100$ iterations, accumulating $10$ samples, only keeping the results of every $10^{th}$ sweep. Plot the log-likelihoods. How long did it take to truly burn in?
+
+Using the methods described above, examine the topics for Reagan's addresses. As best as you can, come up with labels for each topic.  Note that if $ntopics=20$ and $n=10$, we will get the top $10$ words that represent each of the $20$ topics.  What you will want to do for each topic is decide what these ten words jointly represent represent.  Save your topic labels in a list or an array.
+
+In your above topic analysis, you should have found a topic about the Cold War and one about education. Find the five paragraphs in Reagan's addresses that most closely focus on each of these topics, according to the above method.

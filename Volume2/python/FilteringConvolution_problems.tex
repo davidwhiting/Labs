@@ -1,0 +1,105 @@
+ % White noise Problem. Currently commented out. 
+Create white noise and listen to the resulting sound (\textbf{CAUTION:} Turn your volume \emph{way} down! It may be very, \emph{very} loud).
+This kind of noise is called ``white" because it contains all frequencies with the same strength, or rather, with the same expected strength (since the amplitude of a specific frequency is a matter of chance).
+In order to see this, plot the spectrum of the noise.
+ % Circular convolution problem. 
+Use SciPy's \li{sp.fft()} and \li{sp.ifft()} to create a \li{SoundWave} object that is the circular convolution of \texttt{tada.wav} with two seconds of white noise.
+Note that the length of the two samples must be the same, so pad an array of zeros to the end of the \texttt{tada.wav} sample to match the length of the noise. 
+You may use \li{np.append()} to add an array of zeros to the end of a sample. 
+
+Make a sample of white noise by using NumPy's \li{random} module:
+\begin{lstlisting}
+# Create 2 seconds of mono white noise.
+samplerate = 22050
+noise = np.int16(np.random.randint(-32767, 32767, samplerate*2))
+\end{lstlisting} 
+
+To test your result, use the \li{append()} method in the \li{SoundWave} class to add multiple copies of the signal consecutively. 
+Your new signal should have a continuous, seamless transition. 
+
+Write a function that accepts two arrays of sound samples and returns the linear convolution of the samples using the Fourier transform. 
+Make sure to pad the right amount of zeros to the end of both samples to avoid circular convolution and return the correct length of sample. 
+
+Print out and compare the time it takes to compute the convolution of the signals of \texttt{AEA.wav} and \texttt{EAE.wav} using the method you have written with SciPy's \li{sp.signal.fftconvolve()} function and a naive convolution function using Equation (\ref{eq:naive-convolve}) given below.  
+ 
+\begin{lstlisting}
+def naive_convolve(sample1,sample2):
+    sig1 = np.append(sample1, np.zeros(len(sample2)-1))
+    sig2 = np.append(sample2, np.zeros(len(sample1)-1))
+    
+    final = np.zeros_like(sig1)
+    rsig1 = sig1[::-1]
+    for k in range(len(sig1)-1):
+        final[i+1] = np.sum((np.append(rsig1[i:],rsig1[::-i][:i]))*sig2)
+    return final    
+\end{lstlisting}
+
+To test the convolution method, listen to the signal created with the fast Fourier transformation convolution. 
+Compare your audio with the convolution created with SciPy's \li{signal.fftconvolve()}.  
+
+(Optional)\footnote{If the instructor does not require this problem then students may use the provided \texttt{balloon.wav} file which contains the sound of a balloon pop in a large room.} Find a large room or area with good acoustics, and record (an approximation to) its impulse response using a balloon pop.
+To record the sound, you will want to use at least a decent microphone.
+You may want to record it using the program Audacity\footnote{Audacity is free sound manipulation software and may be downloaded at http://audacity.sourceforge.net} and a laptop.
+If you use a unidirectional microphone, be sure the microphone is pointing at the balloon when you pop it, so that the direct sound from the pop is picked up.
+(If you don't, the result will still be okay.
+However, after the convolution it will probably sound somewhat distant, as if we were standing somewhere where we couldn't hear the music directly.)
+If you've chosen a good room, the response should be audible for at least a full second.
+Include a plot of both the waveform and spectrum of the impulse response you recorded.
+
+The \texttt{chopin.wav} file is a signal with piano being played in a dead room with little or no acoustics, and the \texttt{balloon.wav} file is a recording of a balloon pop in an echoic room. 
+Use SciPy's \li{signal.fftconvolve()} to take the convolution of \texttt{chopin.wav} with \texttt{balloon.wav}.
+
+Listen to the new signal, there should be echo in the piano recording. 
+\begin{comment}
+To summarize:
+\begin{enumerate}
+\item Read in \texttt{chopin.wav} and the impulse response with \li{wavfile},
+\item Add several seconds of silence to the signal from \texttt{chopin.wav},
+\item Insert zeros into the middle of the impulse response transform so that it is the same length as  \texttt{chopin.wav},
+\item Calculate the convolution of the signals,
+\item And finally, calculate the inverse Fourier transform.
+\end{enumerate}
+\end{comment}
+
+Record yourself singing a few notes (or, feel free to produce some other sound another way).
+Take the circular convolution of white noise with this recording.
+Now do it again using stereo white noise.
+This is just like the mono white noise problem, but make the NumPy array in two dimensions.
+It's no problem that your original recording will probably be mono; just make the left and right channels duplicate in the recording (but be sure to use different left and right channels for the white noise).
+Can you hear any difference between the mono and stereo versions of the result?
+ % Clean up a noisy signal (The only thing we have to fear...)
+Write a function that accepts a sound sample, a sample rate and low and high frequencies that define a range of frequencies to remove using the technique described above. 
+It should return an array of samples that has the indicated frequencies removed. 
+
+Listen to \texttt{Noisysignal2.wav}, which just sounds like random noise. 
+Use the \li{SoundWave} class to plot the discrete Fourier transform of this signal to see at what frequencies is the noise present. 
+Remove the noise using the function you have written and create a \li{SoundWave} object from the new signal. 
+
+It may be helpful to plot the DFT of the new signal to fine-tune the low and high frequencies chosen to filter out. 
+
+Listen to the filtered signal and see if you can recognize the famous person speaking. 
+
+During the 2010 World Cup in South Africa, large plastic horns called vuvuzelas were blown excessively throughout the games.
+Broadcasting organizations faced difficulties with their programs due to the noise level of these vuvuzelas. 
+To solve this problem, audio filtering techniques were used to cancel out the sound of the vuvuzela which has a frequency of around 200-500 Hz. 
+
+Listen to \li{vuvuzela.wav}\footnote{A clip of \url{https://www.youtube.com/watch?v=g_0NoBKWCT8}.} and notice the low humming sound of the vuvuzelas in the background.  
+Use the function written previously to create a new \li{SoundWave} object that removed the vuvuzela noise. 
+Note that the sound file is a stereo sound with two sound signals. 
+The first and second column of the array sample corresponds to the signals for the left and right speaker respectively.  
+Filter out the frequencies of the vuvuzela in each signal. 
+Then combine the two samples back to its original form. 
+
+Listen to the resulted signal to see whether the vuvuzela horns has successfully been filtered out. 
+
+
+One potential application of removing noise from an image is cleaning up an image of a license plate to retrieve its information. 
+The file \li{license_plate.png} contains a blurred image of a license plate. 
+In the bottom right corner of this image, there is a sticker that has information about the month and year that the license plate was renewed. 
+However, in its current state the year is not clearly legible.
+Use the two-dimensional Fourier transform to clean up the image enough that the year in the bottom right corner is legible. 
+\label{prob:filter}
+\leavevmode
+Finish writing the function \li{Filter} by filling in lines 5, 6, and 10.  Hint: Note in \ref{equ:convolve}, $C_{ij}$ was calculated by summing from -1 to 1.  This is only the case if the filter \li{F} is $3 \times 3$. A slight modification is needed in the general case.  Test your function on the image \li{cameraman.jpg} using the Gaussian Blur. The result is in Figure \ref{fig:cameraman_blur}.
+
+Write a function that accepts an image as input and applies the Sobel filter to the image.  Test your function on \li{cameraman.jpg}.  Hint: If you want to find the average of a matrix \li{A}, use the function \li{A.mean()}.

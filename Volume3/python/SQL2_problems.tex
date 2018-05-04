@@ -1,0 +1,29 @@
+ % Simple inner join.
+Write a function that accepts the name of a database file.
+Assuming the database to be in the format of Tables \ref{table:sql1-student-majorinfo}--\ref{table:sql1-student-grades}, query the database for the list of the names of students who have a B grade in any course (not a B-- or a B+).
+ % Combining joins.
+Write a function that accepts the name of a database file.
+Query the database for all tuples of the form \li{(Name, MajorName, Grade)} where \li{Name} is a student's name and \li{Grade} is their grade in Calculus.
+Only include results for students that are actually taking Calculus, but be careful not to exclude students who haven't declared a major.
+ % HAVING
+Write a function that accepts a database file.
+Query the database for the list of the names of courses that have at least 5 student enrolled in them.
+ % COUNT(), ORDER BY.
+Write a function that accepts a database file.
+Query the given database for tuples of the form \li{(MajorName, N)} where \li{N} is the number of students in the specified major.
+Sort the results in ascending order by the count \li{N}.
+ % LIKE
+Write a function that accepts a database file.
+Query the database for tuples of the form \li{(StudentName, MajorName)} where the last name of the specified student begins with the letter C.
+ % Average GPA.
+Write a function that accepts the name of a database file.
+Query the database for tuples of the form \li{(StudentName, N, GPA)} where \li{N} is the number of courses that the specified student is enrolled in and \li{GPA} is their grade point average based on the following point system.
+
+\begin{center}
+\begin{tabular}{lclclcl}
+A+, A   = 4.0 & & B   = 3.0 & & C   = 2.0 & & D   = 1.0 \\
+    A-- = 3.7 & & B-- = 2.7 & & C-- = 1.7 & & D-- = 0.7 \\
+    B+  = 3.4 & & C+  = 2.4 & & D+  = 1.4 & &
+\end{tabular}
+\end{center}
+Order the results from greatest GPA to least.

@@ -1,0 +1,151 @@
+
+Download the {\tt seeds\_dataset.txt} file.
+This file contains 7 features describing 3 species of wheat.
+\begin{enumerate}
+\item Area
+\item Perimeter
+\item Compactness
+\item Length
+\item Width
+\item Asymmetry Coefficient
+\item Groove length
+\end{enumerate}
+
+The species of wheat are
+\begin{enumerate}
+\item Kama
+\item Rosa
+\item Canadian
+\end{enumerate}
+
+The measurements of the kernels are real valued, making this a good example on which to try our Gaussian classifier.
+Make a function that classifies a subset of the data in this file and returns the accuracy of your calculations by proceeding in the following manner:
+\begin{enumerate}
+\item Randomly select a test set consisting of 40 vectors.  Make the remaining vectors into your training set.
+\item Calculate the mean and variance for each feature of each label using the training set.
+\item Using a uniform prior, predict the labels of your test set.
+\item Compare your predictions to the correct labels of the test set. In particular, report the accuracy of the prediction,
+which is the number of correctly predicted test samples divided by the total number of test samples.
+\end{enumerate}
+
+
+
+Repeat the previous problem using {\tt sklearn}'s Naive Bayes classifier.
+Check that your implementation from the previous problem predicts the same labels as the {\tt sklearn}
+implementation does.
+
+
+Implement a Naive Bayes model for document classification.
+We provide an interface below.
+
+\begin{lstlisting}
+class naiveBayes(object):
+    """
+    This class performs Naive Bayes classification for word-count document features.
+    """
+    def __init__(self):
+        """
+        Initialize a Naive Bayes classifier.
+        """
+        pass
+
+    def fit(self,X,Y):
+        """
+        Fit the parameters according to the labeled training data (X,Y).
+
+        Parameters
+        ----------
+        X : ndarray of shape (n_samples, n_features)
+            Each row is the word-count vector for one of the documents
+        Y : ndarray of shape (n_samples,)
+            Gives the class label for each instance of training data. Assume class labels are in {0,1,...,k-1} where k is the number of classes.
+        """
+        # get prior class probabilities P(c_i)
+        # (you may wish to store these as a length k vector as a class attribute)
+
+        # get (smoothed) word-class probabilities
+        # (you may wish to store these in a (k, n_features) matrix as a class attribute)
+
+        pass
+
+    def predict(self, X):
+        """
+        Predict the class labels of a set of test data.
+
+        Parameters
+        ----------
+        X : ndarray of shape (n_samples, n_features)
+            The test data
+
+        Returns
+        -------
+        Y : ndarray of shape (n_samples,)
+            Gives the classification of each row in X
+        """
+        pass
+\end{lstlisting}
+
+In this problem, you will train a Naive Bayes classifier using a corpus of emails extracted from the Enron dataset.
+
+Load in the data from {\tt SpamFeatures.txt}. This is a text file containing a whitespace-delimited
+numerical array with several thousand columns and several thousand rows, each row representing an email
+as a count vector.
+Also load in the data from {\tt SpamLabels.txt}, which is a text file containing a 1 (for legitimate email) or 0
+(for spam email) on each line, in correspondence with the rows of the count vector array.
+Using your document classification implementation, do the following:
+\begin{enumerate}
+\item Randomly create a test set from the data (500 documents), leaving the remaining documents as the training set.
+\item Create a Naive Bayes classifier and fit it using the training set.
+\item Predict the labels of the test set and compare them to the true labels (by reporting the classification accuracy).
+\end{enumerate}
+
+Next, perform the same task using {\tt sklearn}'s implementation and the same training and testing sets:
+\begin{lstlisting}
+>>> # assume train_vectors, train_labels, and test_vectors are defined
+>>> from sklearn.naive_bayes import MultinomialNB
+>>> mnb = MultinomialNB()
+>>> mnb.fit(train_vectors, train_labels)
+>>> predicted = mnb.predict(test_vectors)
+\end{lstlisting}
+Again report the accuracy of the predicted labels. The result should be on par with those produced by your
+own implementation.
+
+(Optional)
+
+If you wish, you may use your Naive Bayes classifier on your own email.
+To do so, you need to load in the vocabulary words contained in the file {\tt SpamVocab.txt} as follows:
+\begin{lstlisting}
+>>> with open("SpamVocab.txt", 'r') as f:
+>>>     vocab = [s.strip() for s in f]
+\end{lstlisting}
+Next, load the email you wish to classify into memory, stored as a string object (either copy and paste the email
+directly into the interpreter, or load it from a file). Once you have this string, convert it to a count vector using
+the following code:
+\begin{lstlisting}
+from collections import Counter
+def getCountVector(document, vocab):
+    """
+    Return the count vector for the given document using the given vocabulary.
+
+    Parameters
+    ----------
+    document : string
+		The text of the document, words separated by whitespaces
+    vocab : list of length (n) containing strings
+		Each vocab word is a string
+
+    Returns
+    -------
+    counts : ndarray of shape (1,n)
+		The word-count vector
+    """
+    tf = Counter(document.lower().split()) # get frequencies of each word
+    counts = np.array([[tf[t] if t in tf else 0 for t in vocab]])
+    return counts
+\end{lstlisting}
+Feed this output into the \li{predict} method of your classifier, and see how well it performs.
+
+The die roll problem is simplification of a spam filter.
+The different kinds of die produce different kinds of rolls.
+Thus, the probability of getting one kind of histogram of rolls is different depending on the label of the die.
+Write an explanation of how you could extend these ideas to a spam filter, and how you would use {sklearn} to implement it.

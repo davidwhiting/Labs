@@ -1,0 +1,60 @@
+ % Use View Page Source to see HTML source of a simple website.
+The HTML of a website is easy to view in most browsers.
+In Google Chrome, go to \url{http://www.example.com}, right click anywhere on the page that isn't a picture or a link, and select \li{View Page Source}.
+This will open the HTML source code that defines the page.
+Examine the source code.
+What tags are used?
+What is the value of the \li{<<type>>} attribute associated with the \li{style} tag?
+
+Write a function that returns the set of names of tags used in the website, and the value of the \li{<<type>>} attribute of the \li{style} tag (as a string).
+\\(Hint: there are ten unique tag names.)
+\label{prob:look-at-example.com}
+ % Find tag names using BeautifulSoup.
+The \li{BeautifulSoup} class has a \li{find_all()} method that, when called with \li{True} as the only argument, returns a list of all tags in the HTML source code.
+
+Write a function that accepts a string of HTML code as an argument.
+Use BeautifulSoup to return a list of the \textbf{names} of the tags in the code.
+Use your function and the source code from \url{http://www.example.com} (see \texttt{example.html}) to check your answers from Problem \ref{prob:look-at-example.com}.
+
+The file \texttt{example.html} contains the HTML source for \url{http://www.example.com}.
+Write a function that reads the file and loads the code into BeautifulSoup.
+Find the only \li{<a>} tag with a hyperlink and return its text.
+ % TODO: give them the html file, don't download it.
+
+% example.html
+Write a function that returns the following line using three different methods.
+\begin{lstlisting}
+<<'More information...'>>
+\end{lstlisting}
+The function should accept an integer.
+If the integer is 1, find the line using tag names and the \li{.string} method.
+If the integer is 2, find the line by traversing through the children of the body tag with repeated calls to \li{.contents}.
+If the integer is 3, find the line by using navigation between siblings and \li{.string}.
+
+The file \texttt{san\_diego\_weather.html} contains the HTML source for an old page from Weather Underground.\footnote{See \url{http://www.wunderground.com/history/airport/KSAN/2015/1/1/DailyHistory.html?req_city=San+Diego&req_state=CA&req_statename=California&reqdb.zip=92101&reqdb.magic=1&reqdb.wmo=99999&MR=1}}.
+Write a function that reads the file and loads it into BeautifulSoup.
+Return a list of the following tags:
+\begin{enumerate}
+\item The tag containing the date ``Thursday, January 1, 2015''.
+\item The tags which contain the \textbf{links} ``Previous Day'' and ``Next Day.''
+\item The tag which contains the number associated with the Actual Max Temperature.
+\end{enumerate}
+
+This HTML tree is significantly larger than the previous examples.
+To get started, consider opening the file in a web browser.
+Find the element that you are searching for on the page, right click it, and select \li{Inspect}.
+This opens the HTML source at the element that the mouse clicked on.
+ % Bank Data Index.
+The file \texttt{large\_banks\_index.html} is an index of data about large banks, as recorded by the Federal Reserve.\footnote{See \url{https://www.federalreserve.gov/releases/lbr/}.}
+Write a function that reads the file and loads the source into BeautifulSoup.
+Return a list of the tags containing the links to bank data from September 30, 2003 to December 31, 2014, where the dates are in reverse chronological order.
+\label{prob:bs-bank-index}
+ % Actual Bank Data.
+The file \texttt{large\_banks\_data.html} is one of the pages from the index in Problem \ref{prob:bs-bank-index}.\footnote{See \url{http://www.federalreserve.gov/releases/lbr/20030930/default.htm}.}
+Write a function that reads the file and loads the source into BeautifulSoup.
+Create a single figure with two subplots:
+\begin{enumerate}
+    \item A sorted bar chart of the seven banks with the most domestic branches.
+    \item A sorted bar chart of the seven banks with the most foreign branches.
+\end{enumerate}
+In the case of a tie, sort the banks alphabetically by name.

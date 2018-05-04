@@ -1,0 +1,126 @@
+ % Solve the normal equations with QR.
+Write a function that accepts an $m \times n$ matrix $A$ of rank $n$ and a vector $\b$ of length $n$.
+Use the QR decomposition and (\ref{eq:normal-equation-via-qr}) to solve the normal equations corresponding to $A\x = \b$.
+
+You may use either SciPy's QR routine or one of your own QR routines.
+In addition, you may use \li{la.solve_triangular()}, SciPy's optimized routine for solving triangular systems.
+
+\label{prob:lstsq-via-qr}
+
+The file \texttt{housing.npy} contains the purchase-only housing price index, a measure of how housing prices are changing, for the United States from 2000 to 2010.%
+\footnote{See \url{http://www.fhfa.gov/DataTools/Downloads/Pages/House-Price-Index.aspx}.}
+Each row in the array is a separate measurement; the columns are the year and the price index, in that order.
+To avoid large numerical computations, the year measurements start at 0 instead of 2000.
+
+Find the least squares line that relates the year to the housing price index (i.e., let year be the $x$-axis and index the $y$-axis).
+
+\begin{enumerate}
+    \item Construct the matrix $A$ and the vector $\b$ described by (\ref{eq:linear-least-squares}).\\
+    (Hint: \li{np.vstack()}, \li{np.column_stack()}, and/or \li{np.ones()} may be helpful.)
+    \item Use your function from Problem \ref{prob:lstsq-via-qr} to find the least squares solution.
+    \item Plot the data points as a scatter plot.
+    \item Plot the least squares line with the scatter plot.\\
+\end{enumerate}
+ % Polynomial fitting.
+The data in \texttt{housing.npy} is nonlinear, and might be better fit by a polynomial than a line.
+
+Write a function that uses (\ref{eq:polynomial-least-squares}) to calculate the polynomials of degree $3$, $6$, $9$, and $12$ that best fit the data.
+Plot the original data points and each least squares polynomial together in individual subplots.
+\\(Hint: define a separate, refined domain with \li{np.linspace()} and use this domain to smoothly plot the polynomials.)
+
+Instead of using Problem \ref{prob:lstsq-via-qr} to solve the normal equations, you may use SciPy's least squares routine, \li{scipy.linalg.lstsq()}.
+
+\begin{lstlisting}
+>>> from scipy import linalg as la
+
+# Define A and b appropriately.
+
+# Solve the normal equations using SciPy's least squares routine.
+# The least squares solution is the first of four return values.
+>>> x = la.lstsq(A, b)[0]
+\end{lstlisting}
+
+Compare your results to \li{np.polyfit()}.
+This function receives an array of $x$ values, an array of $y$ values, and an integer for the polynomial degree, and returns the coefficients of the best fit polynomial of that degree.
+
+\begin{comment}
+\begin{lstlisting}
+# Generate some random data close to the line y = x^2 - 3x + 2.
+>>> x = np.linspace(0, 10, 20)
+>>> y = x**2 - 3*x + 2 + np.random.randn(20)
+
+# Use np.polyfit() to calculate the best fit 2nd degree polynomial.
+>>> coeffs = np.polyfit(x, y, 2)
+
+>>> domain = np.linspace(0, 10, 200)
+>>> plt.plot(x, y, 'k*')
+>>> plt.plot(domain, np.polyval(coeffs, domain))
+>>> plt.show()
+\end{lstlisting}
+\end{comment}
+
+\label{prob:polynomial-least-squares}
+
+The general equation for an ellipse is \[ax^2 + bx + cxy + dy + ey^2 = 1.\]
+Write a function that calculates the parameters for the ellipse that best fits the data in the file \texttt{ellipse.npy}.
+Plot the original data points and the ellipse together, using the following function to plot the ellipse.
+
+\begin{lstlisting}
+def plot_ellipse(a, b, c, d, e):
+    """Plot an ellipse of the form ax^2 + bx + cxy + dy + ey^2 = 1."""
+    theta = np.linspace(0, 2*np.pi, 200)
+    cos_t, sin_t = np.cos(theta), np.sin(theta)
+    A = a*(cos_t**2) + c*cos_t*sin_t + e*(sin_t**2)
+    B = b*cos_t + d*sin_t
+    r = (-B + np.sqrt(B**2 + 4*A)) / (2*A)
+    plt.plot(r*cos_t, r*sin_t, lw=2)
+    plt.gca().set_aspect("equal", "datalim")
+\end{lstlisting}
+ % Implement the power method.
+Write a function that accepts an $n \times n$ matrix $A$, a maximum number of iterations $N$, and a stopping tolerance \li{tol}.
+Use Algorithm \ref{Alg:power-method} to compute the dominant eigenvalue of $A$ and a corresponding eigenvector.
+Continue the loop in step \ref{step:power-method-stopping-criterion} until either $\|\x_{k+1} - \x_k\|$ is less than the tolerance \li{tol}, or until iterating the maximum number of times $N$.
+
+Test your function on square matrices with all positive entries, verifying that $A\x = \lambda\x$.
+Use SciPy's eigenvalue solver, \li{scipy.linalg.eig()}, to compute all of the eigenvalues and corresponding eigenvectors of $A$ and check that $\lambda$ is the dominant eigenvalue of $A$.
+
+\begin{lstlisting}
+# Construct a random matrix with positive entries.
+>>> A = np.random.random((10,10))
+
+# Compute the eigenvalues and eigenvectors of A via SciPy.
+>>> eigs, vecs = la.eig(A)
+
+# Get the dominant eigenvalue and eigenvector of A.
+# The eigenvector of the kth eigenvalue is the kth column of 'vecs'.
+>>> loc = np.argmax(eigs)
+>>> lamb, x = eigs[loc], vecs[:,loc]
+
+# Verify that Ax = lambda x.
+>>> np.allclose(A @ x, lamb * x)
+<<True>>
+\end{lstlisting}
+
+Write a function that accepts an $n \times n$ matrix $A$, a number of iterations $N$, and a tolerance \li{tol}.
+Use Algorithm \ref{Alg:qr-algorithm} to implement the QR algorithm with Hessenberg preconditioning, returning the eigenvalues of $A$.
+
+Consider the following implementation details.
+\begin{itemize}
+    \item Use \li{scipy.linalg.hessenberg()} or your own Hessenburg algorithm to reduce $A$ to upper Hessenberg form in step \ref{step:qr-alg-hessenberg}.
+    \item The loop in step \ref{step:qr-alg-niters} should run for $N$ total iterations.
+    \item Use \li{scipy.linalg.qr()} or one of your own QR factorization routines to compute the QR decomposition of $S$ in step \ref{step:qr-alg-qr-S}.
+    Note that since $S$ is in upper Hessenberg form, Givens rotations are the most efficient way to produce $Q$ and $R$.
+    \item Assume that $S_i$ is $1 \times 1$ in step \ref{step:qr-alg-S_i-1x1-or-2x2} if one of two following criteria hold:
+    \begin{itemize}
+        \item $S_i$ is the last diagonal entry of $S$.
+        \item The absolute value of element below the $i$th main diagonal entry of $S$ (the lower left element of the $2\times 2$ block) is less than \li{tol}.
+    \end{itemize}
+    \item If $S_i$ is $2 \times 2$, use the quadratic formula and (\ref{eq:qr-algorithm-roots}) to compute its eigenvalues.
+    Use the function \li{cmath.sqrt()} to correctly compute the square root of a negative number.
+\end{itemize}
+
+Test your function on small random symmetric matrices, comparing your results to SciPy's \li{scipy.linalg.eig()}.
+To construct a random symmetric matrix, note that $A + A\trp$ is always symmetric.
+% How many iterations are necessary?
+% How small does \li{tol} have to be?
+% How large can $A$ be?

@@ -1,0 +1,103 @@
+ % Simple recursion for linked lists traversal
+The following code defines a simple class for singly linked lists.
+\begin{lstlisting}
+class SinglyLinkedListNode:
+    """Simple singly linked list node."""
+    def __init__(self, data):
+        self.value, self.<<next>> = data, None
+
+class SinglyLinkedList:
+    """A very simple singly linked list with a head and a tail."""
+    def __init__(self):
+        self.head, self.tail = None, None
+
+    def append(self, data):
+        """Add a Node containing 'data' to the end of the list."""
+        n = SinglyLinkedListNode(data)
+        if self.head is None:
+            self.head, self.tail = n, n
+        else:
+            self.tail.<<next>> = n
+            self.tail = n
+\end{lstlisting}
+Rewrite the following iterative function for finding data in a linked list using recursion.
+Use instances of the \li{SinglyLinkedList} class to test your function.
+\begin{lstlisting}
+def iterative_search(linkedlist, data):
+    """Search 'linkedlist' iteratively for a node containing 'data'."""
+	current = linkedlist.head
+	while current is not None:
+		if current.value == data:
+			return current
+		current = current.<<next>>
+	raise ValueError(str(data) + " is not in the list.")
+\end{lstlisting}
+(Hint: define a second function to perform the actual recursion.)
+\label{prob:recursion}
+ % BST.insert()
+Implement the \li{insert()} method in the \li{BST} class.
+%
+\begin{enumerate}
+\item Find the parent of the new node.
+Consider writing a recursive method, similar to \li{find()}, to do this.
+Determine whether the new node will be the parent's left or right child, then double-link the parent and the new child.
+\item Do not allow for duplicates in the tree. Raise a \li{ValueError} if there is already a node in the tree containing the input data.
+\end{enumerate}
+
+Be sure to consider the special case of inserting to an empty tree.
+To test your tree, use (but do not modify) the provided \li{BST.__str__()} method.
+ % BST.remove()
+Implement the \li{remove()} method in the \li{BST} class.
+If the tree is empty, or if the target node is not in the tree, raise a \li{ValueError}.
+Test your solutions thoroughly, accounting for all possible cases:
+\begin{enumerate}
+\item The tree is empty (\li{ValueError}).
+\item The target is not in the tree (\li{ValueError}).
+\item The target is the root node:
+	\begin{enumerate}
+	\item the root is a leaf node, hence the only node in the tree.
+	\item the root has one child.
+	\item the root has two children.
+	\end{enumerate}
+\item The target is in the tree but is not the root:
+	\begin{enumerate}
+	\item the target is a leaf node.
+	\item the target has one child.
+	\item the target has two children.
+	\end{enumerate}
+\end{enumerate}
+(Hints: \textbf{Before coding anything}, outline the entire function with comments and \li{if}-\li{else} blocks.
+Use the \li{find()} method wherever appropriate.)
+ % Compare build and search times.
+Write a function to compare the build and search times of the data structures we have implemented so far.
+
+Read the file \texttt{english.txt}, adding the contents of each line to a list of data.
+For various values of $n$, repeat the following:
+%
+\begin{enumerate}
+\item Get a subset of $n$ \textbf{random} items from the data set.
+\\(Hint: use a function from the \li{random} or \li{np.random} modules.)
+\item Time (separately) how long it takes to load a new \li{SinglyLinkedList}, a \li{BST}, and an \li{AVL} with the $n$ items.
+\item Choose 5 \textbf{random} items from the subset, and time how long it takes to find all 5 items in each data structure.
+Use the \li{find()} method for the trees, but to avoid exceeding the maximum recursion depth, use the provided \li{iterative_search()} function from Problem \ref{prob:recursion} to search the \li{SinglyLinkedList}.
+\end{enumerate}
+
+Report your findings in a single figure with two subplots: one for build times, and one for search times.
+Use log scales if appropriate.
+
+\begin{comment} % TODO: Decide whether or not to show them these plots.
+Your figure should resemble the following plots, though your results may be less smooth.
+%
+\begin{figure}[H] % Solution to problem 4.
+    \centering
+    \begin{subfigure}[b]{.5\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/BuildTimes.pdf}
+    \end{subfigure}%
+    \begin{subfigure}[b]{.5\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/SearchTimes.pdf}
+    \end{subfigure}
+    % \caption{The \li{SinglyLinkedList} has the fastest build times, but the \li{AVL} has the fastest search times. How would the graphs be different if the data had been sorted to begin with?}
+\end{figure}
+\end{comment}

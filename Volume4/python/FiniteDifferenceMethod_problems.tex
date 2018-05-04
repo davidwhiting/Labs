@@ -1,0 +1,51 @@
+
+	Let $u(x) = \sin((x+\pi)^2-1)$. Use \eqref{finitedifference2:up} - \eqref{finitedifference2:upp} to approximate $\frac{1}{2}u'' - u'$ at the grid points where $a=0$, $b=1$, and $n=10$. \label{prob:finitedifference2:prob1}
+
+Use equation \eqref{eqn:practical_fin_dif} to solve the singularly perturbed BVP \eqref{eqn:singular_perturbed_BVP} with $\epsilon = 1/10$, $f(x) = -1$, $\alpha=1$, and $\beta=3$. Graph the solution.
+This BVP is called singularly perturbed because of the location of the parameter $\epsilon$.
+For $\epsilon = 0$ the ODE has a drastically different character - it then becomes first order, and can no longer support two boundary conditions.
+    \label{prob:finitedifference2:prob1}
+
+Return to problem \ref{prob:finitedifference2:prob1}.   How many subintervals are needed to obtain 4 digits of accuracy?
+
+This is a question about the convergence of your solution.
+The following code generates the log-log plot in Figure \ref{fig:finitedifference2}, and demonstrates second-order convergence for our finite difference approximation of \eqref{eqn:singular_perturbed_BVP}.
+Use this code to determine what $h$ (and hence what $N$) is needed for the error to be less than $10^{-4}$.
+You don't need to return the value of $h$, but make sure you understand by looking at the plot.
+
+\textsc{note}: The function \li{bvp} is not provided; you need to use your code from problem \ref{prob:finitedifference2:prob1} to define it.  Make sure your function is compatible with the code below.  It must take 5 parameters as input and return the solution.
+
+	% If $\alpha = 1$,  $\beta = 3$, and $f(x) = -1$, there is an exact solution:
+	% \[y(x) = \alpha + x+ (\beta - \alpha -1)\frac{e^{x/\epsilon -1}}{e^{1/\epsilon -1}}\]
+	\label{prob:finitedifference2:prob2}
+
+Extend your finite difference code to the case of a general second order linear BVP with boundary conditions (These boundary conditions are sometimes called Dirichlet conditions):
+\begin{align*}
+	&{ } a_1(x)y'' +a_2(x)y'+ a_3(x) y = f(x), \quad x \in (a,b),\\
+	&{ } y(a) = \alpha, \quad y(b) = \beta.
+\end{align*}
+Use your code to solve the boundary value problem
+\begin{align*}
+	\epsilon y'' - 4(\pi - x^2)y = \cos x, \\
+	y(0) = 0, \quad y(\pi/2) = 1,
+\end{align*}
+for $\epsilon = 0.1$.
+\label{prob:finitedifference2:prob3}
+(Hint: How should the finite difference operator $D_h$ in \eqref{fd_operator} be modified?)
+
+
+Numerically solve the boundary value problem
+\begin{align*}
+	\epsilon y'' + xy' = -\epsilon \pi^2 \cos(\pi x) - \pi x \sin(\pi x), \\
+	y(-1) = -2, \quad y(1) = 0,
+\end{align*}
+for $\epsilon = 0.1, 0.01,$ and $0.001$.
+\label{prob:finitedifference2:prob4}
+
+Numerically solve the boundary value problem
+\begin{align*}
+	(\epsilon +x^2)y'' + 4xy' + 2y = 0, \\
+	y(-1) = 1/(1+\epsilon), \quad y(1) = 1/(1+\epsilon),
+\end{align*}
+for $\epsilon = 0.05, 0.02$.
+\label{prob:finitedifference2:prob5}

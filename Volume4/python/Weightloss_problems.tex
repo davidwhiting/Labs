@@ -1,0 +1,60 @@
+
+Finish the following code box. You will create the function that takes as input the time, current \li{r} and \li{w} values, and all growth parameters.
+\begin{lstlisting}
+def predator_prey(t, y, a, alpha, c, gamma):
+	'''
+	Parameters:
+	--------------
+	t:	time variable.
+	y:	an array of length len(y0) representing current wolf and rabbit populations at time t.
+	a, alpha, c, gamma:	growth parameters. These are keyword arguments and can be of any length.
+	
+	Return:
+	--------
+	Return a list corresponding to the Predator-Prey model.
+	'''
+	pass
+\end{lstlisting}
+
+Graph the wolf-rabbit model given in \eqref{eqn: Pred-Prey}.
+It should look like Figure \ref{fig: Pred-Prey}.
+
+Consider the initial value problem
+\begin{align}
+	\begin{split}
+\rho_F \dfrac{dF(t)}{dt} &= (1-p(t)) EB(t),\\
+\rho_L \dfrac{dL(t)}{dt} &= p(t) EB(t),\\
+F(0) &= F_0, \\
+L(0) &= L_0.
+	\end{split}\label{eqn:weight_prob1}
+\end{align}
+The ode is given above by the function \li{weight_odesystem}.
+To solve this IVP for a specific individual we need initial conditions $F_0$ and $L_0.$
+The function \li{fat_mass} given earlier calculates $F_0$ based on an individual's body weight (kg), age, height (meters), and gender.
+$L_0$ is then given by $L_0 = BW - F_0$.
+
+Suppose a 38 year old female, standing 5'8'' and weighing 160 lbs, reduces her intake from 2143 to 2025 calories/day, and increases her physical activity from little to no exercise (PAL=1.4) to exercising to 2-3 days per week (PAL=1.5).
+Using \li{scipy.integrate.ode}, find and graph the solution curve for this single-stage weightloss intervention over a period of 5 years.
+
+Note the provided code requires quantities in metric units (kilograms, meters, days) while our graph is converted to units of pounds and days.
+
+Modify the preceding problem to handle a two stage weightloss intervention:
+Suppose for the first 16 weeks intake is reduced from 2143 to 1600 calories/day and physical activity is increased from little to no exercise (PAL=1.4) to an hour of exercise 5 days per week (PAL=1.7).
+The following 16 weeks intake is increased from 1600 to 2025 calories/day, and exercise is limited to only 2-3 days per week (PAL=1.5).
+
+Find and graph the solution curve over a period of 32 weeks.
+
+Compute the solutions $(U,V)$ of \eqref{lotka_volterra} 
+% \begin{align*}
+% 	\frac{dU}{d\bar{t}} &= U(1-V),\\
+% 	\frac{dV}{d\bar{t}} &= \alpha V (U-1).
+% \end{align*}
+for initial conditions $(1/2, 3/4)$, $(1/16, 3/4)$, and $(1/40, 3/4)$.
+Add these solutions to the phase portrait of the Lotka-Volterra model.
+Can you see any limitations of this model?
+
+Compute the solutions $(U,V)$ of \eqref{logistic_pred_prey}
+for initial conditions $(1/3, 1/3)$ and $(1/2, 1/5)$.
+Do this for parameter values $\alpha, \beta = 1, .3$ and also for values $\alpha, \beta = 1, 1.1$.
+Create a phase portrait for the logistic equations using both sets of parameter values.
+Remember to plot the direction field, all equilibrium points, and the orbits of the solutions.

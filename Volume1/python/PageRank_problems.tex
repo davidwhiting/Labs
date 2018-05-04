@@ -1,0 +1,152 @@
+
+Write a function that creates an adjacency matrix from a file. The function should accept a filename, and an integer $N$ that represents the number of nodes in the graph described by the datafile. Return the adjacency matrix as a \li{SciPy} sparse \li{dok_matrix}. \\
+\begin{comment}
+\begin{lstlisting}
+def to_matrix( filename, n ):
+    ''' Return the nxn adjacency matrix described by the file.
+
+    INPUTS:
+    filename - Name of a .txt file describing a directed graph. Lines
+            describing edges should have the form
+        '<from node>\t<to node>'.
+        The file may also include comments.
+    n   - The number of nodes in the graph described by datafile
+
+    RETURN:
+    Return a NumPy array.
+    '''
+\end{lstlisting}
+\end{comment}
+Hints:
+\begin{enumerate}
+\item The file \texttt{matrix.txt} included with this lab describes the matrix in Figure \ref{fig:network1} and has the adjacency matrix \li{A} given above.
+You may use it to test your function.
+
+\item You can open a file in Python using the \li{with} syntax.
+Then, you can iterate through the lines using a \li{for} loop.
+Here is an example.
+\begin{lstlisting}
+# Open `matrix.txt' for read-only
+with open('./matrix.txt', 'r') as myfile:
+    for line in myfile:
+        print line
+\end{lstlisting}
+
+\item Here is an example of how to process a line of the form in \li{datafile}.
+\begin{lstlisting}
+>>> line = '0\t4\n'
+# strip() removes trailing whitespace from a line.
+# split() returns a list of the space-separated pieces of the line.
+>>> line.strip().split()
+['0', '4']
+\end{lstlisting}
+
+\item Rather than testing for lines of \texttt{matrix.txt} that contain comments, put all your string operations in a \li{try} block with an \li{except} block following.
+\end{enumerate}
+
+Write a function that computes and returns the K matrix given an adjacency matrix.
+\begin{enumerate}
+\item Compute the diagonal matrix $D$.
+\item Compute the modified adjacency matrix where the rows corresponding to sinks all have ones instead of zeros.
+\item Compute $K$ using array broadcasting.
+\end{enumerate}
+
+\label{prob:pagerank_dense_iter}
+Implement a function that uses the iterative method to find the steady state of the PageRank algorithm. You function should accept an adjacency matrix \li{A}, an integer \li{N} that defaults to \li{None}, the damping factor \li{d} that defaults to \li{0.85}, and a tolerance \li{tol} that defaults to \li{1E-5}. Return the approximation to the steady state as a float.
+When the argument \li{N} is not \li{None}, work with only the upper $N \times N$ portion of the array \li{adj}.
+Test your function against the example datafile that accompanies this lab.\\
+\begin{comment}
+\begin{lstlisting}
+def iter_solve( adj, N=None, d=.85, tol=1E-5):
+    '''
+    Return the page ranks of the network described by 'adj' using the iterative method.
+
+    INPUTS:
+    adj - A NumPy array representing the adjacency matrix of a directed
+            graph
+    N     - Restrict the computation to the first `N` nodes of the graph.
+            Defaults to N=None; in this case, the entire matrix is used.
+    d     - The damping factor, a float between 0 and 1.
+            Defaults to .85.
+    tol  - Stop iterating when the change in approximations to the
+            solution is less than `tol'. Defaults to 1E-5.
+
+    OUTPUTS:
+    Return the approximation to the steady state of p.
+    '''
+\end{lstlisting}
+\end{comment}
+Hints:
+\begin{enumerate}
+\item Try making your initial guess for $\mathbf{p}(0)$ a random vector.
+\item NumPy can do unexpected things with the dimensions when performing matrix-vector multiplication.
+When debugging, check at each iteration that all arrays have the dimensions you expect.
+\end{enumerate}
+
+Implement a function that uses the eigenvalue method to find the steady state of the PageRank algorithm. Your function should accept an adjacency matrix \li{A}, an integer \li{N} that defaults to \li{None}, and the damping factor \li{d} that defaults to \li{0.85}. Return the approximation to the steady state as a float.
+\begin{comment}
+\begin{lstlisting}
+def eig_solve( adj, N=None, d=.85):
+    '''
+    Return the page ranks of the network described by `adj`.
+
+    INPUTS:
+    adj - A NumPy array representing the adjacency matrix of a directed
+            graph
+    N     - Restrict the computation to the first `N` nodes of the graph.
+            Defaults to N=None; in this case, the entire matrix is used.
+    d     - The damping factor, a float between 0 and 1.
+            Defaults to .85.
+
+    OUTPUTS:
+    Return the approximation to the steady state of p.
+    '''
+\end{lstlisting}
+\end{comment}
+
+By applying the PageRank algorithm to win-loss data from the 2013 NCAA basketball season, produce a comparative ranking of the teams.
+\begin{enumerate}
+\item The file  \texttt{ncaa2013.csv} contains data on over 5000 basketball games.
+The first line is a header.
+After the header, each line represents a game and has the winning team followed by the losing team (there are no ties in basketball).
+
+Load this file and use it to create the adjacency matrix $A$, where $A_{ij} = 1$ if team $j$ beat team $i$.
+Make sure to ignore the header line.
+You will need some way of mapping from team names to the integers and vice versa.
+\item Use the iterative method from Problem \ref{prob:pagerank_dense_iter} with $d = 0.7$ to find the steady state.
+The steady-state solution is your vector of ranks.
+\item Return the ranks sorted from largest to smallest, and the corresponding list of teams sorted from ``best'' to ``worst''.
+\end{enumerate}
+Hints:
+\begin{enumerate}
+\item The code below may be helpful for processing the .csv file:
+\begin{lstlisting}
+>>> with open('./ncaa2013.csv', 'r') as ncaafile:
+>>>     ncaafile.readline() #reads and ignores the header line
+>>>     for line in ncaafile:
+>>>         teams = line.strip().split(',') #split on commas
+>>>         print teams
+>>> ['Middle Tenn St', 'Alabama St']
+>>> ...
+>>> ['Mississippi', 'Florida']
+\end{lstlisting}
+\item Before creating the adjacency matrix, you can get all the unique teams by running through all the matches once and adding every team to a set.
+Next, count the number of unique teams and initialize $A$ to be the right size.
+Try using dictionaries, lists, or both to map numbers to teams and teams to numbers and fill in $A$.
+There is more than one right way to do this.
+\item The function \li{np.argsort()} will be useful for sorting the ranks and teams.
+\item There should be 347 teams. PageRank should predict that the top five ranked teams are Duke, Butler, Louisville, Illinois, and Indiana (in that order). Use this to check your results.
+\end{enumerate}
+[Optional]
+The \li{twitter_combined.txt} file contains a list of edges that represent a Twitter network.
+To protect the privacy of users, the data has been anonymized.
+Each number is an ID for a user.
+The users in the first column represent Twitter users that follow the users in the second column.
+
+Using these edges,
+\begin{enumerate}
+\item Create a \li{DiGraph} object using all the edges described in \li{twitter_combined.txt}.
+\item Calcualte the page ranks for this graph. The page ranks create a ranking of which users are the most ``influential". Even though the results will just be numbers, remember that they represent actual Twitter users.
+\item Analyze the in-degree and out-degree of the top 10 ranked users. What do you notice about the second-highest ranked user? Why would this user be ranked so high? HINT: Use \li{G.in_edges()} and \li{G.out_edges()} to gain further insight into this result.
+\item Return the top 10 most influential users and their scores
+\end{enumerate}

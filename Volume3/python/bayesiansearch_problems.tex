@@ -1,0 +1,8 @@
+
+Write a function that accepts two $20 \times 20$ arrays, $p$ and $q$, and returns the index pair $i,j$ of the next search location.
+
+Write a function that accepts two $20 \times 20$ arrays, $p$ and $q$, as well as an index pair $i,j$ of search coordinates for the most recent unsuccessful search, and returns the posterior probabilities $\tilde{p}_{k,l}$ for each possible location $k,l$, where $1 \leq k,l \leq 20$.
+
+Write a function to simulate the search procedure. It should accept two $20 \times 20$ arrays, $p$ and $q$, where $p$ is our initial prior on the location of the vessel and $q$ contains the probability of success for each grid location. It should also accept the actual location $i,j$ of the vessel. During the simulation process, assume that $q$ is correct, i.e. given that we search in location $i,j$, we will successfully find the vessel with probability $q_{i,j}$. The function should return the number of search iterations until success, as well as the location of the vessel (but don't hard code this!).
+
+Unpickle the two files mentioned above, and test your previous function. Once it's working properly, write a function that runs the previous function $n\_sim$ times, and prints out the shortest search length, longest search length, and average search length. Test it with $n\_sim = 500$ at locations $9, 10$ and $12, 5$.

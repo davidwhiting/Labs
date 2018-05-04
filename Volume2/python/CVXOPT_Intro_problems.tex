@@ -1,0 +1,63 @@
+
+Solve the following convex optimization problem:
+\begin{align*}
+\text{minimize}\qquad &2x_1+x_2+3x_3 \\
+\text{subject to}\qquad &x_1+2x_2 \geq 3 \\
+	        &2x_1+10x_2+3x_3 \geq 10 \\
+		&x_1 \geq 0 \\
+		&x_2 \geq 0 \\
+		&x_3 \geq 0
+\end{align*}
+Report the values for $x$ and the objective value that you obtain.
+Remember to make the necessary adjustments so that all inequality constraints are $\leq$ rather than $\geq$.
+
+Write a function called \li{l1Min()} that takes a matrix $A$ and vector $b$ as inputs, and solves the $l_1$ optimization problem. 
+Report the values for $x$ and the objective value. 
+Remember to first discard the unneccesary $u$ values from the minimizer.
+
+Solve the problem by converting the last equality constraint into an inequality constraint.
+Report the optimal values for $x$ and the objective function.
+
+Find the minimizer and minimum of
+\begin{equation*}
+g(x,y,z) = \frac{3}{2}x^2 +2xy + xz+ 2y^2 +2yz+\frac{3}{2}z^2+3x + z
+\end{equation*}
+\begin{comment}
+\begin{equation}
+f(x) = \frac{1}{2}x\trp Qx - x\trp p
+\end{equation}
+where
+
+\begin{center}
+$Q =
+\begin{bmatrix}
+3 & 2 & 1\\
+2 & 4 & 2\\
+1 & 2 & 3\\
+\end{bmatrix}
+$
+and $p =
+\begin{bmatrix}
+3\\
+0\\
+1\\
+\end{bmatrix}
+$
+\end{center}
+\end{comment}
+
+
+The $l_2$ minimization problem is to
+\begin{align*}
+\text{minimize}\qquad &\|x\|_2\\
+\text{subject to} \qquad &Ax = b.
+\end{align*}
+
+This problem is equivalent to a quadratic program, since $\|x\|_2 = x\trp x$.
+Write a function called \li{l2Min()} that takes a matrix $A$ and vector $b$ as inputs and solves the $l_2$ minimization problem.
+Report the values for $x$ and the objective value. 
+
+Solve the problem above. 
+Return the minimizer $x$ of $x_{i,j}$'s. 
+Also return the maximum total net present value, which will be equal to the primal objective of the appropriately minimized linear function, multiplied by -1000. 
+(This final multiplication after we have obtained a solution changes our answer to be a maximum, and compensates for the data being in thousands of acres).

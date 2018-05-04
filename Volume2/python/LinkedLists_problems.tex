@@ -1,0 +1,92 @@
+ % Restricting data types of the Node class.
+Consider the following generic node class.
+\begin{lstlisting}
+class Node:
+    """A basic node class for storing data."""
+    def __init__(self, data):
+        """Store 'data' in the 'value' attribute."""
+        self.value = data
+\end{lstlisting}
+
+Modify the constructor so that it only accepts data of type \li{int}, \li{float}, or \li{str}.
+If another type of data is given, raise a \li{TypeError} with an appropriate error message.
+Modify the constructor docstring to document these restrictions.
+
+Add a method called \li{find(self, data)} to the \li{LinkedList} class that
+returns the first node in the list containing \li{data} (return the actual \li{LinkedListNode} object, not its \li{value}).
+If no such node exists, or if the list is empty, raise a \li{ValueError} with an appropriate error message.
+\\
+(Hint: if \li{current} is assigned to one of the nodes the list, what does the following line do?)
+\begin{lstlisting}
+current = current.<<next>>
+\end{lstlisting}
+ % __len__() and __str__() for the LinkedList class.
+Add magic methods to the \li{LinkedList} class so it behaves more like the built-in Python list.
+\begin{enumerate}
+\item Write the \li{__len__()} method so that the length of a \li{LinkedList} instance is equal to the number of nodes in the list.
+To accomplish this, consider adding an attribute that tracks the current size of the list.
+It should be updated every time a node is successfully added or removed.
+
+\item Write the \li{__str__()} method so that when a \li{LinkedList} instance is printed, its output matches that of a Python list.
+Entries are separated by a comma and one space, and strings are surrounded by single quotes.
+Note the difference between the string representations of the following lists:
+
+\begin{lstlisting}
+>>> num_list = [1, 2, 3]
+>>> str_list = ['1', '2', '3']
+>>> print(num_list)
+[1, 2, 3]
+>>> print(str_list)
+<<['1', '2', '3']>>
+\end{lstlisting}
+\end{enumerate}
+ % LinkedList.remove().
+Modify the \li{remove()} method given above so that it correctly removes the first node in the list containing the specified data.
+Account for the special cases of removing the first, last, or only node.
+ % LinkedList.insert()
+Add a method called \li{insert(self, data, place)} to the \li{LinkedList} class that inserts a new node containing \li{data} immediately before the first node in the list containing \li{place}.
+Account for the special case of inserting before the first node.
+
+See Figure \ref{fig:insert} for an illustration.
+Note that since \li{insert()} places a new node before an existing node, it is not possible to use \li{insert()} to put a new node at the end of the list or in an empty list (use \li{append()} instead).
+ % Deque class.
+Write a \li{Deque} class that inherits from the \li{LinkedList} class.
+%
+\begin{enumerate}
+\item Use inheritance to implement the following methods:
+%
+\begin{itemize}
+    \item \li{pop(self)}: Remove the last node in the list and return its data.
+    \item \li{popleft(self)}: Remove the first node in the list and return its data.
+    \item \li{appendleft(self, data)}: Insert a new node containing \li{data} at the beginning of the list.
+\end{itemize}
+The \li{LinkedList} class already implements the \li{append()} method.
+
+\item Override the \li{remove()} method with the following:
+
+\begin{lstlisting}
+def remove(*args, **kwargs):
+    raise NotImplementedError("Use pop() or popleft() for removal")
+\end{lstlisting}
+
+This effectively disables \li{remove()} for the \li{Deque} class, preventing the user from removing a node from the middle of the list.
+
+\item Disable the \li{insert()} method as well.
+\end{enumerate}
+ % Reverse a file using a stack/deque.
+Write a function that accepts the name of a file to be read and a file to write to.
+Read the first file, adding each line to the end of a deque.
+After reading the entire file, pop each entry off of the end of the deque one at a time, writing the result to a line of the second file.
+
+For example, if the file to be read has the list of words on the left, the resulting file should have the list of words on the right.
+
+\begin{lstlisting}
+<<My homework is too hard for me.         I am a mathematician.
+I do not believe that                   Programming is hard, but
+I can solve these problems.             I can solve these problems.
+Programming is hard, but                I do not believe that
+I am a mathematician.                   My homework is too hard for me.
+\end{lstlisting}
+
+You may use a Python list, your \li{Deque} class, or \li{collections.deque} for the deque.
+Test your function on the file \texttt{english.txt}, which contains a list of over 58,000 English words in alphabetical order.

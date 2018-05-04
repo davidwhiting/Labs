@@ -1,0 +1,74 @@
+
+% Using \li{dopri5}, solve the IVP
+% \begin{align*}
+% 5y''' + y'+2y &= 0, \,\, 0 \leq x \leq 16,\\
+% y(0) &=0,\\
+% y'(0) &= 1,\\
+% y''(0) &= -2.
+% \end{align*}
+% 
+Solve the IVP
+\begin{align*}
+\frac{dS}{dt} &=-\frac{1}{2} IS ,\\
+\frac{dI}{dt} &= \frac{1}{2} I S-\frac{1}{4} I, \\
+\frac{dR}{dt} &=\frac{1}{4} I,\\
+S(0) &= 1-6.25\cdot10^{-7},\\
+I(0) &= 6.25\cdot10^{-7},\\
+R(0) &=0,
+\end{align*}
+on the interval $[0,100]$, and plot your results.  See Figure \ref{sir1}. \label{prob_sir1}
+
+Suppose that, in a city of approximately three million, five have recently entered the city carrying a certain disease.
+(Suppose they have just entered the infectious state.)
+
+Each of those individuals has a contact each day that could spread the disease, and an average of three days is spent in the infectious state.
+Find the solution of the corresponding SIR equations for the next fifty days and plot your results.
+
+
+At the peak of the infection, how many in the city will still be able to work (Assume for simplicity that those who are in the infectious state either cannot go to work or are unproductive, etc.)
+Print your result.
+
+
+Suppose that, in a city of approximately three million, five have recently entered the city carrying a certain disease.
+(Suppose they have just entered the infectious state.)
+
+Each of those individuals will make three contacts every ten days that could spread the disease, and an average of four days is spent in the infectious state.
+Find the solution of the corresponding SIR equations and plot your results. See Figure \ref{sir:exercise3}.
+\label{prob_sir3}
+
+In the world there are 7 billion people.
+Influenza, or the flu, is one of those viruses that everyone can be susceptible to, even after recovering from their last sickness.
+The flu virus is able to change in order to evade our immune system and we become susceptible once more (although technically it is now a different strain).
+Suppose the virus originates with 1000 people in Texas after Hurricane Harvey flooded Houston and stagnant water allowed the virus to proliferate.
+According to WebMD (trustworthy source, right?), once you get the virus you are contagious up to a week, and kids up to 2 weeks.
+For this lab, suppose you are contagious for 10 days before recovering.
+Also suppose that on average someone makes one contact every two days that could spread the flu.
+Since we can catch a new strain of the flu, suppose that a recovered individual becomes susceptible again with probability $f=1/50$.
+The flu is also known to be deadly, killing hundreds of thousands every year on top of the normal death rate.
+To assure a steady population, let the birth rate balance out the death rate, and in particular let $\mu=.0001$.
+
+Using the SIRS model above, plot the proportion of population that is Susceptible, Infected, and Recovered over a year span (365 days).
+
+Consider \eqref{SEIR_BVP}
+Let the periodic function for our measles case be $\beta(t) = \beta_0(1 + \beta_1 \cos{2\pi t})$.
+Use parameters $\beta_1 = 1,$ $\beta_0 = 1575,$ $\eta = 0.01,$ $\lambda = .0279,$ and $\mu = .02.$
+Note: in this case, time is measured in years, so run the solution over the interval $\left[0, 1\right]$ to show a one-year cycle.
+The boundary conditions are really just saying that the year will begin and end in the same state.
+
+\li{solve_bvp} requires \emph{separated boundary conditions}.
+In other words, each equation in the set of boundary conditions can only include values at one end of the interval.
+To deal with this, let $C = [C_1, C_2, C_3]$, and add the equation
+\[C' = 0\]
+to the system of ODEs given above (for a total of 6 equations).
+Then the boundary conditions can be separated using the following trick:
+\begin{align*}
+	\begin{pmatrix}C_1(0) \\C_2(0) \\ C_3(0) \end{pmatrix} &= \begin{pmatrix}S(0) \\E(0) \\ I(0) \end{pmatrix}, \quad 	\begin{pmatrix}C_1(1) \\C_2(1) \\ C_3(1) \end{pmatrix} = \begin{pmatrix}S(1) \\E(1) \\ I(1) \end{pmatrix}.
+\end{align*}
+Now $C_1,C_2,C_3$ become the 4th, 5th, and 6th rows of your solution matrix, so the 3 boundary conditions for the left are obtained by subtracting the last three entries of $y(0)$ from the first three entries, giving you $ya[0:3]-ya[3:]$. Similarly, your right boundary conditions will look like $yb[0:3]-yb[3:]$.
+
+%This translates to 3 boundary conditions for the left and 3 for the right.  Now $C_1,C_2,C_3$ become the 4th, 5th, and 6th rows of your solution matrix.  
+%The formulae you will want to use for the boundary conditions can be formed by subtracting one side of these equations from the other. That is, subtract the last 3 entries of $y(a)$ from the %first 3 entries for the left boundary conditions, and similarly for the right.
+When you code your boundary conditions, note that \li{solve_bvp} changes the initial conditions to force all the entries in the return of \li{bcs()} to be zero.
+You can use the initial conditions from Fig.~\ref{fig:sir4} as your initial guess (which will be an array of 6 elements). Remember that the initial infected proportion is small, not 0.
+
+\label{prob:sir_measles}

@@ -1,0 +1,124 @@
+
+Implement the \emph{k-means} algorithm using the following function declaration.
+
+\begin{lstlisting}
+def kmeans(data,n_clusters,init='random',max_iter=300):
+    """
+    Cluster a dataset using the k-means algorithm.
+
+    Parameters
+    ----------
+    data : ndarray of shape (n,k)
+        Each row is an observation.
+    n_clusters : int
+        The number of clusters.
+    init : string or ndarray of shape (n_clusters,k)
+        If init is the string 'random', then randomly initialize the cluster means.
+        Else, the initial cluster means are given by the rows of init.
+    max_iter : int
+        The maximum allowable number of iterations.
+
+    Returns
+    -------
+    means : ndarray of shape (n_cluster,k)
+        The final cluster means, given as the rows.
+    labels : ndarray of shape (n,)
+        The i-th entry is an integer in [0,n_clusters-1] indicating
+        which cluster the i-th row of data belongs to relative to
+        the rows of means.
+    measure : float
+        The within-cluster sum of squares quality measure.
+    """
+    pass
+\end{lstlisting}
+
+Test your function on the first two principal components of the iris dataset.
+Run it 10 times, using a different random initialization of the means each time.
+Retain the clustering with the smallest within-cluster sum of squares.
+Your clustering should be similar to the first clustering in Figure \ref{fig:iris_clusterings}.
+
+Load the earthquake data into a $n\times 2$ array, where each row gives the longitude and latitude of an earthquake in degrees.
+Multiply South latitudes and West longitudes by $-1$.
+Create a scatter plot of the resulting data. You should be able to see the outlines of some of the continents and tectonic plates (since these are often areas of significant seismic activity). Your plot should match Figure \ref{fig:earthquakes}.
+
+Transform your earthquake data into three dimensional Euclidean coordinates.
+Be sure to consider if and when you need to transform your data from degrees to radians.
+
+Add a keyword argument \li{normalize=False} to your \li{kmeans} function, and add code to normalize the means at each iteration, should this argument be set to \li{True}.
+Use your function to cluster the earthquake data into 15 clusters. Run this 10 times, keeping the best clustering.
+Transform the cluster means back to latitude and longitude coordinates (when calculating $\theta$ using the inverse tangent, use \li{numpy.arctan2} or \li{math.arctan2},
+so that that correct quadrant is chosen).
+Create a scatter plot showing each cluster mean, along with the earthquake epicenters color-coded according to their cluster. Your plot should resemble that of Figure \ref{fig:earthquakeclusters}.
+
+Add a keyword argument \li{3d=False} to your \li{kmeans} function, and add code to show the three-dimensional plot instead of the two-dimensional scatter plot should this argument be set to \li{True}.  Maintain the same color-coding scheme as before.  Use \li{mpl_toolkits.mplot3d.Axes3D} to make your plot.
+
+Implement the Spectral Clustering Algorithm by calling your \li{kmeans} function, using the following function declaration:
+\begin{lstlisting}
+def specClus(measure,Laplacian,args,arg1=None,kiters=10):
+    """
+    Cluster a dataset using the k-means algorithm.
+
+    Parameters
+    ----------
+    measure : function
+        The function used to calculate the similarity measure.
+    Laplacian : int in {1,2,3}
+        Which Laplacian matrix to use. 1 corresponds to the unnormalized,
+        2 to the symmetric normalized, 3 to the random walk normalized.
+    args : tuple
+        The arguments as they were passed into your k-means function,
+        consisting of (data, n_clusters, init, max_iter, normalize). Note
+        that you will not pass 'data' into your k-means function.
+    arg1 : None, float, or int
+        If Laplacian==1, it should remain as None
+        If Laplacian==2, the cut-off value, epsilon.
+        If Laplacian==3, the number of edges to retain, T.
+    kiters : int
+        How many times to call your kmeans function to get the best
+        measure.
+
+    Returns
+    -------
+    labels : ndarray of shape (n,)
+        The i-th entry is an integer in [0,n_clusters-1] indicating
+        which cluster the i-th row of data belongs to.
+    """
+    pass
+\end{lstlisting}
+
+Create a function that will return the accuracy of your spectral clustering implementation, as follows:
+\begin{lstlisting}
+def test_specClus(location,measure,Laplacian,args,arg1=None,kiters=10):
+    """
+    Cluster a dataset using the k-means algorithm.
+
+    Parameters
+    ----------
+    location : string
+        The location of the dataset to be tested.
+    measure : function
+        The function used to calculate the similarity measure.
+    Laplacian : int in {1,2,3}
+        Which Laplacian matrix to use. 1 corresponds to the unnormalized,
+        2 to the symmetric normalized, 3 to the random walk normalized.
+    args : tuple
+        The arguments as they were passed into your k-means function,
+        consisting of (data, n_clusters, init, max_iter, normalize). Note
+        that you will not pass 'data' into your k-means function.
+    arg1 : None, float, or int
+        If Laplacian==1, it should remain as None
+        If Laplacian==2, the cut-off value, epsilon.
+        If Laplacian==3, the number of edges to retain, T.
+    kiters : int
+        How many times to call your kmeans function to get the best
+        measure.
+    
+    Returns
+    -------
+    accuracy : float
+        The percent of labels correctly predicted by your spectral
+        clustering function with the given arguments (the number
+        correctly predicted divided by the total number of points.
+    """
+    pass
+\end{lstlisting}

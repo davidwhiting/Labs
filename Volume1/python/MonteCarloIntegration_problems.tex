@@ -1,0 +1,104 @@
+
+The $n$-dimensional \emph{open unit ball} is the set $U_n = \{\x\in\mathbb{R}^n\mid \|\x\|_2 < 1\}$.
+Write a function that accepts an integer $n$ and a keyword argument $N$ defaulting to $10^4$.
+Estimate the volume of $U_n$ by drawing $N$ points over the $n$-dimensional domain $[-1,1]\times[-1,1]\times\cdots\times[-1,1]$.
+\\(Hint: the volume of $[-1,1]\times[-1,1]\times\cdots\times[-1,1]$ is $2^n$.)
+
+When $n=2$, this is the same experiment outlined above so your function should return an approximation of $\pi$.
+The volume of the $U_3$ is $\frac{4}{3}\pi \approx 4.18879$, and the volume of $U_4$ is $\frac{\pi^2}{2} \approx 4.9348$.
+Try increasing the number of sample points $N$ to see if your estimates improve.
+\label{prob:unit-ball-volume}
+
+Write a function that accepts a function $f:\mathbb{R}\rightarrow\mathbb{R}$, bounds of integration $a$ and $b$, and an integer $N$ defaulting to $10^4$.
+Use \li{np.random.uniform()} to sample $N$ points over the interval $[a,b]$, then use (\ref{eq:monte-carlo-integration-1d}) to estimate the integral
+\[
+\int_a^b f(x)\:dx.
+\]
+Test your function on the following integrals, or on other integrals that you can check by hand.
+\[
+\begin{array}{c}
+    \begin{array}{ccccc}
+    \displaystyle\int_{-4}^2 x^2\:dx = 24
+    & &
+    \displaystyle\int_{-2\pi}^{2\pi} \sin(x)\:dx = 0
+    & &
+    \displaystyle\int_1^{10} \frac{1}{x}dx = \log(10) \approx 2.30259
+    \end{array}
+\\ \\
+\displaystyle\int_1^5 \left|\sin(10x)\cos(10x) + \sqrt{x}\sin(3x) \right|\:dx \approx 4.502
+\end{array}
+\]
+\label{prob:monte-carlo-integration-1d}
+
+Write a function that accepts a function $f:\mathbb{R}^n\rightarrow\mathbb{R}$, a list of lower bounds $[a_1, a_2, \ldots, a_n]$, a list of upper bounds $[b_1, b_2, \ldots, b_n]$, and an integer $N$ defaulting to $10^4$.
+Use (\ref{eq:monte-carlo-integration}), (\ref{eq:mc-box-volume}), and (\ref{eq:mc-domain-transform}) with $N$ sample points to estimate the integral
+\[
+\int_\Omega f(\x)\:dV,
+\]
+where $\Omega = [a_1,b_1]\times[a_2,b_2]\times\cdots\times[a_n,b_n]$.
+\\(Hint: use a list comprehension to calculate all of the $f(\x_i)$ quickly.)
+
+Test your function on the following integrals.
+\[
+\begin{array}{c}
+    \begin{array}{ccc}
+    \displaystyle\int_0^1\int_0^1 x^2 + y^2\:dx\:dy = \frac{2}{3}
+    & &
+    \displaystyle\int_{-2}^1\int_1^3 3x - 4y + y^2\:dx\:dy = 54
+    \end{array}
+\\ \\
+\displaystyle\int_{-4}^4\int_{-3}^3\int_{-2}^2\int_{-1}^1 x + y - w z^2\:dx\:dy\:dz\:dw = 0
+\end{array}
+\]
+Note carefully how the order of integration defines the domain.
+In the last example, the $x$-$y$-$z$-$w$ domain is $[-1,1]\times[-2,2]\times[-3,3]\times[-4,4]$, so the lower and upper bounds passed to your function should be $[-1, -2, -3, -4]$ and $[1, 2, 3, 4]$, respectively.
+\label{prob:montecarlo-integration-nd}
+
+The probability density function of the joint distribution of $n$ independent normal random variables, each with mean $0$ and variance $1$, is the function $f:\mathbb{R}^n\rightarrow\mathbb{R}$ defined by
+\[
+f(\x) = \frac{1}{(2 \pi)^{n/2}} e^{- \frac{\x\trp\x}{2}}.
+\]
+% The integral of $f$ over a domain $\Omega\subset\mathbb{R}^n$ is the probability that a draw from the distribution will be in $\Omega$.
+Though this is a critical distribution in statistics, $f$ does not have a symbolic antiderivative.
+
+Integrate $f$ several times to study the convergence properties of Monte Carlo integration.
+
+\begin{enumerate}
+\item Let $n=4$ and $\Omega=[-\frac{3}{2}, \frac{3}{4}]\times[0,1]\times[0, \frac{1}{2}]\times[0,1] \subset \mathbb{R}^4$.
+Define $f$ and $\Omega$ so that you can integrate $f$ over $\Omega$ using your function from Problem \ref{prob:montecarlo-integration-nd}.
+
+\item Use \li{scipy.stats.mvn.mvnun()} to get the ``exact'' value of $F = \int_\Omega f(\x)\:dV$.
+As an example, the following code computes the integral over $[-1,1]\times [-1,3]\times[-2,1] \subset \mathbb{R}^3$.
+\begin{lstlisting}
+>>> from scipy import stats
+
+# Define the bounds of integration.
+>>> mins = np.array([-1, -1, -2])
+>>> maxs = np.array([ 1,  3,  1])
+
+# The distribution has mean 0 and covariance I (the nxn identity).
+>>> means, cov = np.zeros(3), np.eye(3)
+
+# Compute the integral with SciPy.
+>>> stats.mvn.mvnun(mins, maxs, means, cov)[0]
+0.4694277116055261
+\end{lstlisting}
+
+\item Use \li{np.logspace()} to get $20$ \textbf{integer} values of $N$ that are roughly logarithmically spaced from $10^1$ to $10^5$.
+For each value of $N$, use your function from Problem \ref{prob:montecarlo-integration-nd} to compute $25$ estimates of the integral with $N$ samples, and average these estimates to obtain $\tilde{F}(N)$.
+Compute the relative error $\frac{|F - \tilde{F}(N)|}{|F|}$ for each value of $N$.
+
+\item Plot the relative error against the sample size $N$ on a log-log scale.
+Also plot the line $1/\sqrt{N}$ for comparison.
+Your results should be similar to Figure \ref{fig:monte-carlo-convergence}.
+\end{enumerate}
+
+Repeat the experiment of Problem \ref{prob:mc-point-convergence}, but fix $N=10^4$ and define $\Omega_n$ to be the $n$-dimensional cube $[-1,1]\times[-1,1]\times\cdots\times[-1,1]$.
+For $n=5,10,20,\ldots,100$, redefine $f$ and $\Omega_n$ to fit the dimension, use SciPy to compute the correct value of the integral $F_n$, use your function from Problem \ref{} to estimate the integral, and compute the relative error.
+
+Plot the dimension against the relative error.
+
+Create a new function (based upon the function from Problem \ref{prob:montecarlo-integration-nd}) that uses a ``flawed'' random number generator that doesn't produce numbers between $-.95$ and $-1$.
+Test your method on the function from Problem \ref{prob:mc_test}.
+How bad is the error?
+\label{prob:mc_flawed}

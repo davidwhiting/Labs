@@ -1,0 +1,77 @@
+
+Create a function called \li{initialize} which will process the Titanic data set into useable format by doing the following:
+\begin{enumerate}
+\item Choose the coulmns that you believe will be relevant in predicting the survival of the passengers, and drop the other columns.  You may not use \li{boat} or \li{body}, as these are dependent on whether or not the passenger survived.  Be sure to include \li{survived}, which will be separated later as the independent variable, as well as \li{sex} and \li{pclass}.
+\item Since \li{sex} is really a binary variable, make it one explicitly by changing ``female" and ``male" to be binary values.
+\item Drop the rows that contain missing values.  Make sure you have a significant number of rows left.  If you have too few, you may need to choose fewer columns to keep before deleting the incomplete rows.
+\item Because the \li{pclass} column is an integer in $\{1, 2, 3\}$, it will be treated as a ranked variable instead of simply a categorical variable.  It may be useful to rank this variable, or it may mess up our classification.  Include a keyword argument \li{pclass_change} with default \li{True}.  If it is set to \li{True}, eliminate this ranking by dividing \li{pclass} into two binary columns.  Make one column a boolean for being $1^{st}$ class and the other a boolean for being $2^{nd}$ class. (This means that a value of $1$ would correspond to $[1, 0]$, $2$ to $[0, 1]$, and $3$ to $[0, 0]$.)
+\item Split the remaining rows into a training and a test set using a $60/40$ split.  Be sure and pick random rows for each group and not rows in any particular order.
+\end{enumerate}
+Have your function return the training set and the test set, in that order.
+
+Use the function declaration below to find the best value for $\tau$.  You should use evenly spaced values from $0$ to $1$, exclusive.
+\begin{lstlisting}
+def best_tau(predicted_labels, true_labels, n_tau=100, plot=True):
+    """
+    Parameters
+    ----------
+    predicted_labels : ndarray of shape (n,)
+        The predicted labels for the data
+    true_labels : ndarray of shape (n,)
+        The actual labels for the data
+    n_tau : int
+        The number of values to try for tau
+    plot : boolean
+        Whether or not to plot the roc curve
+
+    Returns
+    -------
+    best_tau : float
+        The optimal value for tau for the data.
+    """
+    pass
+\end{lstlisting}
+
+Use the following function declaration to return the auc score for the two Logistic Regression models described.
+\begin{lstlisting}
+def auc_scores(unchanged_logreg, changed_logreg):
+    """
+    Parameters
+    ----------
+    unchanged_logreg : float in (0,1)
+        The value to use for C in the unchanged model
+    changed_logreg : float in (0,1)
+        The value to use for C in the changed model
+
+    Returns
+    -------
+    unchanged_auc : float
+        The auc for the unchanged model
+    changed_auc : float
+        The auc for the changed model
+    """
+    pass
+\end{lstlisting}
+
+Add input variables \li{unchanged_bayes} and \li{changed_bayes} to your function from the previous problem to obtain the auc for each of these models.  Your function should return all four areas, unchanged logistic regression, changed logistic regression, unchanged Bayes, and changed Bayes, in that order.
+
+Use the function declaration below to find the optimal values for \li{C} and $alpha$ as described.
+\begin{lstlisting}
+def find_best_parameters(choices):
+    """
+    Parameters
+    ----------
+    choices : int
+        The number of values to try for C and alpha
+
+    Returns
+    -------
+    best : list of length 4
+        The best values for C for the unchanged and changed logistic
+         regression models, and the best values for alpha for the
+         unchanged and changed Naive Bayes models, respectively.
+    """
+    pass
+\end{lstlisting}
+
+Create a function called \li{results} which will graph of the roc curves for each of the methods, and will print out the names of the models with their corresponding areas, in numerically descending order.

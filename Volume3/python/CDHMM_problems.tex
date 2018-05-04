@@ -1,0 +1,48 @@
+
+Write a function which accepts a GMMHMM in the format above as well as an integer $n\_sim$, and which simulates the GMMHMM process, generating $n\_sim$ different observations.
+Do so by implementing the following function declaration.
+\begin{lstlisting}
+def sample_gmmhmm(gmmhmm, n_sim):
+    """
+    Simulate sampling from a GMMHMM.
+
+    Returns
+    -------
+    states : ndarray of shape (n_sim,)
+        The sequence of states
+    obs : ndarray of shape (n_sim, K)
+        The generated observations (column vectors of length K)
+    """
+    pass
+\end{lstlisting}
+
+Obtain $30$ (or more) recordings for each of the words/phrases \emph{mathematics}, \emph{biology}, \emph{political science}, \emph{psychology}, and \emph{statistics}.
+These audio samples should be 2 seconds in duration, recorded at a rate of 44100 samples per second, with samples stored as 16-bit signed integers in WAV format.
+Load the recordings into Python using {\tt scipy.io.wavfile.read}.
+
+If the audio files have two channels, average these channels to obtain an array of length $88200$ for each sample.
+Extract the MFCCs from each sample using code from the file {\tt MFCC.py}:
+\begin{lstlisting}
+>>> import MFCC
+>>> # assume sample is an array of length 88200
+>>> mfccs = MFCC.extract(sample)
+\end{lstlisting}
+Store the MFCCs for each word in a separate list. You should have five lists, each containing 50 MFCC arrays, corresponding to each of the five words
+under consideration.
+
+Partition each list of MFCCs into a training set of 20 samples, and a test set of the remaining 10 samples.
+
+Using the training sets, train a GMMHMM on each of the words from the previous problem with at least $10$ random restarts, keeping the best model for each word (the one with the highest log-likelihood).
+This process may take several minutes.  Since you will not want to run this more than once, you will want to save the best model for each word to disk using the {\tt pickle} module so that you can use it later.
+
+Classify the 10 test samples for each word. 
+How does your system perform? Which words are the hardest to correctly classify?
+Make a dictionary containing the accuracy of the classification of your five testing sets.  Specifically, the words/phrases will be the keys, and the values will be the percent accuracy. 
+
+Record the word \emph{mathematics} as a $2$ second WAV file $20$ times, and decompose each file into its MFCC array, storing these in a list. Do this also for the words/phrases \emph{biology}, \emph{political science}, \emph{psychology}, and \emph{statistics}. Be sure you complete each word/phrase in the $2$ second window.
+
+Write a function that initializes the initial state distribution and transition matrix for a GMMHMM with $n$ states. You may have done this in a previous lab, so feel free to copy and paste.
+
+Train a GMMHMM on each of the words you previously recorded with at least $10$ random restarts, keeping the best model for each word. You might want to do this in parallel to save time.
+
+Write a function that records a sample, converts it into its MFCC array, and then scores it on each of the five trained models. Return the word corresponding to the highest scoring model. Test your speech recognition system on each of the five words multiple times. How does it perform?

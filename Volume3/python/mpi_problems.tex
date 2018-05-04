@@ -1,0 +1,29 @@
+
+Write a program in which the the processes with an even rank print "Hello'' and process with an odd rank print "Goodbye.'' 
+Print the process number along with the "Hello'' or "Goodbye'' 
+(for example, "Goodbye from process 3'').
+
+Write a script \texttt{passVector.py} that runs on two processes and passes an $n$ by $1$ vector of random values from one process to the other. 
+Write it so that the user passes the value of $n$ in as a command-line argument.
+Hint: This code will be useful in remembering how to pass command-line arguments.
+\begin{lstlisting}
+from sys import argv
+
+# Pass in the first command line argument as n
+n = int(argv[1])
+\end{lstlisting}
+\begin{lstlisting}
+mpirun -n 2 python passVector.py 3
+\end{lstlisting}
+
+Write a script \texttt{passCircular.py} in which the process with rank $i$ sends a random value to the process with rank $i+1$ in the global communicator. 
+The process with the highest rank will send its random value to the root process. 
+Notice that we are communicating in a ring. 
+For communication, only use \li{Send} and \li{Recv}. 
+The program should work for any number of processes. 
+Hint: Remember that \li{Send} and \li{Recv} are blocking functions but that Send. 
+Does the order in which \li{Send} and \li{Recv} are called matter?
+
+Write a script using $n$ processes to find the volume of a unit $m$-sphere testing $p$ random points in the unit $m$ dimensional box. 
+All of these variables should be passed from the command line (the n processes are passed in the mpirun command as in previous problems). 
+The $n$ processes should pass their individual results up to the root process, which then calculates an overall average. 

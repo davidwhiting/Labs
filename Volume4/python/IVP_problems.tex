@@ -1,0 +1,92 @@
+ The solution of
+\begin{align}
+	\begin{split}
+		y' &= y - 2x + 4,\quad 0 \leq x \leq 2, \\
+		y(0) &= 0,
+	\end{split}\label{ivp:prob1}
+\end{align}
+is given by $y(x) = -2+2x + 2e^x.$
+Use Euler's method to numerically approximate the solution with step sizes $h = 0.2, 0.1$, and $0.05.$ 
+Implement the following code to initialize variables and compute all $y$ values.
+
+\begin{lstlisting}
+def initialize_all(a,b,y0,h):
+    """Given an initial and final time a and b, with y(a)=y0, and step size h,
+    return several things.
+    
+    X: an aray from a to b with n elements, where n is the number of steps from a to b.
+    Y: an empty array of size (n, y.size), Y[0]=y0.
+    h: the step size.
+    n: the number of steps to be taken.
+    
+    """
+    n = int((b-a)/h+1)
+    X = np.linspace(a, b, n)
+    if isinstance(y0, np.ndarray):
+        Y = np.empty((n, y0.size))
+    else:
+        Y = np.empty(n)
+    Y[0] = y0
+    return X, Y, h, int(n)
+
+def euler(f,X,Y,h,n):
+    """Use the Euler method to compute an approximate solution
+    to the ODE y' = f(t, y) over X.
+
+    Y[0] = y0
+    f is assumed to accept two arguments.
+    The first is a constant giving the value of t.
+    The second is a one-dimensional numpy array of the same size as y.
+
+    This function returns an array Y of shape (n,) if
+    y is a constant or an array of size 1.
+    It returns an array of shape (n, y.size) otherwise.
+    In either case, Y[i] is the approximate value of y at
+    the i'th value of X.
+    """
+    
+    return None
+\end{lstlisting}
+
+Graph the results and check that your results match Figure \ref{ivp:euler}.
+
+Suppose a differential equation is given by
+\[ y' = f(t).\]
+Since the function $f$ has no $y$ dependence, this a simple integration problem. 
+Which integration approximation methods correspond to Euler's method, backward Euler's method, modified Euler's method, the Midpoint method, and the fourth order Runge-Kutta method (RK4)?
+ Consider the IVP \eqref{ivp:prob2}.
+Use the Midpoint method and the fourth order Runge-Kutta method (RK4) to approximate the value of the solution at $x = 2$, with a step size of $h = 0.2,$ $ 0.1,$ $0.05 $, $0.025,$ and $0.0125.$ 
+Create a log-log plot of the relative error of each approximation using the \li{loglog} function in \li{matplotlib} (see Figure \ref{ivp:relative_error}).
+ Use the RK4 method to solve for the simple harmonic oscillator satisfying 
+\begin{align}
+	\begin{split}
+&{}my'' + ky = 0,\quad 0 \leq t \leq 20, \\
+&{}y(0) = 2, \quad
+y'(0) = -1,
+	\end{split}
+	\label{ivp:simple_oscillator}
+\end{align}
+for $m = 1$ and $k =1$. Note that in your implementation of RK4, the constants $K_1, K_2, K_3,$ and $K_4$ become vectors with $n$ entries, where $n$ is the number of equations in the first-order system.
+
+Plot your numerical approximation of $y(t)$.  
+Compare this with its numerical approximation when $m = 3$ and $k =1$. Consider: Why does the difference in solutions make sense physically?
+
+Use the RK4 method to solve for the damped free harmonic oscillator satisfying 
+\begin{align*}
+&{}y'' +\gamma y'+ y = 0, \quad 0 \leq t \leq 20,\\
+&{}y(0) = 1, \quad
+y'(0) = -1.
+\end{align*}
+For $\gamma = 1/2,$ and $\gamma = 1$, simultaneously plot your numerical approximations of $y$.  
+Print $y(20)$ accurate to four significant digits, by checking that the relative error is less than $5\times 10^{-5}$.
+
+Use the RK4 method to solve for the damped and forced harmonic oscillator satisfying 
+\begin{align}
+	\begin{split}
+&{}2y'' + \gamma y' + 2y = 2 \cos (\omega t), \quad 0 \leq t \leq 40,\\
+&{}y(0) = 2, \quad
+y'(0) = -1. 
+	\end{split}
+	\label{ivp:damped_forced_oscillator}
+\end{align}
+For the following values of $\gamma$ and $\omega,$ plot your numerical approximations of $y$ and print $y(40)$ accurate to four significant digits: $(\gamma, \omega) = (0.5, 1.5),$ $(0.1, 1.1),$ and $(0, 1).$

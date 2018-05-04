@@ -1,0 +1,36 @@
+
+Consider again the function $u(x) = \sin^2 (x) \cos(x) +e^{2\sin(x+1)}$.
+Create a function that approximates $\frac{1}{2}u''-u'$ on the Fourier grid points for $N=24$.	
+
+% The motion of a damped pendulum can be described by the ODE
+% 	\begin{align}
+% 	\theta'' + \theta' +\sin \theta = 0. \label{damped_pendulum}
+% 	\end{align}
+% Using the pseudospectral method, solve \eqref{damped_pendulum} on the interval $[0,2\pi]$, with the boundary conditions $\theta(0) = \theta(2\pi) =0$. Produce at least two unique solutions.
+% 
+	Using a fourth order Runge-Kutta method (RK4), solve the initial value problem 
+	\begin{align}
+		u_t +c(x) u_x = 0,
+	\end{align}
+	where $c(x) = .2 + \sin^2(x-1)$, and $u(x,t=0) = e^{-100(x-1)^2}.$  Plot your numerical solution from $t = 0$ to $t = 8$ over 150 time steps and 100 $x$ steps.  Note that the initial data is nearly zero near $x = 0$ and  $2 \pi$, and so we can use the pseudospectral method. \footnote{This problem is solved in \textit{Spectral Methods in MATLAB} using a leapfrog discretization in time. } 
+	\label{spectral2:advection_equation}
+	Use the following code to help graph.
+\begin{lstlisting}
+t_steps = 150    # Time steps
+x_steps = 100     # x steps
+
+'''
+Your code here to set things up
+'''
+
+sol = # RK4 method. Should return a t_steps by x_steps array
+
+X,Y = np.meshgrid(x_domain, t_domain)
+fig = plt.figure()
+ax = fig.add_subplot(111, projection="3d")
+ax.plot_wireframe(X,Y,sol)
+plt.show()
+
+\end{lstlisting}
+
+

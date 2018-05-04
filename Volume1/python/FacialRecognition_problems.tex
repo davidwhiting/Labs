@@ -1,0 +1,71 @@
+ % show_face() function.
+Write a function that accepts an image as a flattened $mn$-vector, along with its original dimensions $m$ and $n$.
+Use \li{np.reshape()} to convert the flattened image into its original $m\times n$ shape and display the result with \li{plt.imshow()}.
+\\ (Hint: use \li{cmap='gray'} in \li{plt.imshow()} to display images in grayscale.)
+
+Unzip the \texttt{faces94.zip} archive and use \li{get_faces()} to construct $F$.
+Each \texttt{faces94} image is $200 \times 180$, and there are $153$ people in the dataset, so $F$ should be $36000 \times 153$.
+Use your function to display one of the images stored in $F$.
+\label{prob:visualize-faces}
+ % Shift by the mean.
+\label{prob:meanFace}
+Write a class called \li{FacialRec} whose constructor accepts a path to a directory of images.
+In the constructor, use \li{get_faces()} to construct $F$, then compute the mean face $\boldsymbol\mu$ and the shifted faces $\bar{F}$.
+Store each array as an attribute.
+\\(Hint: Both $\boldsymbol\mu$ and $\bar{F}$ can be computed in a single line of code by using NumPy functions and/or array broadcasting.)
+
+Use your function from Problem \ref{prob:visualize-faces} to visualize the mean face, and compare it to Figure \ref{fig:facerec-meanface}.
+Also display an original face and its corresponding mean-shifted face.
+Compare your results with Figures \ref{fig:facerec-original} and \ref{fig:facerec-shifted}.
+ % Compute U, implement project().
+In the constructor of \li{FacialRec}, calculate the compact SVD of $\bar{F}$ and save the matrix $U$ as an attribute.
+Compare the computed eigenfaces (the columns of $U$) to Figure \ref{fig:facerec-eigenfaces}.
+
+Also write a method that accepts a vector of length $mn$ or an $mn\times l$ matrix, as well as an integer $s$.
+Construct $U_s$ by taking the first $s$ columns of $U$, then use (\ref{eq:facialrec-projection}) or (\ref{eq:facialrec-projectall}) to calculate the projection of the input vector or matrix onto the span of the first $s$ eigenfaces.
+\\(Hint: this method should be implemented with a single line of code.)
+\label{prob:facialrec-project}
+
+Instantiate a \li{FacialRec} object that draws from the \texttt{faces94} dataset.
+Select one of the shifted images $\bar{\f}_i$.
+For at least 4 values of $s$, use your method from Problem \ref{prob:facialrec-project} to compute the corresponding $s$-projection $\widehat{\f}_i$, then use (\ref{eq:facialrec-reconstruct}) to compute the reconstruction $\widetilde{\f}_i$.
+Display the various reconstructions and the original image.
+Compare your results to Figure \ref{fig:rebuiltImage}
+ % Find nearest.
+Write a method for the \li{FacialRec} class that accepts an image vector $\g$ and an integer $s$.
+Use your method from Problem \ref{prob:facialrec-project} to compute $\widehat{F}$ and $\widehat{\g}$ for the given $s$, then use (\ref{eq:facialrec-findnearest}) to determine the best matching face in the database.
+Return the index of the matching face.
+\\(Hint: \li{scipy.linalg.norm()} and \li{np.argmin()} may be useful.)
+\label{prob:facialrec-nearest}
+
+Write a method for the \li{FacialRec} class that accepts an flat image vector $\g$, an integer $s$, and the original dimensions of $\g$.
+Use your method from Problem \ref{prob:facialrec-nearest} to find the index $j$ of the best matching face, then display the original face $\g$ alongside the best match $\f_j$.
+
+The following generator yields random faces from \texttt{faces94} that can be used as test cases.
+%
+\begin{lstlisting}
+def sample_faces(num_faces, path="./faces94"):
+    # Get the list of possible images.
+    files = []
+    for (dirpath, dirnames, filenames) in walk(path):
+        for fname in filenames:
+            if fname[-3:]=="jpg":       # Only get jpg images.
+                files.append(dirpath+"/"+fname)
+
+    # Get a subset of the image names and yield the images one at a time.
+    test_files = np.random.choice(files, num_faces, replace=False)
+    for fname in test_files:
+        yield np.ravel(imread(fname, flatten=True))
+\end{lstlisting}
+%
+The \li{yield} keyword is like a \li{return} statement, but the next time the generator is called, it will resume immediately after the last \li{yield} statement.%
+\footnote{See the Python Essentials lab on Profiling for more on generators.}
+
+Use \li{sample_faces()} to get at least 5 random faces from \texttt{faces94}, and match each random face to the database with $s=38$.
+Iterate through the random faces with the following syntax.
+%
+\begin{lstlisting}
+for test_image in sample_faces(5):
+    # 'test_image' is a now flattened face vector.
+\end{lstlisting}
+\label{prob:facialrec-match}

@@ -1,0 +1,75 @@
+
+Use the differentiation matrix to numerically approximate the derivative of $u(x) = e^{x}\cos(6x)$ on a grid of $N$ Chebychev points where $N=6, 8,$ and $10.$
+(Use the linear system $D U \approx U'$.)
+Then use barycentric interpolation (\li{scipy.interpolate.barycentric_interpolate}) to approximate $u'$ on a grid of 100 evenly spaced points.
+
+Graphically compare your approximation to the exact derivative.
+Note that this convergence would not be occurring if the collocation points were equally spaced.
+
+Use the pseudospectral method to solve the boundary value problem
+\begin{align*}
+&{ } u'' = e^{2x}, \quad x \in (-1,1), \\
+&{ } u(-1) = 0, \quad u(1) = 0.
+\end{align*}
+
+Use $N=8$ in the \li{cheb(N)} method and use barycentric interpolation to approximate $u$ on 100 evenly spaced points.
+Compare your numerical solution with the exact solution,
+\[
+u(x) = \frac{- \cosh(2) - \sinh(2)x + e^{2x}}{4}.
+\]
+
+	Use the pseudospectral method to solve the boundary value problem
+	\begin{align*}
+	&{ } u'' + u' = e^{3x}, \quad x \in (-1,1), \\
+	&{ } u(-1) = 2, \quad u(1) = -1.
+	\end{align*}
+	
+	Use $N=8$ in the \li{cheb(N)} method and use barycentric interpolation to approximate $u$ on 100 evenly spaced points.
+
+Use the pseudospectral method to solve the boundary value problem
+\begin{align*}
+&{ } u'' = \lambda\sinh(\lambda u), \quad x \in (0,1), \\
+&{ } u(0) = 0, \quad u(1) = 1
+\end{align*}
+for several values of $\lambda$: $\lambda = 4, 8, 12$. 
+Begin by transforming this BVP onto the domain $-1<x<1$.
+Use $N=20$ in the \li{cheb(N)} method and use barycentric interpolation to approximate $u$ on 100 evenly spaced points.
+ 
+Below is sample code for implementing Newton's Method
+\begin{lstlisting}
+from scipy.optimize import root
+
+N = 20
+D, x = cheb(20)
+
+def F(U):
+	out = None	#Set up the equation you want the root of.
+	#Make sure to set the boundaries correctly
+	
+	return out	#Newtons Method will update U until the output is all 0's.
+
+guess = None    #Make your guess, same size as the cheb(N) output
+solution = root(F, guess).x 
+\end{lstlisting}
+
+Find the function $y(x)$ that satisfies $y(-1) = 1$, $y(1) = 7$, and whose surface of revolution (about the $x$-axis) minimizes surface area.
+Compute the surface area, and plot the surface. \label{prob:pseudospectral1_revision:minimal_surface}
+Use $N=50$ in the \li{cheb(N)} method and use barycentric interpolation to approximate $u$ on 100 evenly spaced points.
+
+Below is sample code for creating the 3D wireframe figure.
+\begin{lstlisting}
+from mpl_toolkits.mplot3d import Axes3D
+
+barycentric = None	#This is the output of barycentric_interpolate() on 100 points
+
+lin = np.linspace(-1, 1, 100)
+theta = np.linspace(0,2*np.pi,401)
+X, T = np.meshgrid(lin, theta)
+Y, Z = barycentric*np.cos(T), barycentric*np.sin(T)
+
+fig = plt.figure()
+ax = fig.gca(projection="3d")
+ax.plot_wireframe(X, Y, Z, rstride=10, cstride=10)
+plt.show()
+\end{lstlisting}
+

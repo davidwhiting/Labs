@@ -1,0 +1,192 @@
+ % Easy regular expression, construct test cases.
+Write a function that compiles and returns a regular expression pattern object with the pattern string \li{"python"}.
+
+Construct positive and negative test cases to test your object.
+Having good test cases will be important later, so be thorough.
+Your verification process might start as follows.
+\begin{lstlisting}
+>>> pattern = re.<<compile>>("cat")
+>>> positive = ["cat", "catfish", "fish cat", "your cat ran away"]
+>>> assert all(pattern.search(p) for p in positive)
+\end{lstlisting}
+\label{prob:regex-superbasic}
+
+Write a function that compiles and returns a regular expression pattern object that matches the string \li{"^\{@\}(?)[\%]\{.\}(*)[_]\{&\}\$"}.
+\label{prob:regex-metacharacter-literals}
+
+Write a function that compiles and returns a regular expression pattern object that matches the following strings (and no other strings, even with \li{re.search()}).
+
+\centering
+\begin{tabular}{lll}
+\li{"Book store"} & \li{"Mattress store"} & \li{"Grocery store"} \\
+\li{"Book supplier"} & \li{"Mattress supplier"} & \li{"Grocery supplier"} \\
+\end{tabular}
+
+A \emph{valid Python identifier} (a valid variable name) is any string staring with an alphabetic character or an underscore, followed by any (possibly empty) sequence of alphanumeric characters and underscores.
+
+Define a function that compiles and returns a regular expression pattern object that matches any valid Python identifier.
+\\(Hint: Use the \li{\\w} character class shortcut to keep your regular expression clean.)
+
+Check your regular expression against the following words.
+These test cases are a good start, but are not exhaustive.
+
+\centering
+\begin{tabular}{c|lllll}
+Matches: & \li{"Mouse"} & \li{"compile"} & \li{"_123456789"} & \li{"__x__"} & \li{"while"} \\ \hline
+Non-matches: & \li{"3rats"} & \li{"err*r"} & \li{"sq(x)"} & \li{"sleep()"} & \li{"     x"}
+\end{tabular}
+% As you might have noticed, using this definition, \li{"while"} is considered a valid python identifier, even though it really is a reserved word. In the following problems, we will make a few other simplifying assumptions about the python language.
+
+A \emph{valid python parameter definition} is defined as the concatenation of the following strings:
+\begin{itemize}
+    \item any valid python identifier
+    \item any number of spaces
+    \item (optional) an equals sign followed by any number of spaces and ending with one of the following: any real number, a single quote followed by any number of non-single-quote characters followed by a single quote, or any valid python identifier
+\end{itemize}
+
+Define a variable \li{parameter_pattern_string} that defines a regular expression that matches valid python parameter definitions.
+
+For example, each element of \li{["max=4.2", "string= ''", "num_guesses", "msg ='\\\\'", "volume_fn=_CALC_VOLUME"]} is a valid python parameter definition, while each element of \li{["300", "no spaces", "is_4=(value==4)", "pattern = r'^one|two fish\$'", 'string="these last two are actually valid in python, but they should not be matched by your pattern"']} is not. % TODO add more negative examples maybe?
+
+A \emph{valid python function definition} is defined as the concatenation of the following strings:
+\begin{itemize}
+    \item \li{"def"}
+    \item Any number of spaces
+    \item any valid python identifier
+    \item \li{"("}
+    \item a sequence of any number of (possibly zero) valid python parameter definitions, separated by any number of spaces followed by a comma followed by any number of spaces
+    \item \li{")"}
+    \item \li{":"}
+\end{itemize}
+with any number of spaces between each element of the above list.
+
+Define a variable \li{function_pattern_string} that defines a regular expression that matches valid python function definitions.
+
+For example, the program should behave as follows:
+\begin{lstlisting}
+>>> run match_function_definition.py
+Enter a string>>> def compile(pattern,string):
+<<True>>
+Enter a string>>> def  space  ( ) :
+<<True>>
+Enter a string>>> def func(_dir, file_path='\Desktop\files', val=_PI):
+<<True>>
+Enter a string>>> def func(num=3., num=.5, num=0.0):
+<<True>>
+Enter a string>>> def func(num=., error,):
+<<False>>
+Enter a string>>> def variable:
+<<False>>
+Enter a string>>> def not.allowed(, *args):
+<<False>>
+Enter a string>>> def err*r('no parameter name'):
+<<False>>
+Enter a string>>> def func(value=_MY_CONSTANT, msg='%s' % _DEFAULT_MSG):
+<<False>>
+Enter a string>>> def func(s1='', a little tricky, s2=''):
+<<False>>
+Enter a string>>> def func(): Remember your line anchors!
+<<False>>
+Enter a string>>> deffunc()
+<<False>>
+Enter a string>>> func():
+<<False>>
+Enter a string>>> exit
+
+\end{lstlisting}
+
+\begin{warn}
+In the end, my variable \li{function_pattern_string} was \emph{215 characters long}. You WILL make a mistake while defining \li{function_pattern_string}; do you want to try to debug a 215-character regular expression? Do NOT try to define it all at once!
+
+Instead, use your previously defined regular expressions to make this easier. For example, either of the two following idioms will work:
+\begin{lstlisting}
+>>> key_1 = "basic"
+>>> print("This is a " + key_1 + " way to concatenate strings.")
+This is a basic way to concatenate strings.
+>>> format_dict = {"key_1": "basic", "key_2": "much more", "key_3": "advanced"}
+>>> print("This is a {key_2} {key_3} way to concatenate strings. It's {key_2} flexible.".format(**format_dict))
+This is a much more advanced way to concatenate strings. It's much more flexible.
+\end{lstlisting}
+Keep in mind that you'll have to remove the line anchors from your previously defined regular expressions.
+
+For reference, I used about ten lines to define \li{function_pattern_string} and used statements of the form \li{intermediate_pattern_string = r"(my regular expression here)".format()} four times.
+\end{warn}
+
+\label{prob:match_function_definition}
+
+A Python \emph{block} is composed of several lines of code with the same indentation level.
+Blocks are delimited by key words and expressions, followed by a colon.
+Possible key words are \li{if}, \li{elif}, \li{else}, \li{for}, \li{while}, \li{try}, \li{except}, \li{finally}, \li{with}, \li{def}, and \li{class}.
+Some of these keywords require an expression of some sort to follow before the colon (\li{if}, \li{elif}, \li{for}, etc.), some require no expressions to follow before the colon (\li{else}, \li{finally}), and \li{except} may or may not have an expression following before the colon.
+
+Write a function that accepts a string of Python code and uses regular expressions to place colons in the appropriate spots.
+You may assume that every colon is missing in the input string.
+See the following for an example.
+
+\begin{lstlisting}
+"""
+k, i, p = 999, 1, 0
+while k > i
+    i *= 2
+    p += 1
+    if k != 999
+        print("k should not have changed")
+    else
+        pass
+print(p)
+"""
+
+# The string given above should become this string.
+"""
+k, i, p = 999, 1, 0
+while k > i:
+    i *= 2
+    p += 1
+    if k != 999:
+        print("k should not have changed")
+    else:
+        pass
+print(p)
+"""
+\end{lstlisting}
+
+The file \texttt{fake\_contacts.txt} contains poorly formatted contact data for 2000 fictitious individuals.
+Each line of the file contains data for one person, including their name and possibly their birthday, email address, and/or phone number.
+The formatting of the data is not consistent, and much of it is missing.
+For example, not everyone has their birthday listed, and those who do may have it listed in the form \li{1/1/11}, \li{1/01/2011}, or some other format.
+
+Use regular expressions to parse the data and format it uniformly, writing birthdays as \li{mm/dd/yyyy} and phone numbers as \li{(xxx)xxx-xxxx}.
+Return a dictionary where the key is the name of an individual and the value is another dictionary containing their information.
+Each of these inner dictionaries should have the keys \li{"birthday"}, \li{"email"}, and \li{"phone"}.
+In the case of missing data, map the key to \li{None}.
+The first two entries of the completed dictionary are given below.
+
+\begin{lstlisting}
+{
+    "John Doe": {
+        "birthday": "01/01/1990",
+        "email": "john_doe90@hopefullynotarealaddress.com",
+        "phone": "(123)456-7890"
+        },
+    "Jane Smith": {
+        "birthday": None,
+        "email": None,
+        "phone": "(222)111-3333"
+        },
+# ...
+}
+\end{lstlisting}
+
+You have been given a list of transactions from a fictional start-up company. In the \li{transactions.txt} file, each line represents a transaction. Transactions are represented as follows:
+\begin{lstlisting}
+# Notice the semicolons delimiting the fields. Also, notice that in between the last and first name, that is a comma, not a semicolon.
+<ORDER_ID>;<YEAR><MONTH><DAY>;<LAST>,<FIRST>;<ITEM_ID>
+\end{lstlisting}
+
+Using this set of transactions, produce the following information using regular expressions and the given command:
+\begin{itemize}
+    \item Using \li{grep}, print all transactions by either Nicholas Ross or Zoey Ross.
+    \item Using \li{awk}, print a sorted list of the names of individuls that bought item $3298$.
+    \item Using \li{awk}, print a sorted list of items purchased between June 13 and June 15 of 2014 (inclusive).
+\end{itemize}
+These queries can be produced using one command each.

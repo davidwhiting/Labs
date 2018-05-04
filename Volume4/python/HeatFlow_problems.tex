@@ -1,0 +1,53 @@
+
+\label{prob:heat_exercise1}
+Consider the specific initial boundary value problem
+\begin{align}
+	\begin{split}
+	&{ } u_t = .05 u_{xx}, \quad x \in [0,1], \quad t \in [0,1]\\
+	&{ } u(0,t) = 0,\quad u(1,t) = 0,\\
+	&{ } u(x,0) = 2\max\{.2 - |x-.5|,0\}.
+	\end{split}
+\end{align}
+Approximate the solution $u(x,t)$ at time $t = .4$ by taking 6 subintervals in the $x$ dimension and 10 subintervals in time.
+The graphs for $U^0$ and $U^{4}$ are given in Figures \ref{fig:heatexercise1a} and \ref{fig:heatexercise1b}.
+
+\label{prob:heat_exercise2}
+Solve the specific initial boundary value problem
+\begin{align}
+	\begin{split}
+	&{ } u_t = u_{xx}, \quad x \in [-12,12],\quad t \in [0,1], \\
+	&{ } u(-12,t) = 0,\quad u(12,t) = 0,\\
+	&{ } u(x,0) = \max\{1 - x^2,0\}
+	\end{split}
+\end{align}
+using the first order explicit method \ref{eqn:firstorder_explicit}.
+Use 140 subintervals in the $x$ dimension and 70 subintervals in time.
+The initial and final states are shown in Figure \ref{fig:heatexercise2}.
+Animate your results.
+
+Explicit methods usually have a stability condition, called a CFL condition (for Courant-Friedrichs-Lewy).
+For method \ref{eqn:firstorder_explicit} the CFL condition that must be satisfied is that
+\[\lambda \leq \frac{1}{2}.\]
+Repeat your computations using 140 subintervals in the $x$ dimension and 66 subintervals in time.
+For these values the CFL condition is broken; you should easily see the result of this instability in the approximation $U^{66}$.
+% Then the graphs for $U^0$ and $U^{70}$ are given in \eqref{heatexercise2a} and \ref{heatexercise2b}.
+
+\label{prob:heat_exercise3}
+Using the Crank Nicolson method, numerically approximate the solution $u(x,t)$ of the problem
+\begin{align}
+	\begin{split}
+	&{ } u_t = u_{xx}, \quad x \in [-12,12],\quad t \in [0,1],\\
+	&{ } u(-12,t) = 0,\quad u(12,t) = 0,\\
+	&{ } u(x,0) = \max\{1 - x^2,0\}.
+	\end{split}
+\end{align}
+Demonstrate that the numerical approximation at $t = 1$ converges to  $u(x,t=1)$.
+Do this by computing $U$ at $t=1$ using $20,40,80,160,320$, and $640$ steps.
+Use the same number of steps in both time and space.
+Reproduce the loglog plot shown in Figure \ref{fig:heatexercise3}.
+The slope of the line there shows the proper rate of convergence.
+
+To measure the error, use the solution with the smallest $h$ (largest number of intervals) as if it were the exact solution, then sample each solution only at the x-values that are represented in the solution with the largest $h$ (smallest number of intervals).
+Use the $\infty$-norm on the arrays of values at those points to measure the error.
+
+Notice that, since the Crank-Nicolson method is unconditionally stable, there is no CFL condition and we can use the same number of intervals in time and space.

@@ -1,0 +1,90 @@
+
+Make a class called \li{SoundWave} for storing digital audio signals.
+Write the constructor and have it accept a sample rate (integer) and an array of samples (NumPy array), which it stores as class attributes.
+Then, write a method called \li{plot()} that generates the graph of the sound wave.
+Use the sample rate to label the x-axis in terms of seconds.
+Finally, construct a \li{SoundWave} object using the data in \texttt{tada.wav} and display its plot.
+Your plot should look like Figure \ref{fig:tada}.
+
+Add a method to the \li{SoundWave} class called \li{export()} that accepts a file name and generates a \texttt{.wav} file of that name from the sample rate and the array of samples.
+If the array of samples is not already in \texttt{int16} format, scale it appropriately before writing to the output file.
+Use your method to create a differently named file that contains the same sound as \texttt{tada.wav}.
+Display the two sounds to make sure the method works correctly.
+\begin{info}
+To display a sound in a Jupyter Notebook, first import IPython, then use \li{IPython.display.Audio()}.
+This function can accept either the name of a \texttt{.wav} file present in the same directory, or the keyword arguments \texttt{rate} and \texttt{data}, which represent the sample rate and the array of samples, respectively.
+The function will generate a music player that can be played within the Jupyter Notebook.
+\end{info}
+
+Write a function that accepts a frequency and a duration.
+Follow the pattern above to generate and return an instance of the SoundWave class with the given frequency and duration.
+Use a sample rate of 44100.
+
+The following table shows some frequencies that correspond to common notes.
+Octaves of these notes are obtained by doubling or halving these frequencies.
+
+\begin{center}
+\begin{tabular}{|c|c|}
+\hline
+Note & Frequency \\
+\hline
+A & 440 \\
+B & 493.88 \\
+C & 523.25 \\
+D & 587.33 \\
+E & 659.25 \\
+F & 698.46 \\
+G & 783.99 \\
+A & 880 \\
+\hline
+\end{tabular}
+\end{center}
+
+The ``A'' note occurs at a frequency of 440 Hertz.
+Use your function to generate and display an ``A'' note being played for 2 seconds.
+\label{prob:generate_note}
+
+\leavevmode
+\begin{enumerate}
+\item A chord is a conjunction of several notes played together.
+You can create a chord in Python by adding several sound waves together.
+Write the \li{__add__()} magic method in the SoundWave so that it adds together the samples of two \li{SoundWave} objects and returns the resulting \li{SoundWave} object.
+Note this is only valid if the two sample arrays are the same length.
+Raise a \li{ValueError} if the arrays are not the same length.
+\item Generate and display a minor chord (made up of the ``A'', ``C'', and ``E'' notes).
+\item Add a method called \li{append()} to the \li{SoundWave} class that accepts a \li{SoundWave} object and appends the additional samples from the new object to the end of the samples from the current object.
+Note this only makes sense if the sample rates of the two objects are the same.
+Raise a \li{ValueError} if the sample rates of the two objects are not equal.
+\item Finally, generate and display a sound that changes over time.
+
+\end{enumerate}
+ 
+Write a function called \li{naive_DFT()} that accepts a NumPy array and computes the discrete Fourier transform of the array using Equation \ref{eq:ck}.
+Return the array of calculated coefficients.
+
+SciPy has several methods for calculating the DFT of an array.
+Use \li{scipy.fft()} or \li{scipy.fftpack.fft()} to check your implementation by using your method and the SciPy method to calculate the DFT and comparing the results using \li{np.allclose()}.
+The naive method is significantly slower than SciPy's implementation, so test your function only on small arrays.
+When you have your method working, try to optimize it so that you can calculate each coefficient $c_k$ in just one line of code.
+\label{prob:dft}
+
+Write a function that accepts a NumPy array and computes the discrete Fourier transform of the array using Algorithm \ref{alg:FFT}. 
+Return the array of calculated coefficients.
+
+To verify your method works, generate an array of random samples of a size that is a power of 2 (preferably size 1024 or larger) and use \li{np.allclose()} as in the previous problem to make sure the outputs are the same.
+Then, compare the runtimes of your DFT method, your FFT method, and one of the SciPy methods and print the results.
+
+Hint: Concatenating vectors can be done with \li{np.concatenate}.
+
+Write a method in the \li{SoundWave} class called \li{plot_dft()} that plots the frequencies present in a sound wave on the x-axis and the magnitude of those frequencies on the y-axis. 
+Only display the first half of the plot (as in Figure \ref{fig:dft_a_half}).
+Use one of SciPy's FFT implementations to calculate the DFT.
+
+Display the DFT plots of the `A' note and of the minor chord.
+
+The file \texttt{mystery\_sound.wav} contains an unknown chord.
+Use what you have learned about the DFT to determine the individual notes present in the sound.
+
+Hints: The function \li{np.argmax()} may be useful. Also, remember that the DFT is symmetric, meaning the last half of the array of DFT coefficients will need to be ignored.
+
+Modify the \li{calculate_dft()} method so that in addition to calculating the Fourier coefficients, it also returns a list of their corresponding frequencies measured in Hertz.

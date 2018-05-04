@@ -1,0 +1,26 @@
+
+Copy your \li{interiorPoint()} function from the previous lab into your solutions file for this lab, renaming it \li{qInteriorPoint()}.
+This new function should accept the arrays $Q, \c, A,$ and $\b$, a tuple of arrays \li{guess} giving initial estimates for $\x, \y,$ and $\Mu$ (this will be explained later), along with the keyword arguments \li{niter=20} and \li{tol=1e-16}.
+
+Modify your code to match the $F$ and $DF$ described above, and calculate the search direction $(\triangle \x^T, \triangle \y^T, \triangle \Mu^T)$ by solving Equation \ref{eq:searchDirection}.
+Use $\sigma = \frac{1}{10}$ for the centering parameter.
+
+Hint: What are the dimensions of $F$ and $DF$?
+
+Complete the implementation of \li{qInteriorPoint()}.
+Return the optimal point $\x$ as well as the final objective function value.
+You may want to print out the duality measure $\nu$ to check the progress of the iteration.
+% and \li{verbose}, a boolean value indicating whether or not to print the current objective function value ($ \frac{1}{2}x_k^TQx_k + c^Tx_k$) and duality measure ($\nu_k = \frac{1}{m}y_k^T\lambda_k$) at each iteration.
+% 
+Solve the circus tent problem with the tent pole configuration given above, for grid side length $n = 15$.
+Plot your solution.
+
+The text file \li{portfolio.txt} contains historical stock data for several assets (U.S. bonds, gold, S\&P 500, etc).
+In particular, the first column gives the years corresponding to the data, and the remaining eight columns give the historical returns
+of eight assets over the course of these years.
+Use this data to estimate the covariance matrix $Q$ as well as the expected rates of return $\mu_i$ for each asset.
+Assuming that we want to guarantee an expected return of $R = 1.13$ for our portfolio, find the optimal portfolio both with and without short selling.
+
+Since the problem contains both equality and inequality constraints, use the QP solver in CVXOPT rather than your \li{qInteriorPoint()} function.
+
+Hint: Use \li{numpy.cov()} to compute Q.

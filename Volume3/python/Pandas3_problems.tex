@@ -1,0 +1,56 @@
+ % More dataset visualizations.
+Examine the following data sets from \li{pydataset} and answer the corresponding questions.
+Use visualizations to support your conclusions.
+
+\begin{itemize}
+    \item \li{"iris"}, measurements of various species of iris flowers.
+    \begin{enumerate}
+        \item Which species is easiest to distinguish from the others? How?
+        \item Given iris data without a species label, what strategies could you use to identify the flower's species?
+    \end{enumerate}
+    \item \li{"poisons"}, experimental results of three different poisons and four different treatments.
+    \begin{enumerate}
+        \item In general, which poison is most deadly?
+        Which treatment is most effective?
+        \item If you were poisoned, how would you choose the treatment if you did not know which poison it was? What if you did know which poison it was?
+        \\(Hint: group the data by poison, then group each subset by treatment.)
+    \end{enumerate}
+    \item \li{"diamonds"}, prices and characteristics of almost 54,000 round-cut diamonds.
+    \begin{enumerate}
+        \item How does the color and cut of a diamond affect its price?
+        \item Of the diamonds with color \li{"H"}, those with a \li{"Fair"} cut sell, on average, for a \textbf{higher} price than those with an \li{"Ideal"} (superior) cut.
+        What other factors could explain this unintuitive statistic?
+    \end{enumerate}
+\end{itemize}
+ % More Titanic analysis.
+Suppose that someone claims that the city from which a passenger embarked had a strong influence on the passenger's survival rate.
+Investigate this claim.
+\begin{enumerate}
+    \item Check the survival rates of the passengers based on where they embarked from (given in the \li{"Embarked"} column).
+    \item Create a pivot table to examine survival rates based on both place of embarkment and gender.
+    \item What do these tables suggest to you about the significance of where people embarked in influencing their survival rate?
+    Examine the context of the problem, and explain what you think this really means.
+    \item Investigate the claim further with at least two more pivot tables, exploring other criteria (e.g., class, age, etc.).
+    Carefully explain your conclusions.
+\end{enumerate}
+ % More grouping visualizations / pivot tables.
+Examine the following data sets from \li{pydataset} and answer the corresponding questions.
+Use visualizations and/or pivot tables as appropriate to support your conclusions.
+\begin{itemize}
+    \item \li{"npk"}, an experiment on the effects of nitrogen (N), phosphate (P), and potassium (K) on the growth of peas.
+    \begin{enumerate}
+        \item Which element is most effective in general for simulating growth?
+        Which is the least effective?
+        \item What combination of N, P, and K is optimal? What combination is the worst?
+    \end{enumerate}
+    \item \li{"swiss"}, standardized fertility measures and socio-economic indicators for French-speaking provinces of Switzerland at about 1888.
+    \begin{enumerate}
+        \item What is the relationship in the data between fertility rates and infant mortality?
+        \item How are provinces that are predominantly Catholic different from non-Catholic provinces, if at all?
+        \item What factors in the data are the most important for predicting fertility?
+    \end{enumerate}
+    \item Examine a data set of your choice.
+    Formulate simple questions about the data and hypothesize the answers to those questions.
+    Demonstrate the correctness of incorrectness of each hypothesis.
+    Explain your conclusions.
+\end{itemize}

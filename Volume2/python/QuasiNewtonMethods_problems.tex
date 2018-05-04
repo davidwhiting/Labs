@@ -1,0 +1,95 @@
+
+Write a method that accepts the first and second derivatives $Df$ and $D^2f$ of objective function,  a starting point $\textbf{x}_0$, a maximum number of iterations \li{maxiter}, and a stopping tolerance \li{tol}.
+Implement an n-dimensional Newton's method iteration and return a list containing: the minimizing x value, the number of iterations performed, and if the method converged as a boolean.
+Test this method on the Rosenbrock function:
+\[
+f(x,y) = 100(y-x^2)^2 + (1-x)^2
+\]
+using starting points $(-2,2)$ and $(10,-10)$, maximum iterations $1000$, and tolerance $10^{-2}$.
+Your results can be tested with the following:
+\begin{lstlisting}
+>>> import scipy.optimize as opt
+>>> f = opt.rosen
+>>> df = opt.rosen_der
+>>> d2f = opt.rosen_hess
+>>> minx = opt.fmin_bfgs(f=f,x0=np.array([-2,2]),fprime=df,maxiter=1000,avextol=10**-2)
+\end{lstlisting}
+
+Write a method that accepts a callable first derivative $Df$ of objective function, a starting Hessian guess $A_0$, a starting point $\textbf{x}_0$, a maximum number of iterations \li{maxiter}, and a stopping tolerance \li{tol}.
+This method should implement the BFGS method using Equations \ref{Eq:BroydenSolve} and \ref{Eq:BFGSHessianInv} and return a list containing: the minimizing x value, the number of iterations performed, and if the method converged as a boolean.
+Test this method on the following function:
+\[
+f(x,y) = e^{x-1}+e^{1-y}+(x-y)^2
+\]
+using starting point $(2,3)$, maximum iterations $1000$, and tolerance $10^{-2}$.
+Your results can be tested with the following:
+\begin{lstlisting}
+>>> import scipy.optimize as opt
+>>> f = lambda x : np.exp(x[0]-1) + np.exp(1 - x[1]) + (x[0] - x[1])**2
+>>> df = lambda x : np.array([np.exp(x[0]-1) + 2*(x[0]-x[1]), -1*np.exp(1-x[1]) - 2*(x[0]-x[1])])
+>>> minx = opt.fmin_bfgs(f=f,fprime=df,x0=[2,3],gtol=10**-2,maxiter=1000)
+\end{lstlisting}
+%Experiment with different starting points. Is BFGS faster than Broyden's method? Are there cases (i.e., different starting points or varying number of iterations) where one implementation is better than the other?
+
+Compare the performance of your Newton's method and BFGS with the commercial versions in \li{scipy.optimize} on the following functions:
+\begin{align*}
+f(x,y) = 0.26(x^2+y^2) - 0.48xy
+\end{align*}
+\begin{align*}
+f(x,y) = sin(x+y) + (x-y)^2 - 1.5x + 2.5y + 1
+\end{align*}
+Start at $(3,3)$, time how long each algorithm takes to run, and output the number of iterations that each took to complete.
+
+Write a method that accepts a function for the proposed model $\phi(\mathbf{x})$, the model derivative $D\phi(\mathbf{x})$, a function that returns the residual vector $r(\mathbf{x})$, a callable function that returns the Jacobian of the residual $Dr(\mathbf{x}) = J(\mathbf{x})$, a starting point $\mathbf{x}_0$, a max number of iterations \li{maxiter}, and a stopping tolerance \li{tol}.
+This method should implement the Gauss-Newton Method and return a list containing: the minimizing x value, the number of iterations performed, and if the method converged as a boolean.
+
+Test your function by using the Jacobian function, residual function, and starting point given in the example above.
+You can test your results with the following function:
+\begin{lstlisting}
+>>> import scipy.optimize as opt
+>>> r = lambda x:
+>>> J = lambda x:
+>>> minx = opt.leastsq(fun=r, x0=, Dfun=J,xtol=,maxfev=maxiter)
+\end{lstlisting} 
+
+We have census data giving the population of the United States every ten years since 1790.
+The data is contained in a group of the first 8 decades and the first 16 decades of records in \li{pop_sample1.npy} and \li{pop_sample2.npy}.
+The top row of these is the decade number and the second row is the population samples.
+These can be loaded as follows:
+\begin{lstlisting}
+>>> import numpy as np
+>>> pop_sample1 = np.load('pop_sample1.npy')
+>>> print(pop_sample1)
+<<[[  0.      1.      2.      3.      4.      5.      6.      7.   ]>>
+<<[  3.929   5.308   7.24    9.638  12.866  17.069  23.192  31.443]]>>
+\end{lstlisting}
+Consider just the first 8 decades of population data. 
+By plotting the data and hypothesizing about the behavior of populations, it is reasonable to hypothesize an exponential model for the population.
+That is,
+$$
+\phi(x_1,x_2,x_3,t) = x_1\exp(x_2(t+x_3)).
+$$
+Use initial guess $(150, .4, 2.5)$ for the parameters $(x_1, x_2, x_3)$ and your Gauss Newton function (or the \li{opt.leastsq} function) to fit the model.
+Plot the data against the fitted curve, to see how close it approximates population behavior.
+
+Do the same for the 16 data points.
+The plot of the 16 data points shows that the model is no longer a good fit.
+This suggests that population growth is not exactly exponential but instead a logistic model.
+These types of models are treated in the gradient descent lab.
+
+Write a method that accepts a callable function $f$, it's first derivative $Df$, a starting Hessian guess $A_0$, a starting point $\textbf{x}_0$, a maximum number of iterations \li{maxiter}, and a stopping tolerance \li{tol}.
+This method should implement Broyden's method and return a list containing: the minimizing x value, the number of iterations performed, and if the method converged as a boolean.
+Test this method on the following function:
+\[
+f(x,y) = e^{x-1}+e^{1-y}+(x-y)^2
+\]
+using starting points $(2,3)$ and $(3,2)$, maximum iterations $1000$, and tolerance $10^{-2}$.
+Your results can be tested with the following:
+\begin{lstlisting}
+>>> import scipy.optimize as opt
+>>> f = lambda x: np.array([])
+>>> df = lambda x: np.array([np.exp(x[0] - 1) + 2*(x[0] - x[1]), np.exp(1-x
+    ...: [1]) - 2*(x[0]-x[1])])
+>>> A0 = np.array([])
+>>> minx = opt.broyden1(F=df, xin=[2,3], x_tol=10**2, maxiter=1000)
+\end{lstlisting}

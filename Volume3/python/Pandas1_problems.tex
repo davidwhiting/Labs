@@ -1,0 +1,83 @@
+
+Create a pandas \li{Series} where the index labels are the even integers $0,2,\ldots,50$, and the entries are $n^2 - 1$, where $n$ is the entry's label.
+Set all of the entries equal to zero whose labels are divisible by $3$.
+
+Suppose you make an investment of $d$ dollars in a particularly volatile stock.
+Every day the value of your stock goes up by \$$1$ with probability $p$, or down by \$$1$ with probability $1-p$ (this is an example of a \emph{random walk}).
+
+Write a function that accepts a probability parameter $p$ and an initial amount of money $d$, defaulting to $100$.
+Use \li{pd.date_range()} to create an index of the days from 1 January 2000 to 31 December 2000.
+Simulate the daily change of the stock by making one draw from a Bernoulli distribution with parameter $p$ (a binomial distribution with one draw) for each day.
+Store the draws in a pandas \li{Series} with the date index and set the first draw to the initial amount $d$.
+Sum the entries cumulatively to get the stock value by day.
+Set any negative values to $0$, then plot the series using the \li{plot()} method of the \li{Series} object.
+
+Call your function with a few different values of $p$ and $d$ to observe the different possible kinds of behavior.
+\label{prob:pandas-random-walk}
+
+Create five random walks of length 100, and plot them together in the same plot.
+
+Next, create a ``biased'' random walk by changing the coin flip probability of head from 0.5 to 0.51.
+Plot this biased walk with lengths 100, 10000, and then 100000.
+Notice the definite trend that emerges.
+Your results should be comparable to those in Figure \ref{pandas:biasedRandomWalk}.
+
+The example above shows how to implement a simple WHERE condition, and it is easy
+to have a more complex expression.
+Simply enclose each condition by parentheses,
+and use the standard boolean operators \li{\&} (AND), \li{\|} (OR), and \li{\~} (NOT) to
+connect the conditions appropriately.
+Use pandas to execute the following query:
+\begin{lstlisting}[language=SQL]
+SELECT ID, Name from studentInfo WHERE Age > 19 AND Sex = 'M'
+\end{lstlisting}
+
+Using a join operation, create a \li{DataFrame} containing the ID, age, and GPA of all male individuals.
+You ought to be able to accomplish this in one line of code.
+ % Crime data.
+The file \texttt{crime\_data.csv} contains data on types of crimes committed in the United States from 1960 to 2016.
+\begin{itemize}
+\item Load the data into a pandas \li{DataFrame}, using the column names in the file and the column titled
+``Year'' as the index.
+Make sure to skip lines that don't contain data.
+
+\item Insert a new column into the data frame that contains the crime rate by year (the ratio of ``Total'' column
+to the ``Population'' column).
+
+\item Plot the crime rate as a function of the year.
+
+\item List the 5 years with the highest crime rate in descending order.
+
+\item Calculate the average number of total crimes as well as burglary crimes between 1960 and 2012.
+
+\item Find the years for which the total number of crimes was below average, but the number of burglaries
+was above average.
+
+\item Plot the number of murders as a function of the population.
+
+\item Select the Population, Violent, and Robbery columns for all years in the 1980s, and save
+this smaller data frame to a CSV file \texttt{crime\_subset.csv}.
+\end{itemize}
+
+In 1912 the RMS \emph{Titanic} sank after colliding with an iceberg.
+The file \texttt{titanic.csv} contains data on the incident.
+Each row represents a different passenger, and the columns describe various features of the passengers (age, sex, whether or not they survived, etc.)
+
+Start by cleaning the data.
+\begin{itemize}
+    \item Read the data into a \li{DataFrame}.
+    Use the first row of the file as the column labels, but do not use any of the columns as the index.
+    \item Drop the columns \li{"Sibsp"}, \li{"Parch"}, \li{"Cabin"}, \li{"Boat"}, \li{"Body"}, and \li{"home.dest"}.
+    \item Drop any entries without data in the \li{"Survived"} column, then change the remaining entries to \li{True} or \li{False} (they start as 1 or 0).
+    \item Replace null entries in the \li{"Age"} column with the average age.
+    \item Save the new \li{DataFrame} as \texttt{titanic\_clean.csv}.
+\end{itemize}
+Next, answer the following questions.
+\begin{itemize}
+    \item How many people survived? What percentage of passengers survived?
+    \item What was the average price of a ticket? How much did the most expensive ticket cost?
+    \item How old was the oldest survivor? How young was the youngest survivor? What about non-survivors?
+\end{itemize}
+
+
+

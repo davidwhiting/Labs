@@ -1,0 +1,105 @@
+ % Compute the compact SVD.
+Write a function that accepts a matrix $A$ and a small error tolerance \li{tol}.
+Use Algorithm \ref{alg:compact-svd} to compute the compact SVD of $A$.
+In step \ref{step:nonzero-singular-values}, compute $r$ by counting the number of singular values that are greater than \li{tol}.
+
+Consider the following tips for implementing the algorithm.
+\begin{itemize}
+    \item The Hermitian $A\hrm$ can be computed with \li{A.conj().T}.
+    \item In step \ref{step:sort-singular-values}, the way that $\boldsymbol{\sigma}$ is sorted needs to be stored so that the columns of $V$ can be sorted the same way.
+    Consider using \li{np.argsort()} and fancy indexing to do this, but remember that by default it sorts from least to greatest (not greatest to least).
+    \item Step \ref{step:SVD-construct-U} can be done by looping over the columns of $V$, but it can be done more easily and efficiently with array broadcasting.
+\end{itemize}
+
+Test your function by calculating the compact SVD for random matrices.
+Verify that $U$ and $V$ are orthonormal, that $U\Sigma V\hrm = A$, and that the number of nonzero singular values is the rank of $A$.
+You may also want to compre your results to SciPy's SVD algorithm.
+%
+\begin{lstlisting}
+>>> import numpy as np
+>>> from scipy import linalg as la
+
+# Generate a random matrix and get its compact SVD via SciPy.
+>>> A = np.random.random((10,5))
+>>> U,s,Vh = la.svd(A, full_matrices=False)
+>>> print(U.shape, s.shape, Vh.shape)
+(10, 5) (5,) (5, 5)
+
+# Verify that U is orthonormal, U Sigma Vh = A, and the rank is correct.
+>>> np.allclose(U.T @ U, np.identity(5))
+<<True>>
+>>> np.allclose(U @ np.diag(s) @ Vh, A)
+<<True>>
+>>> np.linalg.matrix_rank(A) == len(s)
+<<True>>
+\end{lstlisting}
+\label{prob:calculate-compact-svd}
+ % Visualize the SVD.
+Write a function that accepts a $2 \times 2$ matrix $A$.
+Generate a $2 \times 200$ matrix $S$ representing a set of 200 points on the unit circle, with $x$-coordinates on the top row and $y$-coordinates on the bottom row (recall the equation for the unit circle in polar coordinates:
+$x = \cos(\theta)$, $y = \sin(\theta)$, $\theta\in[0,2\pi]$).
+Also define the matrix
+\[
+E =
+\left[\begin{array}{c|c|c}
+\arrayrulecolor{gray}
+\e_1 & \0 & \e_2
+\end{array}\right]
+=
+\left[\begin{array}{ccc} 1 & 0 & 0 \\ 0 & 0 & 1 \end{array}\right],
+\]
+so that plotting the first row of $S$ against the second row of $S$ displays the unit circle, and plotting the first row of $E$ against its second row displays the standard basis vectors in $\mathbb{R}^2$.
+
+Compute the full SVD $A = U\Sigma V\hrm$ using \li{scipy.linalg.svd()}.
+Plot four subplots to demonstrate each step of the transformation, plotting $S$ and $E$, $V\hrm S$ and $V\hrm E$, $\Sigma V\hrm S$ and $\Sigma V\hrm E$, then $U\Sigma V\hrm S$ and $U \Sigma V\hrm E$.
+
+For the matrix \[A =  \left[\begin{array}{cc}3 & 1\\1 & 3\end{array}\right],\]
+your function should produce Figure \ref{fig:svd-visualization}.
+\\
+(Hint: Use \li{plt.axis("equal")} to fix the aspect ratio so that the circles don't appear elliptical.)
+ % Lowest-rank approximation.
+Write a function that accepts a matrix $A$ and a positive integer $s$.
+\begin{enumerate}
+\item Use your function from Problem \ref{prob:calculate-compact-svd} or \li{scipy.linalg.svd()} to compute the compact SVD of $A$, then form the truncated SVD by stripping off the appropriate columns and entries from $U_1$, $\Sigma_1$, and $V_1$.
+Return the best rank $s$ approximation $A_s$ of $A$ (with respect to the induced 2-norm and Frobenius norm).
+\item Also return the number of entries required to store the truncated form $\widehat{U}\widehat{\Sigma} \widehat{V}\hrm$ (where $\widehat{\Sigma}$ is stored as a one-dimensional array, not the full diagonal matrix).
+The number of entries stored in NumPy array can be accessed by its \li{size} attribute.
+\begin{lstlisting}
+>>> A = np.random.random((20, 20))
+>>> A.size
+400
+\end{lstlisting}
+\item If $s$ is greater than the number of nonzero singular values of $A$ (meaning $s > $ rank$(A)$), raise a \li{ValueError}.
+\end{enumerate}
+Use \li{np.linalg.matrix_rank()} to verify the rank of your approximation.
+% , and verify that the number of entries required is equal to $ms + s + ns$.
+\label{prob:svd_approx}
+ % Lowest Rank Approximation
+Write a function that accepts a matrix $A$ and an error tolerance $\epsilon$.
+\begin{enumerate}
+\item Compute the compact SVD of $A$, then use (\ref{eq:svd-approximation-error}) to compute the lowest rank approximation $A_s$ of $A$ with 2-norm error less than $\epsilon$.
+Avoid calculating the SVD more than once.
+\\ (Hint: \li{np.argmax()}, \li{np.where()}, and/or fancy indexing may be useful.)
+\item As in the previous problem, also return the number of entries needed to store the resulting approximation $A_s$ via the truncated SVD.
+\item If $\epsilon$ is less than or equal to the smallest singular value of $A$, raise a \li{ValueError}; in this case, $A$ cannot be approximated within the tolerance by a matrix of lesser rank.
+\end{enumerate}
+This function should be close to identical to the function from Problem \ref{prob:svd_approx}, but with the extra step of identifying the appropriate $s$.
+Construct test cases to validate that $\| A - A_s \|_2 < \epsilon$.
+ % Image compression.
+Write a function that accepts the name of an image file and an integer $s$.
+Use your function from Problem \ref{prob:svd_approx}, to compute the best rank-$s$ approximation of the image.
+Plot the original image and the approximation in separate subplots.
+In the figure title, report the difference in number of entries required to store the original image and the approximation (use \li{plt.suptitle()}).
+
+Your function should be able to handle both grayscale and color images.
+Read the image in and check its dimensions to see if it is color or not.
+Grayscale images can be approximated directly since they are represented by 2-dimensional arrays.
+For color images, let $R$, $G$, and $B$ be the matrices for the red, green, and blue layers of the image, respectively.
+Calculate the low-rank approximations $R_s$, $G_s$, and $B_s$ separately, then put them together in a new 3-dimensional array of the same shape as the original image.
+\\ (Hint: \li{np.dstack()} may be useful for putting the color layers back together.)
+
+Finally, it is possible for the low-rank approximations to have values slightly outside the valid range of RGB values.
+Set any values outside of the interval $[0,1]$ to the closer of the two boundary values.
+\\ (Hint: fancy indexing or \li{np.clip()} may be useful here.)
+
+To check, compressing \texttt{hubble\_gray.jpg} with a rank $20$ approximation should appear similar to Figure \ref{fig:hubble-rank20-approximation} and save $1,161,478$ matrix entries.

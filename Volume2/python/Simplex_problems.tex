@@ -1,0 +1,58 @@
+ % Check feasibility at the origin.
+Write a class that accepts the arrays $\c$, $A$, and $\b$ of a linear optimization problem in standard form.
+In the constructor, check that the system is feasible at the origin\footnote{For now, we only check for feasibility at the origin.
+A more robust solver sets up the auxiliary problem and solves it to find a starting point if the origin is infeasible.}.
+That is, check that $A\x \preceq \b$ when $\x = \0$.
+Raise a \li{ValueError} if the problem is not feasible at the origin.
+\label{prob:initsolver}
+ % Slack variables. % TODO: this problem is worthless...
+Design and implement a way to store and track all of the basic and non-basic variables.
+
+Hint: Using integers that represent the index of each variable is useful for Problem \ref{prob:blands}.
+\label{prob:slackvars}
+ % Initialize the tableau.
+Add a method to your Simplex solver that will create the initial tableau as a NumPy array.
+\label{prob:maketableau}
+
+Write a method that will determine the pivot row and pivot column according to Bland's Rule.
+% \begin{comment}
+\begin{definition}[Bland's Rule]
+Choose the nonbasic variable with the smallest index that has a positive coefficient in the objective function
+as the leaving variable.
+Choose the basic variable with the smallest index among all the binding basic variables.
+\end{definition}
+
+Bland's Rule is important in avoiding cycles when performing pivots.
+This rule guarantees that a feasible Simplex problem will terminate in a finite number of pivots.
+% \end{comment}
+\label{prob:blands}
+ % Pivoting
+Add a method to your solver that checks for unboundedness and performs a single pivot operation from start to completion.
+If the problem is unbounded, raise a \li{ValueError}.
+
+Write an additional method in your solver called \li{solve()} that obtains the optimal solution, then returns the maximum value, the basic variables, and the nonbasic variables.
+The basic and nonbasic variables should be represented as two dictionaries that map the index of the variable to its corresponding value.
+
+For our example, we would return the tuple \li{(5.2, \{0: 1.6, 1: .2, 2: .6\}, \{3: 0, 4: 0\})}.
+%The correct format of this tuple is critical, as this tuple of information will be used judge whether or not your solver works!
+ % Product mix problem.
+Solve the product mix problem for the data contained in the file \li{productMix.npz}.
+In this problem, there are 4 products and 3 resources.
+The archive file, which you can load using the function
+\li{np.load}, contains a dictionary of arrays.
+The array with key \li{'A'} gives the resource coefficients $a_{i,j}$ (i.e. the $(i,j)$-th entry of the array give $a_{i,j}$).
+The array with key \li{'p'} gives the unit prices $p_i$.
+The array with key \li{'m'} gives the available resource
+units $m_j$.
+The array with key \li{'d'} gives the demand constraints $d_i$.
+
+Report the number of units that should be produced for each product.
+
+% What is the final tableau for this Klee-Minty example with $n=3$?
+% How many iterations does it take to arrive at the final tableau?
+% 
+% Using problem 1 as a guide, guess the optimum value of the Klee-Minty example with $n=20$.
+% Then find the maximum value for the Klee-Minty example with $n=20$.
+% How many iterations does it take to arrive at the final tableau?
+% How long does the program take to run for only $20$ variables?
+% 

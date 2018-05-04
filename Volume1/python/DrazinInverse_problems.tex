@@ -1,0 +1,113 @@
+ % Check for the Drazin inverse.
+Write a function that accepts an $n \times n$ matrix $A$, the index $k$ of $A$, and an $n \times n$ matrix $A^D$.
+Use the criteria described above to determine whether or not $A^D$ is the Drazin inverse of $A$.
+Return \li{True} if $A^D$ satisfies all three conditions; otherwise, return \li{False}.
+
+Use the following matrices as test cases for your function.
+\[
+A = \left[\begin{array}{cccc}
+1 & 3 & 0 & 0 \\
+0 & 1 & 3 & 0 \\
+0 & 0 & 1 & 3 \\
+0 & 0 & 0 & 0
+\end{array}\right],
+\quad
+A^D = \left[\begin{array}{cccc}
+1 & -3 & 9 & 81 \\
+0 & 1 & -3 & -18 \\
+0 & 0 & 1 & 3 \\
+0 & 0 & 0 & 0
+\end{array}\right],
+\quad
+k = 1
+\]
+%
+\[
+B = \left[\begin{array}{ccc}
+ 1 &  1 &  3 \\
+ 5 &  2 &  6 \\
+-2 & -1 & -3
+\end{array}\right],
+\quad B^D = \left[\begin{array}{ccc}
+0 & 0 & 0 \\
+0 & 0 & 0 \\
+0 & 0 & 0
+\end{array}\right],
+\quad
+k = 3
+\]
+(Hint: \li{np.allclose()} and \li{np.linalg.matrix_power()} may be useful).
+\label{prob:test-drazin}
+ % Compute the Drazin Inverse.
+Write a function that accepts an $n \times n$ matrix $A$ and a tolerance for rounding eigenvalues to zero.
+Use Algorithm \ref{Alg:Drazin-Inverse} to compute the Drazin inverse $A^D$.
+Use your function from Problem \ref{prob:test-drazin} to verify your implementation.
+ % Compute effective resistance.
+Write a function that accepts the $n \times n$ adjacency matrix of an undirected graph.
+Use (\ref{eq:effective-resistance-with-Drazin}) to compute the effective resistance from each node to every other node.
+Return an $n \times n$ matrix where the $(ij)$th entry is the effective resistance from node $i$ to node $j$.
+Keep the following in mind: % TODO: Rephrase this somehow...
+\begin{itemize}
+\item The resulting matrix should be symmetric.
+\item The effective resistance from a node to itself is $0$.
+\item Consider creating the matrix column by column instead of entry by entry. Every time you compute the Drazin inverse, the whole diagonal of the matrix can be used.
+\end{itemize}
+Test your function using the graphs and values from Figure \ref{fig:eff-res}.
+% Write each graph as an adjacency matrix, run the function and verify that the effective resistance from $a$ to $b$ is as given in the Figure.
+\label{prob:effective-resistance}
+
+Write a class called \li{LinkPredictor} for performing link prediction.
+Implement the \li{\_\_init\_\_()} method so that it accepts the name of a \li{csv} file containing information about a social network.
+Each row of the file should contain the names of two nodes which are connected by an (undirected) edge.
+
+Store each of the names of the nodes of the graph as an ordered list.
+Next, create the adjacency matrix for the network where the $i$th row and column of the matrix correspond to the $i$th member of the list of node names.
+Finally, use your function from Problem \ref{prob:effective-resistance} to compute the effective resistance matrix.
+Save the list of names, the adjacency matrix, and the effective resistance matrix as attributes.
+
+Implement the following methods in the \li{LinkPredictor} class:
+
+\begin{enumerate}
+\item \li{predict\_link()}: Accept a parameter \li{node} which is either \li{None} or a string representing a node in the network. If \li{node} is \li{None}, return a tuple with the names of the nodes between which the next link should occur. However, if \li{node} is a string, return the name of the node which should be connected to \li{node} next out of all other nodes in the network. If \li{node} is not in the network, raise a \li{ValueError}. Take the following into consideration:
+
+\begin{enumerate}
+\item You want to find the two nodes which have the smallest effective resistance between them which are not yet connected.
+Use information from the adjacency matrix to zero out all entries of the effective resistance matrix that represent connected nodes. The ``\li{*}" operator multiplies arrays component-wise, which may be helpful.
+
+\item Find the next link by finding the minimum value of the array that is nonzero.
+Your array may be the whole matrix or just a column if you are only considering links for a certain node.
+This can be accomplished by passing \li{np.<<min>>()} a masked version of your matrix to exclude entries that are $0$.
+
+\item NumPy's \li{np.where()} is useful for finding the minimum value in an array:
+
+\begin{lstlisting}
+>>> A = np.random.randint(-9,9,(3,3))
+>>> A
+array([[ 6, -8, -9],
+       [-2,  1, -1],
+       [ 4,  0, -3]])
+
+# Find the minimum value in the array.
+>>> minval = np.<<min>>(A)
+>>> minval
+-9
+
+# Find the location of the minimum value.
+>>> loc = np.where(A==minval)
+>>> loc
+(array([0], dtype=int64), array([2], dtype=int64))
+\end{lstlisting}
+\end{enumerate}
+
+
+\item \li{add\_link()}: Take as input two names of nodes, and add a link between them. If either name is not in the network, raise a \li{ValueError}. Add the link by updating the adjacency matrix and the effective resistance matrix.
+\end{enumerate}
+
+Figure \ref{fig:social-network} visualizes the data in \texttt{social\_network.csv}.
+Use this graph to verify that your class is suggesting plausible new links.
+You should observe the following:
+\begin{itemize}
+\item In the entire network, Emily and Oliver are most likely to become friends next.
+\item Melanie is predicted to become friends with Carol next.
+\item Alan is expected to become friends with Sonia, then with Piers, and then with Abigail.
+\end{itemize}

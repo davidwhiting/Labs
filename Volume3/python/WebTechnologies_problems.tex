@@ -1,0 +1,186 @@
+ % NYC Restaurant cleanliness data.
+The file \texttt{nyc\_traffic.json} contains information about 1000 traffic accidents in New York City during the summer of 2017.\footnote{See \url{https://opendata.cityofnewyork.us/}.}
+Each entry lists one or more reasons for the accident, such as ``Unsafe Speed'' or ``Fell Asleep.''
+
+Write a function that loads the data from the JSON file.
+Look at the first few entries of the dataset and decide how to gather information about the cause(s) of each accident.
+Make a readable, sorted bar chart showing the total number of times that each of the $7$ most common reasons for accidents are listed in the data set.
+\\ (Hint: the \li{collections.Counter} data structure may be useful here.)
+
+To check your work, the $6$th most common reason is ``Backing Unsafely,'' listed $59$ times.
+ % Analyze LA Water.
+% JSON files are often used to package and send data from online database locations.
+The file \texttt{LA\_water.json} contains data on water usage in Los Angeles from 2005 through 2012.\footnote{See \url{https://data.lacity.org}.}
+The \li{"data"} section of the file contains a list of lists, with each inner list containing some logistic information, a newline, the usage values for the eight fiscal years (8 values), and a list of location information that includes the zip code and GPS coordinates.
+The data is organized by zip code (with latitude and longitude), and is measured in hundreds of cubic feet.
+
+
+Write a function that loads \texttt{LA\_water.json} and plots the water usage of each zip code on a map of Los Angeles.
+Plot the zip codes with more average usage over the recorded years as points of larger size or more severe color.
+
+% Each element in the \li{data} key is a list with some logistic information, a newline, the usage values for the eight fiscal years (8 values), and a list of location information that includes the zip code and GPS coordinates.
+
+Use the following code to present the data on a map of Los Angeles via Matplotlib's Basemap tool.
+
+\begin{lstlisting}
+from mpl_toolkits.basemap import Basemap
+
+plt.figure(figsize=(9,5))
+my_map = Basemap(projection='tmerc', lat_0=34.0522, lon_0=-118.2437,
+                    llcrnrlon=-118.7, llcrnrlat=33.8,
+                    urcrnrlon=-118.1, urcrnrlat=34.4,
+                    resolution='c', epsg=2229)
+my_map.arcgisimage(service="ESRI_Imagery_World_2D")
+
+# The 'longs' and 'lats' parameters are the coordinates of zip codes as lists.
+x, y = my_map(longs, lats)
+# 'averages' is a list of average water use by zip code.
+my_map.scatter(x, y, s=averages, c=averages, label='Zip Code')
+
+plt.colorbar(label='Water Use (Hundreds of Cubic Feet)')
+plt.title('Water Usage in Los Angeles from 2005-2012')
+plt.legend()
+plt.show()
+\end{lstlisting}
+
+The following class facilitates a regular $3\times 3$ game of tic-tac-toe, where the boxes in the board have the following coordinates.
+\[
+\begin{array}{c|c|c}
+(0,0) & (0,1) & (0,2) \\ \hline
+(1,0) & (1,1) & (1,2) \\ \hline
+(2,0) & (2,1) & (2,2)
+\end{array}
+\]
+\begin{lstlisting}
+class TicTacToe:
+    def __init__(self):
+        """Initialize an empty board. The O's go first."""
+        self.board = [[' ']*3 for _ in range(3)]
+        self.turn, self.winner = "O", None
+
+    def move(self, i, j):
+        """Mark an O or X in the (i,j)th box and check for a winner."""
+        if self.winner is not None:
+            raise ValueError("the game is over!")
+        elif self.board[i][j] != ' ':
+            raise ValueError("space ({},{}) already taken".<<format>>(i,j))
+        self.board[i][j] = self.turn
+
+        # Determine if the game is over.
+        b = self.board
+        if any(sum(s == self.turn for s in r)==3 for r in b):
+            self.winner = self.turn     # 3 in a row.
+        elif any(sum(r[i] == self.turn for r in b)==3 for i in range(3)):
+            self.winner = self.turn     # 3 in a column.
+        elif b[0][0] == b[1][1] == b[2][2] == self.turn:
+            self.winner = self.turn     # 3 in a diagonal.
+        elif b[0][2] == b[1][1] == b[2][0] == self.turn:
+            self.winner = self.turn     # 3 in a diagonal.
+        else:
+            self.turn = "O" if self.turn == "X" else "X"
+
+    def empty_spaces(self):
+        """Return the list of coordinates for the empty boxes."""
+        return [(i,j) for i in range(3) for j in range(3)
+                                        if self.board[i][j] == ' ' ]
+    def __str__(self):
+        return "\n---------\n".join(" | ".join(r) for r in self.board)
+\end{lstlisting}
+
+Write a custom encoder and decoder for the \li{TicTacToe} class.
+If the custom encoder receives anything other than a \li{TicTacToe} object, raise a \li{TypeError}.
+\label{prob:tictactoe-serialization}
+
+Write a function that accepts a (host, port) tuple and starts up a tic-tac-toe server at the specified location.
+Wait to accept a connection, then while the connection is open, repeat the following operations.
+\begin{enumerate}
+\item Receive a JSON serialized \li{TicTacToe} object (serialized with your custom encoder from Problem \ref{prob:tictactoe-serialization}) from the client.
+\item Deserialize the \li{TicTacToe} object using your custom decoder from Problem \ref{prob:tictactoe-serialization}.
+\item If the client has just won the game, send \li{"WIN"} back to the client and close the connection.
+\item If there is no winner but board is full, send \li{"DRAW"} to the client and close the connection.
+\item If the game still isn't over, make a random move on the tic-tac-toe board and serialize the updated \li{TicTacToe} object.
+If this move wins the game, send \li{"LOSE"} to the client, then send the serialized object separately (as proof), and close the connection.
+Otherwise, send only the updated \li{TicTacToe} object back to the client but keep the connection open.
+\end{enumerate}
+(Hint: print information at each step so you can see what the server is doing.)
+
+Ensure that the connection closes securely even if an exception is raised.
+Note that you will not be able to fully test your server until you have written a client (see Problem \ref{prob:tictactoe-client}).
+\label{prob:tictactoe-server}
+
+Write a function that accepts a (host, port) tuple and connects to the tic-tac-toe server at the specified location.
+Start by initializing a new \li{TicTacToe} object, then repeat the following steps until the game is over.
+\begin{enumerate}
+\item Print the board and prompt the player for a move.
+Continue prompting the player until they provide valid input.
+\item Update the board with the player's move, then serialize it using your custom encoder from Problem \ref{prob:tictactoe-serialization}, and send the serialized version to the server.
+\item Receive a response from the server.
+If the game is over, congratulate or mock the player appropriately.
+If the player lost, receive a second response from the server (the final game board), deserialize it, and print it out.
+\end{enumerate}
+Close the connection once the game ends.
+\label{prob:tictactoe-client}
+ % Download New York Data.
+The \li{requests} module is the standard way to send a download request to an API.
+\begin{lstlisting}
+>>> import requests
+>>> requests.get(endpoint).json()   # Download and extract the data.
+\end{lstlisting}
+
+Write a function that makes requests to download data from the following API endpoints managed by New York City.
+% \footnote{See \url{https://data.cityofnewyork.us/Environment/Public-Recycling-Bins/sxx4-xhzg} and \url{https://data.cityofnewyork.us/City-Government/NYC-Address-Points/g6pj-hd8k}.}
+{\scriptsize
+\begin{itemize}
+\item Recycling bin locations: https://data.cityofnewyork.us/api/views/sxx4-xhzg/rows.json?accessType=DOWNLOAD
+\item Residential addresses: https://data.cityofnewyork.us/api/views/7823-25a9/rows.json?accessType=DOWNLOAD
+\end{itemize}}
+\noindent Save the recycling data as \texttt{nyc\_recycling.json} and the address data as \texttt{nyc\_addresses.json}.
+\label{prob:wt-download-nyc-data}
+ % Analyze New York data.
+Write a function that loads the data files generated in Problem \ref{prob:wt-download-nyc-data} but \textbf{does not} call the actual function from Problem \ref{prob:wt-download-nyc-data}.
+Determine how close the residential addresses in New York City are to the nearest recycling bin.
+\begin{enumerate}
+\item Retrieve the latitude and longitude of each recycling bin and, separately, the latitude and longitude of each residential address (ignore entries without these coordinates).
+Note carefully that the coordinates for the recycling data are in (latitude, longitude) format, but the coordinates for the address data are in (longitude, latitude) format.
+\\(Hint: Both datasets are, at the highest level, dictionaries with two keys: \li{"meta"}, which has information about the data; and \li{"data"}, which has the actual data.
+All of the information needed is contained in the \li{"data"} key value.)
+\item Load the recycling bin data into a k-d tree.
+\label{step:nyc-load-tree}
+\item For each address, query the tree to find the distance to the nearest recycling bin, in terms of the coordinates.
+\label{step:nyc-query-tree}
+\item Plot a histogram of the distances.
+\end{enumerate}
+
+For steps \ref{step:nyc-load-tree}--\ref{step:nyc-query-tree}, recall the following syntax for using a k-d tree in SciPy.
+\begin{lstlisting}
+from scipy.spatial import KDTree
+
+tree = KDTree(data)                         # Initialize the tree.
+min_distance, index = tree.query(target)    # Query for a point.
+\end{lstlisting}
+\label{prob:wt-analyze-nyc-data}
+
+The file \texttt{waterserver.py} is an example of a simple HTTP server using the Python submodules \li{http.server} and \li{urllib.parse}.
+It stores a small sampling of water information from the first problem.
+When a client submits a GET request with a query for a particular zip code, the server returns a list of the water usage for that zip code from 2005-2012.
+
+For example, the following code returns the message \li{'[32, 36, 34, 32, 27, 26, 36, 16]'} from the server.
+
+\begin{lstlisting}
+# Option 1 - Include query in the URL (? signifies start of query)
+r = requests.get("http://localhost:8000?zip=91342").text
+# Option 2 - Use requests library to append query to URL
+r = requests.get("http://localhost:8000", params={'zip':91342}).text
+\end{lstlisting}
+All messages from the server are formatted as JSON strings.
+
+Expand the functionality of the server to accept a request with \li{'zip=all'} and return a JSON string of the \li{data} dictionary in \texttt{waterserver.py}.
+
+Expand the functionality of your new file from the previous problem to accept a PUT request with attached data as a JSON string.
+The inputed string should be loaded and inserted into the \li{data} dictionary as new dictionary keys and values.
+
+Hints: All HTTP server functions must send a status code and a header back to the client.
+The class used in \texttt{waterserver.py} has a class attribute named \li{self.rfile} to read data inputs from the client.
+The \li{self.rfile} attribute is a buffered binary stream that can be read using the \li{read()} function.
+As previously demonstrated, the read function will only read as many bytes as it is instructed to.
+Consider using the \li{self.headers['Content-Length']} attribute to find the number of bytes to read.

@@ -1,0 +1,12 @@
+
+Assume that the current is given by $c(x) = -\frac{7}{10}(x^2-1)$. (This function assumes, for example, that the current is faster near the center of the river.)
+Write a Python function that accepts as arguments a function $y$, its derivative $y'$, and an $x$-value, and returns $L(x,y(x),y'(x))$ (where $T[y] = \int_{-1}^1 L(x,y(x),y'(x))$). Use that function to define a second function that numerically computes $T[y]$ for a given path $y(x)$. 
+
+	Let $y(x)$ be the straight-line path between $A = (-1,0)$ and $B=(1,5)$. Numerically calculate $T[y]$ to get an upper bound on the minimum time required to cross from $A$ to $B$. Using $\eqref{rivercrossing:T}$, find a lower bound on the minimum time required to cross.
+
+Numerically solve the Euler-Lagrange equation \eqref{rivercrossing:EL}, using $c(x) = -\frac{7}{10}(x^2-1)$ and $\alpha = (1-c^2)^{-1/2}$, and $y(-1) = 0$, $y(1) = 5$. 
+
+Hint: Since this boundary value problem is defined over the doimain $[-1,1]$, it is easy to solve using the pseudospectral method. Begin by replacing each $\frac{d}{dx}$ with the pseudospectral differentiation matrix $D$. Then impose the boundary conditions and solve.
+
+Plot the angle at which the boat should be pointed at each $x$-coordinate. (Hint: Use  Equation \eqref{rivercrossing:angle}; see Figure \ref{fig:rivercrossing_angle}. Note that the angle the boat should be steered is \emph{not} described by the tangent vector to the trajectory.)
+

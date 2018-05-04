@@ -1,0 +1,16 @@
+
+Write a function that accepts a list of class assignments and a list of all the $K$ possible classes, and computes the Gini impurity.
+
+Write a function that computes the split of a data set for a given variable $p$ and given value $x$. It should return the partitioned data set, as well as the partitioned class labels.
+
+Write a function that computes the information gain for the split of a data set for a given variable $p$, value $x$.
+
+Write a function that computes the optimal split of a data set. You may need to separate this into two tasks: finding the optimal split for each attribute $p$, and then choosing the optimal split over all the attributes.
+
+Write a class called \li{Node} that creates and trains a classification tree. It should accept a training data set $D$, class labels $y$, current depth (which when initialized should be $1$), some maximum depth which is greater than $1$, and some tolerance for the Gini impurity (say $0.2$). Use recursion to build the tree, i.e. after determining the optimal split, create two new nodes (\li{leftchild} and \li{rightchild}), with incremented depth. If the depth equals the maximum depth or the Gini impurity for a node is less than the tolerance, assign the majority label to the node and do not split further.
+
+Write a method for the class \li{Node} that prints out the tree structure. For each node it should show which attribute $p$ and value $x$ provide the optimal split, and for the leaf nodes, it should show the assigned label. You may use your own creativity for how to display this.
+
+Write a method for the class \emph{Node} that assigns the class label for a new sample. You will probably have to make this method recursive also.
+
+Using the Titanic data set, train a classification tree with a maximum depth of $10$ nodes and Gini impurity tolerance $.1$, and predict labels for the test set. What is your misclassification rate? Print out the tree structure. Is it what you expected? Was there any optimal split which surprised you?

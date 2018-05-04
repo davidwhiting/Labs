@@ -1,0 +1,57 @@
+
+Write a function that accepts a callable function $f$, interval limits $a$ and $b$, a stopping tolerance \li{tol}, and a max number of iterations \li{maxiters}.
+Implement the golden section search and return the minimizer approximation, whether or not the algorithm converged (bool), and the number of iterations executed.
+
+Test your function by minimizing $f(x) = e^x - 4x$ on the interval $[0, 3]$, and by comparing your results to the results of \li{scipy.optimize.golden()}.
+The following code shows how to use \li{scipy.optimize.golden()}.
+ 
+\begin{lstlisting}
+>>> from scipy import optimize as opt
+>>> import numpy as np
+
+>>> f = lambda x : np.exp(x) - 4*x
+>>> result = opt.golden(f, brack=(0,3), tol=.001)
+\end{lstlisting}
+\label{prob:golden-section-search}
+
+Write a method that accepts a function $f$'s first and second derivatives as callable functions $df$ and $d2f$, a starting point $x0$, a stopping tolerance \li{tol}, and a max number of iterations \li{maxiters}.
+Implement Newton's Method as described above and return the minimizer approximation, whether or not the algorithm converged (bool), and the number of iterations executed.
+
+Test your function by minimizing $f(x) = x^2 + \sin(5x)$ with an initial guess of $x_0 = 0$, a stopping tolerance of $10^{-10}$, and $500$ max iterations.
+Compare it to \li{scipy.optimize.newton()} to check your answers.
+Be aware, however, that it is a root finding function, and as such will need to passed the first and second derivatives as follows:
+\begin{lstlisting}
+>>> df = lambda x : 2*x + 5*np.cos(5*x)
+>>> d2f = lambda x : 2 - 25*np.sin(5*x)
+>>> result = opt.newton(df, x0 = 0, fprime = d2f, tol = 1e-10, maxiter = 500)
+# If fprime is not provided, the Secant method will be used.
+\end{lstlisting}
+Note that other initial guesses can yield different minima for this function.
+
+Write a function that accepts a first derivative $df$, starting points $x0$ and $x1$, a stopping tolerance \li{tol}, and a max number of iterations \li{maxiters}.
+Implement the Secant method as described above and return the minimizer approximation, whether or not the algorithm converged (bool), and the number of iterations executed.
+
+Test your code with the function $f(x) = x^2 + \sin(x) + \sin(10x)$ and with initial guesses of $x_0 = 0$ and $x_1 = -1$.
+Compare your answer with the graph of the function.
+Note that this function is highly sensitive to the starting point, which is why it is not as helpful to compare your function with SciPy's method.
+As noted above, \li{scipy.optimize.newton()} uses the Secant method when the second derivative is not available.
+The only difference in the syntax is that the \li{fprime} argument is not included.
+This means that the function only takes in one initial condition, so it could converge to a different minimum.
+
+Write a function that accepts a callable function $f$, its gradient $df$, approximation $\textbf{x}$, search direction $\textbf{p}$, initial step length $\alpha$, and parameters $\rho$ and $c$.
+Implement the backtracking algorithm using the Armijo condition and return the optimal step size.
+
+\li{scipy.optimize.linesearch.scalar_search_armijo()} finds an optimal step size using the Armijo conditions.
+It may not give the exact answer as your implementation as it decreases $\alpha$ differently, but the answers should be similar.
+\begin{lstlisting}
+# Recall that autograd takes the derivatives of functions.
+>>> from autograd import grad
+
+>>> f = lambda x: x[0]**2 + x[1]**2 + x[2]**2
+>>> x = np.array([150., .03, 40.])
+>>> p = np.array([-.5, -100., -4.5])
+>>> phi = lambda alpha: f(x + alpha*p)
+>>> derphi = grad(phi)
+>>> alpha, _ = opt.linesearch.scalar_search_armijo(phi, phi(0.), derphi(0.))
+
+\end{lstlisting}

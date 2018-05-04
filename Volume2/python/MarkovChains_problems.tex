@@ -1,0 +1,80 @@
+ % Make a column stochastic matrix.
+Transition matrices for Markov chains are efficiently stored as NumPy arrays.
+Write a function that accepts an integer $n$ and returns the transition matrix for a random Markov chain with $n$ states.
+\\ (Hint: use array broadcasting to avoid looping.)
+\label{prob:random-markov-chain}
+ % 2-state chain with binomial transitioning.
+Modify \li{forecast()} so that it accepts an integer parameter \li{days} and runs a simulation of the weather for the number of days given.
+Return a list containing the day-by-day weather predictions (0 for hot, 1 for cold).
+Assume the first day is hot, but do not include the data from the first day in the list of predictions.
+The resulting list should therefore have \li{days} entries.
+\label{prob:small-markov-transitions}
+ % 4-state chain with multinomial transitioning.
+Let the following matrix be the transition matrix for a Markov chain modeling weather with four states: hot, mild, cold, and freezing.
+
+\begin{align*}
+\begin{blockarray}{ccccc}
+& \text{\textcolor{red}{hot}} & \text{\textcolor[rgb]{0,.6,0}{mild}} & \text{\textcolor{blue}{cold}} & \text{\textcolor{cyan}{freezing}} \\
+\begin{block}{c[cccc]}
+\text{\textcolor{red}{hot}}              & 0.5 & 0.3 & 0.1 & 0   \\
+\text{\textcolor[rgb]{0,.6,0}{mild}}     & 0.3 & 0.3 & 0.3 & 0.3 \\
+\text{\textcolor{blue}{cold}}            & 0.2 & 0.3 & 0.4 & 0.5 \\
+\text{\textcolor{cyan}{freezing}}        &   0 & 0.1 & 0.2 & 0.2 \\
+\end{block}\end{blockarray}
+\end{align*}
+
+Write a new function that accepts an integer parameter and runs the same kind of simulation as \li{forecast()}, but that uses this new four-state transition matrix.
+This time, assume that the first day is mild.
+Return a list containing the day-to-day results (0 for hot, 1 for mild, 2 for cold, and 3 for freezing).
+\label{prob:markov-larger-chain}
+ % Use the power method (simple) to get the steady state.
+Write a function that accepts an $n\times n$ transition matrix $A$, a convergence tolerance $\epsilon$, and a maximum number of iterations $N$.
+Generate a random state distribution vector $\x_{0}$ and calculate $\x_{k+1} = A\x_k$ until $\|\x_{k-1} - \x_k\| < \epsilon$.
+If $k$ exceeds $N$, raise a \li{ValueError} to indicate that $A^k$ does not converge.
+Return the approximate steady state distribution $\x$ of $A$.
+
+To test your function, use Problem \ref{prob:random-markov-chain} to generate a random transition matrix $A$.
+Verify that $A\x = \x$ and that the columns of $A^k$ approach $\x$ as $k\rightarrow\infty$.
+To compute $A^k$, use NumPy's (very efficient) algorithm for computing matrix powers. % (which is not part of \li{scipy.linalg}).
+
+\begin{lstlisting}
+>>> A = np.array([[.7, .6],[.3, .4]])
+>>> np.linalg.matrix_power(A, 10)       # Compute A^10.
+array([[ 0.66666667,  0.66666667],
+       [ 0.33333333,  0.33333333]])
+\end{lstlisting}
+
+Finally, use your function to validate the results of Problems \ref{prob:small-markov-transitions} and \ref{prob:markov-larger-chain}:
+\begin{enumerate}
+    \item Calculate the steady state distributions corresponding to the transition matrices for each simulation.
+    \item Run each simulation for a large number of days and verify that the results match the steady state distribution (for example, check that approximately 2/3 of the days are hot for the smaller weather model).
+\end{enumerate}
+
+\label{prob:markov-power-method}
+ % Class that makes a Markov chain from a file.
+Write a class called \li{SentenceGenerator}.
+The constructor should accept a filename (the training set).
+Read the file and build a transition matrix from its contents as described in Algorithm \ref{alg:MarkovSentencesTransitionMatrix}.
+
+You may assume that the file has one complete sentence written on each line, and your implementation may be either column- or row-stochastic.
+\label{problem:markov-random-sentences-init}
+ % Create random sentences.
+Add a method to the \li{SentenceGenerator} class called \li{babble()}.
+Begin at the start state and use the strategy from Problem \ref{prob:markov-larger-chain} to repeatedly transition through the object's Markov chain.
+Keep track of the path through the chain and the corresponding sequence of words.
+When the stop state is reached, stop transitioning to terminate the simulation.
+Return the resulting sentence as a single string.
+
+For example, your \li{SentenceGenerator} class should be able to create random sentences that sound somewhat like Yoda speaking.
+
+\begin{lstlisting}
+>>> yoda = SentenceGenerator("yoda.txt")
+>>> for _ in range(3):
+... 	print(yoda.babble())
+...
+<<Impossible to my size, do not!
+For eight hundred years old to enter the dark side of Congress there is.
+But beware of the Wookiees, I have.>>
+\end{lstlisting}
+
+\label{prob:markov-random-sentences-babble}

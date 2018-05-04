@@ -1,0 +1,28 @@
+ \label{problem1}
+Write an acceptance function that computes
+\begin{equation*}
+p = \min \{1, e^{-\frac{1}{2}\left((\mathbf{x} - \mu)^{T} \Sigma^{-1} (\mathbf{x} - \mu) - (\mathbf{y} - \mu)^{T} \Sigma^{-1} (\mathbf{y} - \mu)\right)}\}
+\end{equation*}
+given $\mathbf{x}, \mathbf{y}, \mu,$ and $\Sigma$, and then draws from a Bernoulli distribution with parameter $p$. It should return a $1$ if it accepts the new state, and a $0$ if it rejects it.
+
+Write a function that accepts a current state, the mean and covariance from the distribution we desire to sample from, and returns the next state. We should propose according to $Q$ described above, and accept according to the function in Problem \ref{problem1}.
+
+Write a function that computes the log of the multivariate normal density of a point $\mathbf{x}$ given a mean $\mu$ and covariance matrix $\Sigma$. Be intelligent about how you implement this, that is, do not simply compute the multivariate normal density and then take the log of it, as this may lead to numerical issues. The whole purpose of looking at the multivariate log is to make this more stable.
+
+Write a function that accepts an initial point $\mathbf{x}$, a mean $\mu$ and covariance $\Sigma$ for the desired sampling distribution, and which performs the Metropolis algorithm for a number of iterations, $n\_samples$. Save each sample $\mathbf{x}$ as produced by the algorithm. Also compute the log of the multivariate normal density of each point, and return both the samples and the logprobs.
+
+Using $\mu$ and $\Sigma$ as defined previously and using an initial state $\mathbf{x} = \left[ \begin{array}{cc} 1000 & -1000 \end{array} \right]$ run your Metropolis sampler for $10000$ iterations. Plot the log probs as well as the samples. How long did it take to converge?
+
+Write a function that initializes a spin configuration for an $n \times n$ lattice. It should return an $n \times n$ array, each entry of which is either $1$ or $-1$, chosen randomly. Test this for the grid described above, and plot the spin configuration using \li{matplotlib.pyplot.imshow}. It should look fairly random, as in Figure \ref{fig:random_spin}.
+
+Write a function that computes the energy of a wrap-around $n \times n$ lattice with a given spin configuration, as described above. Make sure that you do not double count site pair interactions!
+
+Write a function that proposes a new spin configuration given the current spin configuration on an $n \times n$ lattice, as described above. This function simply needs to return a pair of indices $(i,j)$, chosen with probability $\frac{1}{n^{2}}$.
+
+Write a function that computes the energy of a proposed spin configuration, given the current spin configuration, its energy, and the proposed spin flip site indices.
+
+Write a function that accepts or rejects a proposed spin configuration, given the current configuration. It should accept the current energy, the proposed energy, and $\beta$, and should return a boolean.
+
+Write a function that initializes a spin configuration for an $n \times n$ lattice as done previously, and then performs the Metropolis algorithm, choosing new spin configurations and accepting or rejecting them. It should burn in first, and then iterate $n\_samples$ times, keeping every $100^{\text{th}}$ sample (this is to prevent memory failure) and all of the above values for $-\beta H(\sigma)$ (keep the values even for the burn-in period). It should also accept $\beta$ as an argument, allowing us to effectively adjust the temperature for the model.
+
+Test your Metropolis sampler on a $100 \times 100$ grid, with $200000$ iterations, with $n\_samples$ large enough so that you will keep $50$ samples, testing with $\beta = 1$ and then with $\beta = 0.2$. Plot the proportional log probabilities, and also plot a late sample from each test using \li{matplotlib.pyplot.imshow}. How does the ferromagnetic material behave differently with differing temperatures? Recall that $\beta$ is an inverse function of temperature. You should see more structure with lower temperature, as illustrated in Figures \ref{fig:config1} and \ref{fig:config2}.

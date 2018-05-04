@@ -1,0 +1,57 @@
+
+Using these commands, navigate to the \texttt{Shell1/} directory provided with this lab. We will use this directory for the remainder of the lab. Use the \li{ls} command to list the contents of this directory. NOTE: You will find a directory within this directory called \texttt{Test/} that is availabe for you to experiment with the concepts and commands found in this lab. The other files and directories are necessary for the exercises we will be doing, so take care not to modify them.
+
+Inside the \texttt{Shell1/} directory, delete the \texttt{Audio/} folder along with all its contents.
+Create \texttt{Documents/}, \texttt{Photos/}, and \texttt{Python/} directories.
+
+Within the \texttt{Shell1/} directory, there are many files.
+We will organize these files into directories.
+Using wildcards, move all the \texttt{.jpg} files to the \texttt{Photos/} directory, all the \texttt{.txt} files to the \texttt{Documents/} directory, and all the \texttt{.py} files to the \texttt{Python/} directory.
+You will see a few other folders in the \texttt{Shell1/} directory.
+Do not move any of the files within these folders at this point.
+
+We should have an exercise (or demonstration) here where they use cat or less to look at a file, just to make sure they do it.
+I don't have access to the toy directory, so I don't know the filenames to write one myself.
+It should only take 5 minutes though.
+
+In addition to the \texttt{.jpg} files you have already moved into the \texttt{Photot/} folder, there are a few other \texttt{.jpg} files in a few other folders within the \texttt{Shell1/} directory.
+Find where these files are using the \li{find} command and move them to the \texttt{Photos/} folder.
+
+The \texttt{words.txt} file in the \texttt{Documents/} directory contains a list of words that are not in alphabetical order.
+Write the number of words in \texttt{words.txt} and an alphabetically sorted list of words to \texttt{sortedwords.txt} using pipes and redirects.
+Save this file in the \texttt{Documents/} directory.
+Try to accomplish this with a total of two commands or fewer.
+
+Archive and compress the files in the \texttt{Photos/} directory using \li{tar} and \li{gzip}. Name the arhive \texttt{pics.tar.gz} and save it inside the \texttt{Photos/} directory. Use \li{ls -l} to see how much the files were compressed in the process.
+
+Using vim, create a new file in the \texttt{Documents/} directory named \texttt{first\_vim.txt}.
+Write least multiple lines to this file.
+Save and exit the file you have created.
+
+Become accustomed to navigating in command mode using the following keys:
+\begin{table}[H]
+\begin{tabular}{r|l}
+    Command & Description
+    \\ \hline
+    \li{k} & up \\
+    \li{j} & down \\
+    \li{h} & left \\
+    \li{l} & right \\
+    \li{w} & beginning of next \textbf{w}ord \\
+    \li{e} & \textbf{e}nd of next word \\
+    \li{b} & \textbf{b}eginning of previous word \\
+    \li{0} & (zero) beginning of line \\
+    \li{\$} & end of line \\
+    \li{gg} & beginning of file \\
+    \li{<<\#gg>>} & go to line \li{<<\#>>} \\
+    \li{G} & end of file
+\end{tabular}
+\end{table}
+
+Open the document you created in the previous problem.
+While in command mode, enter visual mode by pressing the \li{v} key.
+Using the navigation keys discussed earlier, move the cursor to select a few words.
+Copy this text using the \li{y} key (stands for \textbf{y}ank).
+Return to command mode by pressing \li{Esc}.
+Move the cursor to where you would like to paste the text and press the \li{p} key to paste.
+Similarly, select text in visual mode and hit \li{d} to \textbf{d}elete the text and paste it somewhere else with the \li{p} key.

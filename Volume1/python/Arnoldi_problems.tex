@@ -1,0 +1,149 @@
+\label{prob:arnoldi}
+Write a function that accepts a starting vector $\b$ for the Arnoldi Iteration, a function handle $L$ that describes a linear operator, the number of times $n$ to perform the iteration, and a tolerance \li{tol} that defaults to $10^{-8}$.
+Use Algorithm \ref{alg:arnoldi_iteration} to implement the Arnoldi Iteration with these parameters.
+Return the upper Hessenberg matrix $H$ and the orthonormal matrix $Q$ from the iteration.
+
+Consider the following implementation details.
+\begin{enumerate}
+\item Since $H$ and $Q$ will eventually hold complex numbers, initialize them as complex arrays (e.g., \li{A = np.empty((3,3), dtype=np.complex128)}).
+\item This function can be tested on a matrix A by passing in \li{A.dot} for a linear operator.
+\item Remember to use complex inner products. Here is an example of how to evaluate $A^HA$:
+\begin{lstlisting}
+b = A.conj() @ B
+\end{lstlisting}
+\end{enumerate}
+Test your function by comparing the resulting $H$ with $Q\hrm A Q$.
+\label{prob:ritz}
+Write a function that accepts a function handle $L$ that describes a linear operator, the dimension of the space \li{dim} that the linear operator works on, the number of times $k$ to perform the Arnoldi Iteration, and the number of Ritz values $n$ to return.
+Use the previous implementation of the Arnoldi Iteration and an eigenvalue function such as \li{scipy.linalg.eigs()} to compute the largest Ritz values of the given operator.
+Return the \li{n} largest Ritz values.
+
+\label{prob:fourier_eigs}
+The four largest eigenvalues of the Fast Fourier Transform are known to be $\{ -\sqrt{n}, \sqrt{n}, -i\sqrt{n}, i\sqrt{n} \}$ where $n$ is the dimension of the space on which the transform acts.
+
+Use your function from Problem \ref{prob:ritz} to approximate the eigenvalues of the Fast Fourier Transform.
+Set $k = 10$ and \li{dim} = $2^{20}$.
+For the argument $L$, use the \li{scipy.fftpack.fft()}.
+
+Write a function that accepts a linear operator $A$, the number of Ritz values to plot $n$, and the the number of times to perform the Arnoldi iteration \li{iters}.
+Use these parameters to create a plot of the absolute error between the largest Ritz values of $A$ and the largest eigenvalues of $A$.
+\begin{enumerate}
+    \item Find $n$ eigenvalues of $A$ of largest magnitude. Store these in order.
+    \item Create an empty array to store the relative errors for every $k=0,1,\ldots,$ \li{iters}.
+    \begin{enumerate}
+    	\item Use your Ritz function to find the $n$ largest Ritz values of the operator. Note that for small $k$, the matrix $H_k$ may not have this many eigenvalues. Due to this, the graphs of some eigenvalues have to begin after a few iterations.
+        \item Store the absolute error between the eigenvalues of A and the Ritz values of H. Make sure that the errors are stored in the correct order.
+    \end{enumerate}
+    %\item Use array broadcasting to compute the absolute error.
+    \item Iteratively plot the errors for each eigenvalue with the range of the iterations.
+\end{enumerate}
+Hints:
+If $\tilde{\x}$ is an an approximation to $\x$, then the \emph{absolute error} in the approximation is $\|\x - \tilde{\x}\|$.
+
+Sort your eigenvalues from greatest to least.
+An example of how to do this is included:
+\begin{lstlisting}
+# Evaluate the eigenvalues
+eigvalues = la.eig(A)[0]
+# Sort them from greatest to least (use np.abs to account for complex parts)
+eigvalues = eigvalues[np.sort(np.<<abs>>(eigvalues))[::-1]]
+\end{lstlisting}
+In addition, remember that certain eigenvalues of $H$ will not appear until we are computing enough iterations in the Arnoldi algorithm.
+As a result, we will have to begin the graphs of several eigenvalues after we are computing sufficient iterations of the algorithm.
+%To be able to keep our graph readable, use masking such as the following to remove any extreme errors that arise in the first iterations.
+%\begin{lstlisting}
+%errors[errors > 10] = 10.
+%\end{lstlisting}
+
+Run your function on these examples.
+The plots should be fairly similar to Figures \ref{fig:arnoldi_random_eig_conv} and \ref{fig:arnoldi_random_val_conv}.
+
+\begin{lstlisting}
+>>> A = np.random.rand(300, 300)
+>>> plot_ritz(a, 10, 175)
+
+>>> # A matrix with uniformly distributed eigenvalues
+>>> d = np.diag(np.random.rand(300))
+>>> B = A @ d @ la.inv(A)
+>>> plot_ritz(B, 10, 175)
+\end{lstlisting}
+% These may take some time to run.
+
+finding the roots of a polynomial can be represented as an eigenvalue problem.
+finding the roots of a monic polynomial (a polynomial with leading coefficient 1) $p = c_0 + c_1 x + \dots + c_{n-1} x^{n-1} + x^n$ is equivalent to finding the eigenvalues of the matrix
+\[c = \begin{bmatrix}
+0 & 0 & \dots & 0 & -c_0 \\
+1 & 0 & \dots & 0 & -c_1 \\
+0 & 1 & \dots & 0 & -c_2 \\
+\vdots & \vdots & \ddots & \vdots & \vdots \\
+0 & 0 & \dots & 1 & -c_{n-1} \end{bmatrix}\]
+this matrix is called the companion matrix of the polynomial $p$.
+as it happens, every matrix is similar to the companion matrix of its characteristic polynomial, but we won't use that fact here.
+
+The following is a function that, given an array containing the coefficients $c_0, c_1, \dots, c_{n-1}$ for a monic polynomial $p$, performs matrix multiplication by the corresponding companion matrix.
+
+\begin{lstlisting}
+def companion_multiply(c, u):
+    v = np.empty_like(u)
+    v[0] = - c[0] * u[-1]
+    v[1:] = u[:-1] - c[1:] * u[-1]
+    return v
+\end{lstlisting}
+
+Use the Arnoldi iteration to estimate the five zeros of largest norm of a degree $1000$ monic polynomial with randomly chosen coefficients (the leading coefficient still needs to be 1).
+Run $50$ steps of the Arnoldi iteration.
+Compare your results with the roots of the polynomial computed using NumPy's \li{poly1d} class.
+This computation can be done like this (where \li{c} is the array of random coefficients for the polynomial)
+
+\begin{lstlisting}
+p = np.poly1d([1] + list(c[::-1]))
+roots = p.roots
+# Now sort by absolute value from largest to smallest
+roots = roots[np.<<abs>>(roots).argsort()][::-1]
+\end{lstlisting}
+
+How close are the first few zeros of largest norm?
+
+\label{prob:lanczos}
+Implement Algorithm \ref{alg:lanczos_iteration} by completing the following function.
+Write it so that it can operate on complex arrays.
+\begin{lstlisting}
+def lanczos(b, L, k, tol=1E-8):
+    '''Perform `k' steps of the Lanczos iteration on the symmetric linear
+    operator defined by `L', starting with the vector 'b'.
+
+    INPUTS:
+    b    - A NumPy array. The starting vector for the Lanczos iteration.
+    L - A function handle. Should describe a symmetric linear operator.
+    k    - Number of times to perform the Lanczos iteration.
+    tol  - Stop iterating if the next vector in the Lanczos iteration has
+          norm less than `tol'. Defaults to 1E-8.
+
+    RETURN:
+    Return (alpha, beta) where alpha and beta are the main diagonal and
+    first subdiagonal of the tridiagonal matrix computed by the Lanczos
+    iteration.
+    '''
+\end{lstlisting}
+
+The following code performs multiplication by a tridiagonal symmetric matrix.
+
+\begin{lstlisting}
+def tri_mul(a, b, u):
+   ''' Return Au where A is the tridiagonal symmetric matrix with main
+   diagonal a and subdiagonal b.
+   '''
+    v = a * u
+    v[:-1] += b * u[1:]
+    v[1:] += b * u[:-1]
+    return v
+\end{lstlisting}
+
+Let $A$ be a $1000\times 1000$ symmetric tridiagonal matrix with random values in its nonzero diagonals.
+Use the function \li{lanczos()} from Problem \ref{prob:lanczos} with 100 iterations to estimate the 5 eigenvalues of $A$ of largest norm.
+Compare these to the 5 largest true eigenvalues of $A$
+
+If you do this problem for different vectors $a$ and $b$, you may notice that occasionally the largest Ritz value is repeated.
+This happens because the vectors used in the Lanczos iteration may not be orthogonal.
+These erroneous eigenvalues are called ``ghost eigenvalues.''
+%They generally converge to actual eigenvalues of the matrix and can make the multiplicity of an eigenvalue look higher than it really is.

@@ -1,0 +1,14 @@
+
+Write a function to evaluate the density of a normal distribution at a point $x$, given parameters $\mu$ and $\Sigma$. Include the option to return the log of this probability, but be sure to do it intelligently! Also write a function that computes the density of a GMM at a point $x$, given the parameters $\lambda$, along with the log option.
+
+Write the skeleton of a GMM class. In the \li{\_\_init\_\_} method, it should accept the non-null parameter \emph{n\_components}, as well as parameters for the weights, means, and covariance matrices which define the GMM. Include a function to generate data from a fully defined GMM (you may use your code from the CDHMM lab for this), as well as the density function you recently defined.
+
+Add a method to your class to compute $\gamma_{t}(i)$ for $t = 1, \cdots, T$ and $i = 1, \cdots, K$. Don't forget to do this intelligently to avoid underflow!
+
+Add methods to your class to update $w, \mu$ and $\Sigma$ as described above.
+
+Add a method to initialize $\lambda$. Do this intelligently, i.e. your means should not be far from your actual data used for training, and your covariances should neither be too big nor too small. Your weights should roughly be equal, and still sum to $1$. Also add a method to train your model, as described previously, iterating until convergence within some tolerance.
+
+Generate $750$ samples from the above mixture model. Using just the drawn samples, retrain your model. Evaluate and plot your density on the grid used above. How similar is your density to the original?
+
+Write a function to compute the approximate the SKL of two GMMs. Compute the SKL between a randomly initialized GMM and the known GMM. Compute the SKL between the trained GMM and the known GMM. Is our trained model a good fit?
