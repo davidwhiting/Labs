@@ -700,3 +700,110 @@ class WSQ:
                 to the number of bytes contained in the bitstrings.
         """
         pass
+
+# Helper functions and classes for the Huffman encoding portions of WSQ algorithm.
+
+import queue
+class huffmanLeaf():
+    """Leaf node for Huffman tree."""
+    def __init__(self, symbol):
+        self.symbol = symbol
+
+    def makeMap(self, huff_map, path):
+        huff_map[self.symbol] = path
+
+    def __str__(self):
+        return str(self.symbol)
+
+    def __lt__(self,other):
+        return False
+
+class huffmanNode():
+    """Internal node for Huffman tree."""
+    def __init__(self, left, right):
+        self.left = left
+        self.right = right
+
+    def makeMap(self, huff_map, path):
+        """Traverse the huffman tree to build the encoding map."""
+        self.left.makeMap(huff_map, path + '0')
+        self.right.makeMap(huff_map, path + '1')
+
+    def __lt__(self,other):
+        return False
+
+def huffman(freqs):
+    """
+    Generate the huffman tree for the given symbol frequencies.
+    Return the map from symbol to bit pattern.
+    """
+    q = queue.PriorityQueue()
+    for i in range(len(freqs)):
+        leaf = huffmanLeaf(i)
+        q.put((freqs[i], leaf))
+    while q.qsize() > 1:
+        l1 = q.get()
+        l2 = q.get()
+        weight = l1[0] + l2[0]
+        node = huffmanNode(l1[1], l2[1])
+        q.put((weight,node))
+    root = q.get()[1]
+    huff_map = dict()
+    root.makeMap(huff_map, '')
+    return huff_map
+
+import numpy as np
+from scipy.signal import fftconvolve
+
+# given the current approximation frame image, and the filters lo_d and hi_d
+# initialize empty arrays
+temp = np.zeros([image.shape[0], image.shape[1]/2])
+LL = np.zeros([image.shape[0]/2, image.shape[1]/2])
+LH = np.zeros([image.shape[0]/2, image.shape[1]/2])
+HL = np.zeros([image.shape[0]/2, image.shape[1]/2])
+HH = np.zeros([image.shape[0]/2, image.shape[1]/2])
+
+# low-pass filtering along the rows
+for i in xrange(image.shape[0]):
+	temp[i] = fftconvolve(image[i], lo_d, mode='full')[1::2]
+
+# low and hi-pass filtering along the columns
+for i in xrange(image.shape[1]/2):
+	LL[:,i] = fftconvolve(temp[:,i],lo_d,mode='full')[1::2]
+    LH[:,i] = fftconvolve(temp[:,i],hi_d,mode='full')[1::2]
+
+# hi-pass filtering along the rows
+for i in xrange(image.shape[0]):
+	temp[i] = fftconvolve(image[i], hi_d, mode='full')[1::2]
+
+# low and hi-pass filtering along the columns
+for i in xrange(image.shape[1]/2):
+	HL[:,i] = fftconvolve(temp[:,i],lo_d,mode='full')[1::2]
+    HH[:,i] = fftconvolve(temp[:,i],hi_d,mode='full')[1::2]
+
+# given current coefficients LL, LH, HL, HH
+# initialize temporary arrays
+n = LL.shape[0]
+temp1 = np.zeros([2*n,n])
+temp2 = np.zeros([2*n,n])
+up1 = np.zeros(2*n)
+up2 = np.zeros(2*n)
+
+# upsample and filter the columns of the coefficient arrays
+for i in xrange(n):
+	up1[1::2] = HH[:,i]
+	up2[1::2] = HL[:,i]
+	temp1[:,i] = fftconvolve(up1, hi_r)[1:] + fftconvolve(up2, lo_r)[1:]
+	up1[1::2] = LH[:,i]
+	up2[1::2] = LL[:,i]
+	temp2[:,i] = fftconvolve(up1, hi_r)[1:] + fftconvolve(up2, lo_r)[1:]
+
+# upsample and filter the rows, then add results together
+result = sp.zeros([2*n,2*n])
+for i in xrange(2*n):
+	up1[1::2] = temp1[i]
+	up2[1::2] = temp2[i]
+	result[i] = fftconvolve(up1, hi_r)[1:] + fftconvolve(up2, lo_r)[1:]
+
+>>> # calculate one level of wavelet coefficients
+>>> coeffs = pywt.wavedec2(lena,'haar', level=1)
