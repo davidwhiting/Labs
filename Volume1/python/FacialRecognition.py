@@ -1,3 +1,4 @@
+
 import numpy as np
 from os import walk
 from scipy.misc import imread

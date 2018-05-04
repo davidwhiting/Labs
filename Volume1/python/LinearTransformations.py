@@ -1,3 +1,4 @@
+
 >>> import numpy as np
 >>> from matplotlib import pyplot as plt
 
@@ -12,6 +13,25 @@
 >>> plt.gca().set_aspect("equal")
 >>> plt.show()
 
+<g<In [1]:>g> import time
+
+<g<In [2]:>g> def for_loop():
+<g<   ...:>g>     """Go through ten million iterations of nothing."""
+<g<   ...:>g>     for _ in range(int(1e7)):
+<g<   ...:>g>         pass
+
+<g<In [3]:>g> def time_for_loop():
+<g<   ...:>g>     """Time for_loop() with time.time()."""
+<g<   ...:>g>     start = time.time()             # Clock the starting time.
+<g<   ...:>g>     for_loop()
+<g<   ...:>g>     return time.time() - start      # Return the elapsed time.
+
+<g<In [4]:>g> time_for_loop()
+0.24458789825439453
+
+<g<In [5]:>g> <p<%timeit>p> for_loop()
+248 ms +- 5.35 ms per loop (mean +- std. dev. of 7 runs, 1 loop each)
+
 from random import random
 def random_vector(n):       # Equivalent to np.random.random(n).tolist()
     """Generate a random vector of length n as a list."""
@@ -21,17 +41,17 @@ def random_matrix(n):       # Equivalent to np.random.random((n,n)).tolist()
     """Generate a random nxn matrix as a list of lists."""
     return [[random() for j in range(n)] for i in range(n)]
 
-domain = 2**np.arange(1,13)
-times = []
-for n in domain:
-   start = time.time()
-   random_matrix(n)
-   times.append(time.time() - start)
-
-plt.plot(domain, times, 'g.-', linewidth=2, markersize=15)
-plt.xlabel("n", fontsize=14)
-plt.ylabel("Seconds", fontsize=14)
-plt.show()
+>>> domain = 2**np.arange(1,13)
+>>> times = []
+>>> for n in domain:
+...     start = time.time()
+...     random_matrix(n)
+...     times.append(time.time() - start)
+...
+>>> plt.plot(domain, times, 'g.-', linewidth=2, markersize=15)
+>>> plt.xlabel("n", fontsize=14)
+>>> plt.ylabel("Seconds", fontsize=14)
+>>> plt.show()
 
 def matrix_vector_product(A, x):    # Equivalent to np.dot(A,x).tolist()
     """Compute the matrix-vector product Ax as a list."""

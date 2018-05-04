@@ -1,21 +1,23 @@
-import numpy as np
 
-z = 2 - 2*1j                    # 1j is the imaginary unit i = sqrt(-1).
-r, theta = np.<<abs>>(z), np.angle(z)
-print(r, theta)                 # The angle is between -pi and pi.
+>>> import numpy as np
 
+>>> z = 2 - 2*1j                    # 1j is the imaginary unit i = sqrt(-1).
+>>> r, theta = np.<<abs>>(z), np.angle(z)
+>>> print(r, theta)                 # The angle is between -pi and pi.
+2.82842712475 -0.785398163397
 
 # Check that z = r * e^(i*theta)
-np.isclose(z, r*np.exp(1j*theta))
-
+>>> np.isclose(z, r*np.exp(1j*theta))
+<<True>>
 
 # These function also work on entire arrays.
-np.<<abs>>(np.arange(5) + 2j*np.arange(5))
+>>> np.<<abs>>(np.arange(5) + 2j*np.arange(5))
+array([ 0.        ,  2.23606798,  4.47213595,  6.70820393,  8.94427191])
 
-x = np.linspace(-1, 1, 400)     # Real domain.
-y = np.linspace(-1, 1, 400)     # Imaginary domain.
-X, Y = np.meshgrid(x, y)        # Make grid matrices.
-Z = X + 1j*Y                    # Combine the grids into a complex array.
+>>> x = np.linspace(-1, 1, 400)     # Real domain.
+>>> y = np.linspace(-1, 1, 400)     # Imaginary domain.
+>>> X, Y = np.meshgrid(x, y)        # Make grid matrices.
+>>> Z = X + 1j*Y                    # Combine the grids into a complex array.
 
 from sympy import mpmath as mp
 mp.quad(lambda z: mp.exp(z), (complex(-1, -1), complex(1, 1)))
@@ -57,11 +59,11 @@ def colorize(z):
     c = c.swapaxes(0,1)
     return c
 
-f = lambda z :  (z**2-1)/z
-x = np.linspace(-.5, 1.5, 401)
-y = np.linspace(-1, 1, 401)
-X,Y = np.meshgrid(x,y)
-Z=f(X+Y*1j)
-Zc=colorize(Z)
-plt.imshow(Zc, extent=(-.5, 1.5, -1, 1))
-plt.show()
+>>> f = lambda z :  (z**2-1)/z
+>>> x = np.linspace(-.5, 1.5, 401)
+>>> y = np.linspace(-1, 1, 401)
+>>> X,Y = np.meshgrid(x,y)
+>>> Z=f(X+Y*1j)
+>>> Zc=colorize(Z)
+>>> plt.imshow(Zc, extent=(-.5, 1.5, -1, 1))
+>>> plt.show()

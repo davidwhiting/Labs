@@ -1,25 +1,26 @@
 
 b = A.conj() @ B
 
-from scipy.sparse import linalg as spla
-B = np.random.random((100,100))
-spla.eigs(B, k=5, return_eigenvectors=false)
-
+>>> from scipy.sparse import linalg as spla
+>>> B = np.random.random((100,100))
+>>> spla.eigs(B, k=5, return_eigenvectors=false)
+array([ -1.15577072-2.59438308j,  -2.63675878-1.09571889j,
+        -2.63675878+1.09571889j,  -3.00915592+0.j        ,  50.14472893+0.j ])
 
 # Evaluate the eigenvalues
 eigvalues = la.eig(A)[0]
 # Sort them from greatest to least (use np.abs to account for complex parts)
 eigvalues = eigvalues[np.sort(np.<<abs>>(eigvalues))[::-1]]
 
-#errors[errors > 10] = 10.
+%errors[errors > 10] = 10.
+%
+>>> A = np.random.rand(300, 300)
+>>> plot_ritz(a, 10, 175)
 
-A = np.random.rand(300, 300)
-plot_ritz(a, 10, 175)
-
-# A matrix with uniformly distributed eigenvalues
-d = np.diag(np.random.rand(300))
-B = A @ d @ la.inv(A)
-plot_ritz(B, 10, 175)
+>>> # A matrix with uniformly distributed eigenvalues
+>>> d = np.diag(np.random.rand(300))
+>>> B = A @ d @ la.inv(A)
+>>> plot_ritz(B, 10, 175)
 
 def companion_multiply(c, u):
     v = np.empty_like(u)

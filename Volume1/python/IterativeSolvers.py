@@ -1,17 +1,20 @@
-import numpy as np
 
-D = np.array([[2,0],[0,16]])    # Let D be a diagonal matrix.
-d = np.diag(D)                  # Extract the diagonal as a 1-D array.
-x = np.random.random(2)
-np.allclose(D.dot(x), d*x)
+>>> import numpy as np
 
-\begin{lstlisting}
-from scipy import linalg as la
+>>> D = np.array([[2,0],[0,16]])    # Let D be a diagonal matrix.
+>>> d = np.diag(D)                  # Extract the diagonal as a 1-D array.
+>>> x = np.random.random(2)
+>>> np.allclose(D.dot(x), d*x)
+<<True>>
 
-x = np.random.random(10)
-la.norm(x, <<ord>>=np.inf)          # Use la.norm() for ||x||.
-np.<<max>>(np.<<abs>>(x))               # The equivalent in NumPy for ||x||.
-
+% >>> from scipy import linalg as la
+%
+% >>> x = np.random.random(10)
+% >>> la.norm(x, <<ord>>=np.inf)          # Use la.norm() for ||x||.
+% 0.74623726404168045
+% >>> np.<<max>>(np.<<abs>>(x))               # The equivalent in NumPy for ||x||.
+% 0.74623726404168045
+% 
 def diag_dom(n, num_entries=None):
     """Generate a strictly diagonally dominant (n, n) matrix.
     Parameters:
@@ -33,15 +36,17 @@ def diag_dom(n, num_entries=None):
         A[i,i] = np.<<sum>>(np.<<abs>>(A[i])) + 1
     return A
 
-x0 = np.random.random(5)        # Generate a random vector.
-x1 = x0                         # Attempt to make a copy.
-x1[3] = 1000                    # Modify the "copy" in place.
-np.allclose(x0, x1)             # But x0 was also changed!
+>>> x0 = np.random.random(5)        # Generate a random vector.
+>>> x1 = x0                         # Attempt to make a copy.
+>>> x1[3] = 1000                    # Modify the "copy" in place.
+>>> np.allclose(x0, x1)             # But x0 was also changed!
+<<True>>
 
 # Instead, make a copy of x0 when creating x1.
-x0 = np.copy(x1)                # Make a copy.
-x1[3] = -1000
-np.allclose(x0, x1)
+>>> x0 = np.copy(x1)                # Make a copy.
+>>> x1[3] = -1000
+>>> np.allclose(x0, x1)
+<<False>>
 
 # Get the indices of where the i-th row of A starts and ends if the
 # nonzero entries of A were flattened.
@@ -52,11 +57,10 @@ rowend = A.indptr[i+1]
 # corresponding elements of x.
 Aix = A.data[rowstart:rowend] @ x[A.indices[rowstart:rowend]]
 
+>>> from scipy import sparse
 
-from scipy import sparse
-
-A = sparse.csr_matrix(diag_dom(50000))
-b = np.random.random(50000)
+>>> A = sparse.csr_matrix(diag_dom(50000))
+>>> b = np.random.random(50000)
 
 from matplotlib import pyplot as plt
 import numpy as np
@@ -80,4 +84,3 @@ def jacobi(n=100, tol=1e-8):
     # Visualize the results.
     plt.imshow(U)
     plt.show()
-
